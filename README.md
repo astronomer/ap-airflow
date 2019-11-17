@@ -11,11 +11,9 @@ Docker images for deploying and running Astronomer Certified Airflow are current
 
 ## Contents of this repo
 
-* The official Dockerfiles that build and install tagged releases of the
-  services composing Astronomer.
+* The official Dockerfiles that build Astronomer Certified Airflow Images
 * Example docker-compose files for running various pieces and configurations of
   the platform.
-* Scripts to build, maintain and release tagged versions of the platform.
 
 ## Contribute
 
