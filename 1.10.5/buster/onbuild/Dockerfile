@@ -26,9 +26,11 @@ ONBUILD RUN if [[ -s packages.txt ]]; then \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*; \
   fi
+
 # Install python packages
 ONBUILD COPY requirements.txt .
 ONBUILD RUN pip install --no-cache-dir -q -r requirements.txt
 ONBUILD USER astro
+
 # Copy entire project directory
 ONBUILD COPY . .
