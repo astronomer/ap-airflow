@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM astronomerinc/ap-airflow:0.10.3-alpha.6-debian-1.10.5
+FROM astronomerinc/ap-airflow:1.10.5-buster
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 LABEL io.astronomer.docker=true
