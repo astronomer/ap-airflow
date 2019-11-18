@@ -15,14 +15,14 @@ jobs:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
+          comma_separated_tags: "1.10.5-alpine3.10-$CIRCLE_SHA1,1.10.5-alpine3.10-$CIRCLE_BUILD_NUM"
           image_name_load: ap-airflow-alpine
           image_name_publish: ap-airflow
   publish-prod-alpine:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10"
+          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10,1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
           image_name_load: ap-airflow-alpine
           image_name_publish: ap-airflow
   build-buster:
@@ -40,14 +40,14 @@ jobs:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-buster-onbuild"
+          comma_separated_tags: "1.10.5-buster-$CIRCLE_SHA1,1.10.5-buster-$CIRCLE_BUILD_NUMBER"
           image_name_load: ap-airflow-buster
           image_name_publish: ap-airflow
   publish-prod-buster:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-buster"
+          comma_separated_tags: "1.10.5-buster,1.10.5-buster-onbuild"
           image_name_load: ap-airflow-alpine
           image_name_publish: ap-airflow
 
