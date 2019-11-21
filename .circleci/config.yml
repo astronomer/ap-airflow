@@ -1,0 +1,168 @@
+version: 2.1
+jobs:
+  build-alpine:
+    executor: docker-executor
+    steps:
+      - docker-build:
+          image_name: ap-airflow-alpine
+          path: 1.10.5/alpine3.10
+  scan-alpine:
+    executor: clair-scanner/default
+    steps:
+      - clair-scan:
+          image_name: ap-airflow-alpine
+  publish-dev-alpine:
+    executor: docker-executor
+    steps:
+      - push:
+          comma_separated_tags: "1.10.5-alpine3.10-$CIRCLE_SHA1,1.10.5-alpine3.10-$CIRCLE_BUILD_NUM"
+          image_name_load: ap-airflow-alpine
+          image_name_publish: ap-airflow
+  publish-prod-alpine:
+    executor: docker-executor
+    steps:
+      - push:
+          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10,1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
+          image_name_load: ap-airflow-alpine
+          image_name_publish: ap-airflow
+  build-buster:
+    executor: docker-executor
+    steps:
+      - docker-build:
+          image_name: ap-airflow-buster
+          path: 1.10.5/buster
+  scan-buster:
+    executor: clair-scanner/default
+    steps:
+      - clair-scan:
+          image_name: ap-airflow-buster
+  publish-dev-buster:
+    executor: docker-executor
+    steps:
+      - push:
+          comma_separated_tags: "1.10.5-buster-$CIRCLE_SHA1,1.10.5-buster-$CIRCLE_BUILD_NUMBER"
+          image_name_load: ap-airflow-buster
+          image_name_publish: ap-airflow
+  publish-prod-buster:
+    executor: docker-executor
+    steps:
+      - push:
+          comma_separated_tags: "1.10.5-buster,1.10.5-buster-onbuild"
+          image_name_load: ap-airflow-alpine
+          image_name_publish: ap-airflow
+
+workflows:
+  version: 2.1
+  build-images:
+    jobs:
+      - build-alpine
+      - scan-alpine:
+          requires:
+            - build-alpine
+      - publish-dev-alpine:
+          requires:
+            - scan-alpine
+      - publish-prod-alpine:
+          requires:
+            - scan-alpine
+          filters:
+            branches:
+              only: master
+      - build-buster
+      - scan-buster:
+          requires:
+            - build-buster
+      - publish-dev-buster:
+          requires:
+            - scan-buster
+      - publish-prod-buster:
+          requires:
+            - scan-buster
+          filters:
+            branches:
+              only: master
+orbs:
+  clair-scanner: ovotech/clair-scanner@1.6.0
+executors:
+  docker-executor:
+    environment:
+      GIT_ORG: astronomerinc
+    docker:
+      - image: circleci/buildpack-deps:stretch
+commands:
+  docker-build:
+    description: "Build a Docker image"
+    parameters:
+      dockerfile:
+        type: string
+        default: Dockerfile
+      path:
+        type: string
+        default: "."
+      image_name:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build the Docker image
+          command: |
+            set -xe
+            image_name="<< parameters.image_name >>"
+            docker build -t $image_name --file << parameters.path>>/<< parameters.dockerfile >> --build-arg BUILD_NUMBER=${CIRCLE_BUILD_NUM} << parameters.path >>
+            docker save -o << parameters.image_name >>.tar $image_name
+      - persist_to_workspace:
+          root: .
+          paths:
+            - './*.tar'
+  clair-scan:
+    description: "Vulnerability scan a Docker image"
+    parameters:
+      image_name:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Move tarball to directory for scan
+          command: mkdir /tmp/tarballs && mv /tmp/workspace/<< parameters.image_name >>.tar /tmp/tarballs/
+      - clair-scanner/scan:
+          docker_tar_dir: /tmp/tarballs
+  push:
+    description: "Push a Docker image to DockerHub"
+    parameters:
+      comma_separated_tags:
+        type: string
+        default: latest
+      organization:
+        type: string
+        default: $GIT_ORG
+      image_name_load:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+      image_name_publish:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/<< parameters.image_name_load >>.tar
+      - run:
+          name: Login to DockerHub
+          command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+      - run:
+          name: Push Docker image(s)
+          command: |
+            set -e
+            for tag in $(echo "<< parameters.comma_separated_tags >>" | sed "s/,/ /g");
+            do
+              set -x
+              docker tag << parameters.image_name_load >> << parameters.organization >>/<< parameters.image_name_publish >>:${tag}
+              docker push << parameters.organization >>/<< parameters.image_name_publish >>:${tag}
+              set +x
+            done
