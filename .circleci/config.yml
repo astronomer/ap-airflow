@@ -62,7 +62,7 @@ jobs:
           docker_layer_caching: true
       - docker-build:
         image_name: ap-airflow-buster
-          path: 1.10.5/buster
+        path: 1.10.5/buster
       - run:
           name: "Tag image"
           command: docker tag ap-airflow-buster astronomerinc/ap-airflow:1.10.5-buster
