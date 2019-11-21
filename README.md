@@ -17,7 +17,7 @@ Docker images for deploying and running Astronomer Certified Airflow are current
 
 ## Contribute
 
-* Source Code: <https://github.com/ap-airflow>
+* Source Code: <https://github.com/astronomer/ap-airflow>
 * Issue Tracker: <https://github.com/astronomer/ap-airflow/issues>
 
 ## License
