@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 # Sudo _explicitly_ filters out PYTHONPATH, even when env_reset is disabled. but we want it
