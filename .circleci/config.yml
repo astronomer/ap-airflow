@@ -1,55 +1,102 @@
 version: 2.1
 jobs:
+  #
+  # Alpine
+  #
+
+  # Build Alpine Images
   build-alpine:
     executor: docker-executor
     steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - docker-build:
           image_name: ap-airflow-alpine
           path: 1.10.5/alpine3.10
+      - run:
+          name: "Tag image"
+          command: docker tag ap-airflow-alpine astronomerinc/ap-airflow:1.10.5-alpine3.10
+      - docker-build:
+          image_name: ap-airflow-alpine-onbuild
+          path: 1.10.5/alpine3.10/onbuild
+
+  # Scan Alpine Images
   scan-alpine:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine
-  publish-dev-alpine:
-    executor: docker-executor
+  scan-alpine-onbuild:
+    executor: clair-scanner/default
     steps:
-      - push:
-          comma_separated_tags: "1.10.5-alpine3.10-$CIRCLE_SHA1,1.10.5-alpine3.10-$CIRCLE_BUILD_NUM"
-          image_name_load: ap-airflow-alpine
-          image_name_publish: ap-airflow
+      - clair-scan:
+          image_name: ap-airflow-alpine-onbuild
+
+  # Publish Alpine Images
   publish-prod-alpine:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10,1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
+          comma_separated_tags: "1.10.5-alpine3.10,1.10.5-alpine"
           image_name_load: ap-airflow-alpine
-          image_name_publish: ap-airflow
+          image_repo: ap-airflow
+  publish-prod-alpine-onbuild:
+    executor: docker-executor
+    steps:
+      - push:
+          comma_separated_tags: "1.10.5-alpine3.10-onbuild,1.10.5-alpine-onbuild"
+          image_name_load: ap-airflow-alpine-onbuild
+          image_repo: ap-airflow
+
+  #
+  # Debian
+  #
+  
+  # Build Debian Images
   build-buster:
     executor: docker-executor
     steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - docker-build:
           image_name: ap-airflow-buster
           path: 1.10.5/buster
+      - run:
+          name: "Tag image"
+          command: docker tag ap-airflow-buster astronomerinc/ap-airflow:1.10.5-buster
+      - docker-build:
+          image_name: ap-airflow-buster-onbuild
+          path: 1.10.5/buster/onbuild
+
+  # Scan Debian Images
   scan-buster:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-buster
-  publish-dev-buster:
-    executor: docker-executor
+  scan-buster-onbuild:
+    executor: clair-scanner/default
     steps:
-      - push:
-          comma_separated_tags: "1.10.5-buster-$CIRCLE_SHA1,1.10.5-buster-$CIRCLE_BUILD_NUMBER"
-          image_name_load: ap-airflow-buster
-          image_name_publish: ap-airflow
+      - clair-scan:
+          image_name: ap-airflow-buster-onbuild
+
+  # Publish Debian Images
   publish-prod-buster:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-buster,1.10.5-buster-onbuild"
-          image_name_load: ap-airflow-alpine
-          image_name_publish: ap-airflow
+          comma_separated_tags: "1.10.5-buster"
+          image_name_load: ap-airflow-buster
+          image_repo: ap-airflow
+  publish-prod-buster-onbuild:
+    executor: docker-executor
+    steps:
+      - push:
+          comma_separated_tags: "1.10.5-buster-onbuild"
+          image_name_load: ap-airflow-buster-onbuild
+          image_repo: ap-airflow
 
 workflows:
   version: 2.1
@@ -59,12 +106,20 @@ workflows:
       - scan-alpine:
           requires:
             - build-alpine
-      - publish-dev-alpine:
+      - scan-alpine-onbuild:
           requires:
-            - scan-alpine
+            - build-alpine
       - publish-prod-alpine:
           requires:
             - scan-alpine
+            - scan-alpine-onbuild
+          filters:
+            branches:
+              only: master
+      - publish-prod-alpine-onbuild:
+          requires:
+            - scan-alpine
+            - scan-alpine-onbuild
           filters:
             branches:
               only: master
@@ -72,12 +127,20 @@ workflows:
       - scan-buster:
           requires:
             - build-buster
-      - publish-dev-buster:
+      - scan-buster-onbuild:
           requires:
-            - scan-buster
+            - build-buster
       - publish-prod-buster:
           requires:
             - scan-buster
+            - scan-buster-onbuild
+          filters:
+            branches:
+              only: master
+      - publish-prod-buster-onbuild:
+          requires:
+            - scan-buster
+            - scan-buster-onbuild
           filters:
             branches:
               only: master
@@ -103,8 +166,6 @@ commands:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
     steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: Build the Docker image
           command: |
@@ -142,7 +203,7 @@ commands:
       image_name_load:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
-      image_name_publish:
+      image_repo:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
     steps:
@@ -162,7 +223,7 @@ commands:
             for tag in $(echo "<< parameters.comma_separated_tags >>" | sed "s/,/ /g");
             do
               set -x
-              docker tag << parameters.image_name_load >> << parameters.organization >>/<< parameters.image_name_publish >>:${tag}
-              docker push << parameters.organization >>/<< parameters.image_name_publish >>:${tag}
+              docker tag << parameters.image_name_load >> << parameters.organization >>/<< parameters.image_repo >>:${tag}
+              docker push << parameters.organization >>/<< parameters.image_repo >>:${tag}
               set +x
             done
