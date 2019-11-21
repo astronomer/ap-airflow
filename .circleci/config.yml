@@ -6,9 +6,14 @@ jobs:
   build-alpine:
     executor: docker-executor
     steps:
+      - checkout
+      - setup_remote_docker
       - docker-build:
           image_name: ap-airflow-alpine
           path: 1.10.5/alpine3.10
+      - run:
+          name: "Tag image"
+          command: docker tag ap-airflow-alpine astronomerinc/ap-airflow:1.10.5-alpine3.10
       - docker-build:
           image_name: ap-airflow-alpine-onbuild
           path: 1.10.5/alpine3.10/onbuild
@@ -17,13 +22,11 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine
-  # publish-dev-alpine:
-  #   executor: docker-executor
-  #   steps:
-  #     - push:
-  #         comma_separated_tags: "1.10.5-alpine3.10-$CIRCLE_SHA1"
-  #         image_name_load: ap-airflow-alpine
-  #         image_name_publish: ap-airflow
+  scan-alpine-onbuild:
+    executor: clair-scanner/default
+    steps:
+      - clair-scan:
+          image_name: ap-airflow-alpine-onbuild
   publish-prod-alpine:
     executor: docker-executor
     steps:
@@ -31,20 +34,27 @@ jobs:
           comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10"
           image_name_load: ap-airflow-alpine
           image_name_publish: ap-airflow
+  publish-prod-alpine-onbuild:
+    executor: docker-executor
+    steps:
       - push:
           comma_separated_tags: "1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
           image_name_load: ap-airflow-alpine-onbuild
           image_name_publish: ap-airflow
-
   #
   # Debian
   #
   build-buster:
     executor: docker-executor
     steps:
+      - checkout
+      - setup_remote_docker
       - docker-build:
           image_name: ap-airflow-buster
           path: 1.10.5/buster
+      - run:
+          name: "Tag image"
+          command: docker tag ap-airflow-alpine astronomerinc/ap-airflow:1.10.5-buster
       - docker-build:
           image_name: ap-airflow-buster-onbuild
           path: 1.10.5/buster/onbuild
@@ -53,13 +63,11 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-buster
-  # publish-dev-buster:
-  #   executor: docker-executor
-  #   steps:
-  #     - push:
-  #         comma_separated_tags: "1.10.5-buster-$CIRCLE_SHA1"
-  #         image_name_load: ap-airflow-buster
-  #         image_name_publish: ap-airflow
+  scan-buster-onbuild:
+    executor: clair-scanner/default
+    steps:
+      - clair-scan:
+          image_name: ap-airflow-buster-onbuild
   publish-prod-buster:
     executor: docker-executor
     steps:
@@ -67,6 +75,9 @@ jobs:
           comma_separated_tags: "1.10.5-buster"
           image_name_load: ap-airflow-buster
           image_name_publish: ap-airflow
+  publish-prod-buster-onbuild:
+    executor: docker-executor
+    steps:
       - push:
           comma_separated_tags: "1.10.5-buster-onbuild"
           image_name_load: ap-airflow-buster-onbuild
@@ -80,12 +91,20 @@ workflows:
       - scan-alpine:
           requires:
             - build-alpine
-      # - publish-dev-alpine:
-      #     requires:
-      #       - scan-alpine
+      - scan-alpine-onbuild:
+          requires:
+            - build-alpine
       - publish-prod-alpine:
           requires:
             - scan-alpine
+            - scan-alpine-onbuild
+          filters:
+            branches:
+              only: master
+      - publish-prod-alpine-onbuild:
+          requires:
+            - scan-alpine
+            - scan-alpine-onbuild
           filters:
             branches:
               only: master
@@ -93,12 +112,20 @@ workflows:
       - scan-buster:
           requires:
             - build-buster
-      # - publish-dev-buster:
-      #     requires:
-      #       - scan-buster
+      - scan-buster-onbuild:
+          requires:
+            - build-buster
       - publish-prod-buster:
           requires:
             - scan-buster
+            - scan-buster-onbuild
+          filters:
+            branches:
+              only: master
+      - publish-prod-buster-onbuild:
+          requires:
+            - scan-buster
+            - scan-buster-onbuild
           filters:
             branches:
               only: master
@@ -124,8 +151,6 @@ commands:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
     steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: Build the Docker image
           command: |
