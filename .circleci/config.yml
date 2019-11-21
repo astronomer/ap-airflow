@@ -1,54 +1,75 @@
 version: 2.1
 jobs:
+  #
+  # Alpine
+  #
   build-alpine:
     executor: docker-executor
     steps:
       - docker-build:
           image_name: ap-airflow-alpine
           path: 1.10.5/alpine3.10
+      - docker-build-onbuild:
+          image_name: ap-airflow-alpine-onbuild
+          path: 1.10.5/alpine3.10/onbuild
   scan-alpine:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine
-  publish-dev-alpine:
-    executor: docker-executor
-    steps:
-      - push:
-          comma_separated_tags: "1.10.5-alpine3.10-$CIRCLE_SHA1,1.10.5-alpine3.10-$CIRCLE_BUILD_NUM"
-          image_name_load: ap-airflow-alpine
-          image_name_publish: ap-airflow
+  # publish-dev-alpine:
+  #   executor: docker-executor
+  #   steps:
+  #     - push:
+  #         comma_separated_tags: "1.10.5-alpine3.10-$CIRCLE_SHA1"
+  #         image_name_load: ap-airflow-alpine
+  #         image_name_publish: ap-airflow
   publish-prod-alpine:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10,1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
+          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10"
           image_name_load: ap-airflow-alpine
           image_name_publish: ap-airflow
+      - push:
+          comma_separated_tags: "1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
+          image_name_load: ap-airflow-alpine-onbuild
+          image_name_publish: ap-airflow
+
+  #
+  # Debian
+  #
   build-buster:
     executor: docker-executor
     steps:
       - docker-build:
           image_name: ap-airflow-buster
           path: 1.10.5/buster
+      - docker-build-onbuild:
+          image_name: ap-airflow-buster-onbuild
+          path: 1.10.5/buster/onbuild
   scan-buster:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-buster
-  publish-dev-buster:
-    executor: docker-executor
-    steps:
-      - push:
-          comma_separated_tags: "1.10.5-buster-$CIRCLE_SHA1,1.10.5-buster-$CIRCLE_BUILD_NUMBER"
-          image_name_load: ap-airflow-buster
-          image_name_publish: ap-airflow
+  # publish-dev-buster:
+  #   executor: docker-executor
+  #   steps:
+  #     - push:
+  #         comma_separated_tags: "1.10.5-buster-$CIRCLE_SHA1"
+  #         image_name_load: ap-airflow-buster
+  #         image_name_publish: ap-airflow
   publish-prod-buster:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-buster,1.10.5-buster-onbuild"
-          image_name_load: ap-airflow-alpine
+          comma_separated_tags: "1.10.5-buster"
+          image_name_load: ap-airflow-buster
+          image_name_publish: ap-airflow
+      - push:
+          comma_separated_tags: "1.10.5-buster-onbuild"
+          image_name_load: ap-airflow-buster-onbuild
           image_name_publish: ap-airflow
 
 workflows:
