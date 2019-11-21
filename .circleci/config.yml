@@ -61,7 +61,7 @@ jobs:
   #
   # Debian
   #
-  
+
   # Build Debian Images
   build-buster:
     executor: docker-executor
@@ -189,7 +189,7 @@ executors:
     environment:
       GIT_ORG: astronomerinc
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: circleci/python:3
 commands:
   docker-build:
     description: "Build a Docker image"
