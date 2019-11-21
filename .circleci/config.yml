@@ -9,7 +9,7 @@ jobs:
       - docker-build:
           image_name: ap-airflow-alpine
           path: 1.10.5/alpine3.10
-      - docker-build-onbuild:
+      - docker-build:
           image_name: ap-airflow-alpine-onbuild
           path: 1.10.5/alpine3.10/onbuild
   scan-alpine:
@@ -45,7 +45,7 @@ jobs:
       - docker-build:
           image_name: ap-airflow-buster
           path: 1.10.5/buster
-      - docker-build-onbuild:
+      - docker-build:
           image_name: ap-airflow-buster-onbuild
           path: 1.10.5/buster/onbuild
   scan-buster:
