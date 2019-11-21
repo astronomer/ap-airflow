@@ -258,7 +258,7 @@ commands:
             source ./venv/bin/activate
             export AIRFLOW_IMAGE='<< parameters.image_name >>'
             mkdir -p test-reports
-            pytest .circle-ci/test-airflow-image.py --junitxml=test-reports/airflow-test-<< parameters.image_name >>.xml
+            pytest .circleci/test-airflow-image.py --junitxml=test-reports/airflow-test-<< parameters.image_name >>.xml
       - store_test_results:
           path: test-reports
       - store_artifacts:
