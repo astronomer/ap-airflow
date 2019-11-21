@@ -7,7 +7,8 @@ jobs:
     executor: docker-executor
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - docker-build:
           image_name: ap-airflow-alpine
           path: 1.10.5/alpine3.10
@@ -48,7 +49,8 @@ jobs:
     executor: docker-executor
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - docker-build:
           image_name: ap-airflow-buster
           path: 1.10.5/buster
