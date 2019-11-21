@@ -56,7 +56,7 @@ jobs:
           path: 1.10.5/buster
       - run:
           name: "Tag image"
-          command: docker tag ap-airflow-alpine astronomerinc/ap-airflow:1.10.5-buster
+          command: docker tag ap-airflow-buster astronomerinc/ap-airflow:1.10.5-buster
       - docker-build:
           image_name: ap-airflow-buster-onbuild
           path: 1.10.5/buster/onbuild
