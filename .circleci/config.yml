@@ -3,6 +3,8 @@ jobs:
   #
   # Alpine
   #
+
+  # Build Alpine Images
   build-alpine:
     executor: docker-executor
     steps:
@@ -28,6 +30,7 @@ jobs:
     steps:
       - airflow-image-test:
           image_name: ap-airflow-alpine-onbuild
+  # Scan Alpine Images
   scan-alpine:
     executor: clair-scanner/default
     steps:
@@ -38,23 +41,28 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine-onbuild
+
+  # Publish Alpine Images
   publish-prod-alpine:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine,1.10.5-alpine3.10"
+          comma_separated_tags: "1.10.5-alpine3.10,1.10.5-alpine"
           image_name_load: ap-airflow-alpine
-          image_name_publish: ap-airflow
+          image_repo: ap-airflow
   publish-prod-alpine-onbuild:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine-onbuild,1.10.5-alpine3.10-onbuild"
+          comma_separated_tags: "1.10.5-alpine3.10-onbuild,1.10.5-alpine-onbuild"
           image_name_load: ap-airflow-alpine-onbuild
-          image_name_publish: ap-airflow
+          image_repo: ap-airflow
+
   #
   # Debian
   #
+  
+  # Build Debian Images
   build-buster:
     executor: docker-executor
     steps:
@@ -80,6 +88,7 @@ jobs:
     steps:
       - airflow-image-test:
           image_name: ap-airflow-buster-onbuild
+  # Scan Debian Images
   scan-buster:
     executor: clair-scanner/default
     steps:
@@ -90,20 +99,22 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-buster-onbuild
+
+  # Publish Debian Images
   publish-prod-buster:
     executor: docker-executor
     steps:
       - push:
           comma_separated_tags: "1.10.5-buster"
           image_name_load: ap-airflow-buster
-          image_name_publish: ap-airflow
+          image_repo: ap-airflow
   publish-prod-buster-onbuild:
     executor: docker-executor
     steps:
       - push:
           comma_separated_tags: "1.10.5-buster-onbuild"
           image_name_load: ap-airflow-buster-onbuild
-          image_name_publish: ap-airflow
+          image_repo: ap-airflow
 
 workflows:
   version: 2.1
@@ -264,7 +275,7 @@ commands:
       image_name_load:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
-      image_name_publish:
+      image_repo:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
     steps:
@@ -284,7 +295,7 @@ commands:
             for tag in $(echo "<< parameters.comma_separated_tags >>" | sed "s/,/ /g");
             do
               set -x
-              docker tag << parameters.image_name_load >> << parameters.organization >>/<< parameters.image_name_publish >>:${tag}
-              docker push << parameters.organization >>/<< parameters.image_name_publish >>:${tag}
+              docker tag << parameters.image_name_load >> << parameters.organization >>/<< parameters.image_repo >>:${tag}
+              docker push << parameters.organization >>/<< parameters.image_repo >>:${tag}
               set +x
             done
