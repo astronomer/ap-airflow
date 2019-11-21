@@ -80,9 +80,9 @@ workflows:
       - scan-alpine:
           requires:
             - build-alpine
-      - publish-dev-alpine:
-          requires:
-            - scan-alpine
+      # - publish-dev-alpine:
+      #     requires:
+      #       - scan-alpine
       - publish-prod-alpine:
           requires:
             - scan-alpine
@@ -93,9 +93,9 @@ workflows:
       - scan-buster:
           requires:
             - build-buster
-      - publish-dev-buster:
-          requires:
-            - scan-buster
+      # - publish-dev-buster:
+      #     requires:
+      #       - scan-buster
       - publish-prod-buster:
           requires:
             - scan-buster
