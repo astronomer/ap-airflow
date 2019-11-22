@@ -1,0 +1,2 @@
+testinfra==3.2.1
+docker==4.1.0

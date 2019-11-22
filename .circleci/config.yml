@@ -20,7 +20,16 @@ jobs:
       - docker-build:
           image_name: ap-airflow-alpine-onbuild
           path: 1.10.5/alpine3.10/onbuild
-
+  test-alpine:
+    executor: docker-executor
+    steps:
+      - airflow-image-test:
+          image_name: ap-airflow-alpine
+  test-alpine-onbuild:
+    executor: docker-executor
+    steps:
+      - airflow-image-test:
+          image_name: ap-airflow-alpine-onbuild
   # Scan Alpine Images
   scan-alpine:
     executor: clair-scanner/default
@@ -52,7 +61,6 @@ jobs:
   #
   # Debian
   #
-  
   # Build Debian Images
   build-buster:
     executor: docker-executor
@@ -69,7 +77,16 @@ jobs:
       - docker-build:
           image_name: ap-airflow-buster-onbuild
           path: 1.10.5/buster/onbuild
-
+  test-buster:
+    executor: docker-executor
+    steps:
+      - airflow-image-test:
+          image_name: ap-airflow-buster
+  test-buster-onbuild:
+    executor: docker-executor
+    steps:
+      - airflow-image-test:
+          image_name: ap-airflow-buster-onbuild
   # Scan Debian Images
   scan-buster:
     executor: clair-scanner/default
@@ -109,10 +126,18 @@ workflows:
       - scan-alpine-onbuild:
           requires:
             - build-alpine
+      - test-alpine:
+          requires:
+            - build-alpine
+      - test-alpine-onbuild:
+          requires:
+            - build-alpine
       - publish-prod-alpine:
           requires:
             - scan-alpine
             - scan-alpine-onbuild
+            - test-alpine
+            - test-alpine-onbuild
           filters:
             branches:
               only: master
@@ -120,10 +145,18 @@ workflows:
           requires:
             - scan-alpine
             - scan-alpine-onbuild
+            - test-alpine
+            - test-alpine-onbuild
           filters:
             branches:
               only: master
       - build-buster
+      - test-buster:
+          requires:
+            - build-buster
+      - test-buster-onbuild:
+          requires:
+            - build-buster
       - scan-buster:
           requires:
             - build-buster
@@ -134,6 +167,8 @@ workflows:
           requires:
             - scan-buster
             - scan-buster-onbuild
+            - test-buster
+            - test-buster-onbuild
           filters:
             branches:
               only: master
@@ -141,6 +176,8 @@ workflows:
           requires:
             - scan-buster
             - scan-buster-onbuild
+            - test-buster
+            - test-buster-onbuild
           filters:
             branches:
               only: master
@@ -151,7 +188,7 @@ executors:
     environment:
       GIT_ORG: astronomerinc
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: circleci/python:3
 commands:
   docker-build:
     description: "Build a Docker image"
@@ -191,6 +228,40 @@ commands:
           command: mkdir /tmp/tarballs && mv /tmp/workspace/<< parameters.image_name >>.tar /tmp/tarballs/
       - clair-scanner/scan:
           docker_tar_dir: /tmp/tarballs
+  airflow-image-test:
+    description: Test an Airflow image
+    parameters:
+      image_name:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Airflow Docker image
+          command: docker load -i /tmp/workspace/<< parameters.image_name >>.tar
+      - run:
+          name: Set up test environment
+          command: |
+            set -xe
+            pip install virtualenv
+            virtualenv --python=python3 ./venv
+            source ./venv/bin/activate
+            pip install -r .circleci/test-requirements.txt
+      - run:
+          name: Test Airflow Docker image
+          command: |
+            set -xe
+            source ./venv/bin/activate
+            export AIRFLOW_IMAGE='<< parameters.image_name >>'
+            mkdir -p test-reports
+            pytest .circleci/test-airflow-image.py --junitxml=test-reports/airflow-test-<< parameters.image_name >>.xml
+      - store_test_results:
+          path: test-reports
+      - store_artifacts:
+          path: test-reports
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
