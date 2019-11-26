@@ -47,14 +47,14 @@ jobs:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine3.10,1.10.5-alpine"
+          comma_separated_tags: "1.10.5-alpine3.10,1.10.5-alpine,1.10.5,latest"
           image_name_load: ap-airflow-alpine
           image_repo: ap-airflow
   publish-prod-alpine-onbuild:
     executor: docker-executor
     steps:
       - push:
-          comma_separated_tags: "1.10.5-alpine3.10-onbuild,1.10.5-alpine-onbuild"
+          comma_separated_tags: "1.10.5-alpine3.10-onbuild,1.10.5-alpine-onbuild,1.10.5-onbuild,latest-onbuild"
           image_name_load: ap-airflow-alpine-onbuild
           image_repo: ap-airflow
 
