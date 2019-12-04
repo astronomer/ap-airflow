@@ -217,7 +217,6 @@ commands:
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:
-      whitelist: .circleci/cve-whitelist.yaml
       image_name:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
@@ -230,6 +229,7 @@ commands:
           command: mkdir /tmp/tarballs && mv /tmp/workspace/<< parameters.image_name >>.tar /tmp/tarballs/
       - clair-scanner/scan:
           docker_tar_dir: /tmp/tarballs
+          whitelist: /tmp/workspace/.circleci/cve-whitelist.yaml
   airflow-image-test:
     description: Test an Airflow image
     parameters:
