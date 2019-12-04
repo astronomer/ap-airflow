@@ -47,9 +47,9 @@ RUN yum install -y epel-release cyrus-sasl-devel krb5-libs python-devel mysql-de
 RUN wget https://nodejs.org/dist/v12.13.1/node-v12.13.1-linux-x64.tar.xz && \
     tar -xvf /node-v12.13.1-linux-x64.tar.xz
 
-ADD python3.6.sh /python3.6.sh
-RUN chmod 750 ./python3.6.sh && \
-    ./python3.6.sh
+COPY include/install-python /install-python
+RUN chmod 750 ./install-python && \
+    ./install-python
 #    cp /usr/share/zoneinfo/UTC /etc/localtime && \
 
 RUN pip3.6 install --no-cache-dir cryptography  \
