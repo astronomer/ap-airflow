@@ -36,13 +36,11 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine
-          whitelist: .circleci/cve-whitelist.yaml
   scan-alpine-onbuild:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine-onbuild
-          whitelist: .circleci/cve-whitelist.yaml
 
   # Publish Alpine Images
   publish-prod-alpine:
@@ -95,13 +93,11 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-buster
-          whitelist: .circleci/cve-whitelist.yaml
   scan-buster-onbuild:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-buster-onbuild
-          whitelist: .circleci/cve-whitelist.yaml
 
   # Publish Debian Images
   publish-prod-buster:
@@ -221,6 +217,7 @@ commands:
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:
+      whitelist: .circleci/cve-whitelist.yaml
       image_name:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
