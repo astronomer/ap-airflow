@@ -292,7 +292,7 @@ commands:
         default: $CIRCLE_PROJECT_REPONAME
       whitelist:
         type: string
-        default: .circleci/cve-whitelist.yaml
+        default: cve-whitelist.yaml
     steps:
       - checkout
       - setup_remote_docker
