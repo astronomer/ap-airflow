@@ -231,6 +231,7 @@ commands:
           name: Move tarball to directory for scan
           command: mkdir /tmp/tarballs && mv /tmp/workspace/<< parameters.image_name >>.tar /tmp/tarballs/
       - clair-scanner/scan:
+          whitelist: .circleci/cve-whitelist.yaml
           docker_tar_dir: /tmp/tarballs
   airflow-image-test:
     description: Test an Airflow image
