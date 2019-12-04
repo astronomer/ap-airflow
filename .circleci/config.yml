@@ -36,11 +36,13 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine
+          whitelist: .circleci/cve-whitelist.yaml
   scan-alpine-onbuild:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-alpine-onbuild
+          whitelist: .circleci/cve-whitelist.yaml
 
   # Publish Alpine Images
   publish-prod-alpine:
@@ -93,11 +95,13 @@ jobs:
     steps:
       - clair-scan:
           image_name: ap-airflow-buster
+          whitelist: .circleci/cve-whitelist.yaml
   scan-buster-onbuild:
     executor: clair-scanner/default
     steps:
       - clair-scan:
           image_name: ap-airflow-buster-onbuild
+          whitelist: .circleci/cve-whitelist.yaml
 
   # Publish Debian Images
   publish-prod-buster:
@@ -229,7 +233,6 @@ commands:
           command: mkdir /tmp/tarballs && mv /tmp/workspace/<< parameters.image_name >>.tar /tmp/tarballs/
       - clair-scanner/scan:
           docker_tar_dir: /tmp/tarballs
-          whitelist: .circleci/cve-whitelist.yaml
   airflow-image-test:
     description: Test an Airflow image
     parameters:
