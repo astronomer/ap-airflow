@@ -347,7 +347,7 @@ commands:
           command: |
             #!/usr/bin/env bash
 
-            set -e
+            set -xe
 
             DOCKER_TAR_DIR="<< parameters.docker_tar_dir >>"
 
