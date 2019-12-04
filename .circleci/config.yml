@@ -428,13 +428,11 @@ commands:
             if [ -n "<< parameters.image_file >>" ]; then
                 images=$(cat "<< parameters.image_file >>")
                 for image in $images; do
-                    docker pull "$image"
                     scan "$image"
                 done
             fi
             if [ -n "<< parameters.image >>" ]; then
                 image="<< parameters.image >>"
-                docker pull "$image"
                 scan "$image"
             fi
 
