@@ -221,6 +221,7 @@ commands:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
     steps:
+      - checkout
       - attach_workspace:
           at: /tmp/workspace
       - run:
@@ -228,6 +229,7 @@ commands:
           command: mkdir /tmp/tarballs && mv /tmp/workspace/<< parameters.image_name >>.tar /tmp/tarballs/
       - clair-scanner/scan:
           docker_tar_dir: /tmp/tarballs
+          whitelist: .circleci/cve-whitelist.yaml
   airflow-image-test:
     description: Test an Airflow image
     parameters:
