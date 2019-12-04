@@ -384,7 +384,8 @@ commands:
                     --clair=http://"$clair_ip":6060 \
                     -t "<< parameters.severity_threshold >>" \
                     --report "/$sanitised_image_filename" \
-                    --log "/log.json" ${WHITELIST:+"-x"}
+                    --log "/log.json" \
+                    --whitelist /whitelist.yml \
                     --reportAll=true \
                     --exit-when-no-features=false \
                     "$image")
