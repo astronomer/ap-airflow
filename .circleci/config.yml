@@ -305,7 +305,7 @@ commands:
           whitelist: "<< parameters.whitelist >>"
           image: "<< parameters.image_name >>:latest"
   # TODO: move to an Astronomer orbs repo, publish orb.
-  # This is to work around an issue in the provided orb.
+  # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
     description: "Scan an image for vulnerabilities"
     parameters:
