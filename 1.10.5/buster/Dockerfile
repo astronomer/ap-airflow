@@ -83,9 +83,9 @@ RUN useradd --uid $ASTRONOMER_UID --create-home ${ASTRONOMER_USER}
 
 # From the airflow image on master
 
-#######################################################
-######## Installed dependencies - now installing Airflow
-#######################################################
+#################################################################
+######## Installed dependencies - now installing Airflow ########
+#################################################################
 
 FROM ${APT_DEPS_IMAGE} as devel
 SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
@@ -125,9 +125,9 @@ RUN cd usr/local/lib/python3.7/site-packages/airflow/www_rbac \
   && rm -rf node_modules
 
 
-####################
-# Installing node node_modules
-###############
+################################
+# Installing node_node modules #
+################################
 
 ## move this to same layer as airflow because its from tag.
 
@@ -145,7 +145,7 @@ COPY --from=devel /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.
 COPY --from=devel /usr/local/bin /usr/local/bin
 
 
-# Create logs directory so we can own it when we mount volumes
+# Create logs directory, so we can own it when we mount volumes
 RUN install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}" \
     && install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}/logs"
 
