@@ -59,6 +59,7 @@ RUN pip3.6 install --no-cache-dir cryptography  \
      &&	 pip3.6 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
      &&	 pip3.6 install --no-cache-dir "${AIRFLOW_MODULE}" \
      &&	 pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
+     &&  pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.3/astronomer_airflow_scripts-0.0.3-py3-none-any.whl" \
      &&  cd /usr/local/lib/python3.6/site-packages/airflow/www_rbac \
      &&  /node-v12.13.1-linux-x64/bin/npm install \
      &&  /node-v12.13.1-linux-x64/bin/npm run build
