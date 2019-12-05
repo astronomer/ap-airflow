@@ -56,7 +56,7 @@ ENV DEPENDENCIES_EPOCH_NUMBER=${DEPENDENCIES_EPOCH_NUMBER}
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
            apt-utils \
-           wget \
+           curl \
            libmariadb3 \
            dumb-init \
            freetds-bin \
@@ -93,8 +93,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
 ENV PIP_NO_CACHE_DIR="true"
 
 RUN apt-get update \
-    # replaced curl  with wget, security issue: buster 7.64.0-4 vulnerable (https://security-tracker.debian.org/tracker/CVE-2019-5482)
-    && wget -qO- https://deb.nodesource.com/setup_13.x | sudo bash - \
+    && curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - \
     && apt-get install -y --no-install-recommends \
         build-essential \
         default-libmysqlclient-dev \
