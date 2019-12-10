@@ -10,7 +10,7 @@ set -e
 CMD=$2
 
 # Wait for postgres then init the db
-if [[ -n $AIRFLOW__CORE__SQL_ALCHEMY_CONN  ]] && [[ $CMD =~ ^(webserver|scheduler|worker|run)$ ]]; then
+if [[ -n $AIRFLOW__CORE__SQL_ALCHEMY_CONN  ]] && [[ $CMD =~ ^(webserver|scheduler|worker|run|initdb|upgradedb)$ ]]; then
   # Wait for database port to open up
   HOST=$(echo "${AIRFLOW__CORE__SQL_ALCHEMY_CONN}" | awk -F: '{print $3}' | awk -F@ '{print $2}')
   PORT=$(echo "${AIRFLOW__CORE__SQL_ALCHEMY_CONN}" | awk -F: '{print $4}' | awk -F/ '{print $1}')
