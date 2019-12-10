@@ -144,6 +144,9 @@ RUN apt-get update \
 COPY --from=devel /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
 COPY --from=devel /usr/local/bin /usr/local/bin
 
+# Force pip to install these specific versions when ever it installs a module
+ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
+COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Create logs directory, so we can own it when we mount volumes
 RUN install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}" \
