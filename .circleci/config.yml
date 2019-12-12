@@ -1,186 +1,122 @@
 version: 2.1
-jobs:
-  #
-  # Alpine
-  #
-
-  # Build Alpine Images
-  build-alpine:
-    executor: docker-executor
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - docker-build:
-          image_name: ap-airflow-alpine
-          path: 1.10.5/alpine3.10
-      - run:
-          name: "Tag image"
-          command: docker tag ap-airflow-alpine astronomerinc/ap-airflow:1.10.5-alpine3.10
-      - docker-build:
-          image_name: ap-airflow-alpine-onbuild
-          path: 1.10.5/alpine3.10/onbuild
-  test-alpine:
-    executor: docker-executor
-    steps:
-      - airflow-image-test:
-          image_name: ap-airflow-alpine
-  test-alpine-onbuild:
-    executor: docker-executor
-    steps:
-      - airflow-image-test:
-          image_name: ap-airflow-alpine-onbuild
-  # Scan Alpine Images
-  scan-alpine:
-    executor: clair-scanner/default
-    steps:
-      - clair-scan:
-          image_name: ap-airflow-alpine
-  scan-alpine-onbuild:
-    executor: clair-scanner/default
-    steps:
-      - clair-scan:
-          image_name: ap-airflow-alpine-onbuild
-
-  # Publish Alpine Images
-  publish-prod-alpine:
-    executor: docker-executor
-    steps:
-      - push:
-          comma_separated_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-alpine3.10,1.10.5-alpine,1.10.5,latest"
-          image_name_load: ap-airflow-alpine
-          image_repo: ap-airflow
-  publish-prod-alpine-onbuild:
-    executor: docker-executor
-    steps:
-      - push:
-          comma_separated_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-alpine3.10-onbuild,1.10.5-alpine-onbuild,1.10.5-onbuild,latest-onbuild"
-          image_name_load: ap-airflow-alpine-onbuild
-          image_repo: ap-airflow
-
-  #
-  # Debian
-  #
-  # Build Debian Images
-  build-buster:
-    executor: docker-executor
-    steps:
-      - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - docker-build:
-          image_name: ap-airflow-buster
-          path: 1.10.5/buster
-      - run:
-          name: "Tag image"
-          command: docker tag ap-airflow-buster astronomerinc/ap-airflow:1.10.5-buster
-      - docker-build:
-          image_name: ap-airflow-buster-onbuild
-          path: 1.10.5/buster/onbuild
-  test-buster:
-    executor: docker-executor
-    steps:
-      - airflow-image-test:
-          image_name: ap-airflow-buster
-  test-buster-onbuild:
-    executor: docker-executor
-    steps:
-      - airflow-image-test:
-          image_name: ap-airflow-buster-onbuild
-  # Scan Debian Images
-  scan-buster:
-    executor: clair-scanner/default
-    steps:
-      - clair-scan:
-          image_name: ap-airflow-buster
-  scan-buster-onbuild:
-    executor: clair-scanner/default
-    steps:
-      - clair-scan:
-          image_name: ap-airflow-buster-onbuild
-
-  # Publish Debian Images
-  publish-prod-buster:
-    executor: docker-executor
-    steps:
-      - push:
-          comma_separated_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-buster"
-          image_name_load: ap-airflow-buster
-          image_repo: ap-airflow
-  publish-prod-buster-onbuild:
-    executor: docker-executor
-    steps:
-      - push:
-          comma_separated_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-buster-onbuild"
-          image_name_load: ap-airflow-buster-onbuild
-          image_repo: ap-airflow
-
 workflows:
   version: 2.1
-  build-images:
+  airflow-image-workflow:
     jobs:
-      - build-alpine
-      - scan-alpine:
+      - build:
+          airflow_version: 1.10.5
+          distribution_name: alpine
+      - scan:
+          name: scan
+          airflow_version: 1.10.5
+          distribution_name: alpine
           requires:
-            - build-alpine
-      - scan-alpine-onbuild:
+            - build
+      - scan:
+          name: scan-onbuild
+          airflow_version: 1.10.5
+          distribution_name: alpine-onbuild
           requires:
-            - build-alpine
-      - test-alpine:
+            - build
+      - test:
+          name: test
+          airflow_version: 1.10.5
+          distribution_name: alpine
           requires:
-            - build-alpine
-      - test-alpine-onbuild:
+            - build
+      - test:
+          name: test-onbuild
+          airflow_version: 1.10.5
+          distribution_name: alpine-onbuild
           requires:
-            - build-alpine
-      - publish-prod-alpine:
+            - build
+      - publish:
+          airflow_version: 1.10.5
+          distribution_name: alpine
+          comma_separated_tags: "1.10.5-alpine"
           requires:
-            - scan-alpine
-            - scan-alpine-onbuild
-            - test-alpine
-            - test-alpine-onbuild
+            - scan
+            - test
           filters:
             branches:
               only: master
-      - publish-prod-alpine-onbuild:
+      - publish:
+          airflow_version: 1.10.5
+          distribution_name: alpine-onbuild
+          comma_separated_tags: "1.10.5-alpine-onbuild"
           requires:
-            - scan-alpine
-            - scan-alpine-onbuild
-            - test-alpine
-            - test-alpine-onbuild
+            - scan-onbuild
+            - test-onbuild
           filters:
             branches:
               only: master
-      - build-buster
-      - test-buster:
-          requires:
-            - build-buster
-      - test-buster-onbuild:
-          requires:
-            - build-buster
-      - scan-buster:
-          requires:
-            - build-buster
-      - scan-buster-onbuild:
-          requires:
-            - build-buster
-      - publish-prod-buster:
-          requires:
-            - scan-buster
-            - scan-buster-onbuild
-            - test-buster
-            - test-buster-onbuild
-          filters:
-            branches:
-              only: master
-      - publish-prod-buster-onbuild:
-          requires:
-            - scan-buster
-            - scan-buster-onbuild
-            - test-buster
-            - test-buster-onbuild
-          filters:
-            branches:
-              only: master
+jobs:
+  build:
+    executor: docker-executor
+    description: Build Airflow images
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        default: "1.10.5"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        default: "alpine"
+        type: string
+    steps:
+      - docker-build-base-and-onbuild:
+          airflow_version: "<< parameters.airflow_version >>"
+          distribution_name: "<< parameters.distribution_name >>"
+  test:
+    executor: docker-executor
+    description: Test Airflow images
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        default: "1.10.5"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        default: "alpine"
+        type: string
+    steps:
+      - airflow-image-test:
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+  scan:
+    executor: clair-scanner/default
+    description: Test Airflow images
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        default: "1.10.5"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        default: "alpine"
+        type: string
+    steps:
+      - clair-scan:
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+  publish:
+    executor: docker-executor
+    description: Publish Airflow images
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        default: "1.10.5"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        default: "alpine"
+        type: string
+      comma_separated_tags:
+        default: "alpine"
+        type: string
+    steps:
+      - push:
+          comma_separated_tags: "<< parameters.comma_separated_tags >>"
+          image_name_load: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_repo: ap-airflow
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
@@ -190,6 +126,30 @@ executors:
     docker:
       - image: circleci/python:3
 commands:
+
+  docker-build-base-and-onbuild:
+    description: "Build Airflow images to use with the Astronomer platform"
+    parameters:
+      airflow_version:
+        type: string
+        default: 1.10.5
+      distribution_name:
+        type: string
+        default: alpine
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - docker-build:
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
+      - run:
+          name: "Tag image"
+          command: |
+            docker tag ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >> ${GIT_ORG}/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>
+      - docker-build:
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>/onbuild"
   docker-build:
     description: "Build a Docker image"
     parameters:
