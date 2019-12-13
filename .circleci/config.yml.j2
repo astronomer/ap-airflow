@@ -1,321 +1,62 @@
-# Warning: automatically generated file
-# Please edit config.yml.j2, and use the script generate_circleci_config.py
 version: 2.1
 workflows:
   version: 2.1
   certified-airflow:
     jobs:
-
-
+{% for airflow_version in airflow_versions %}
+{% for distribution in distributions %}
       - build:
-          name: build-1.10.5-alpine
-          airflow_version: 1.10.5
-          distribution_name: alpine
+          name: build-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}
       - scan:
-          name: scan-1.10.5-alpine
-          airflow_version: 1.10.5
-          distribution_name: alpine
+          name: scan-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}
           requires:
-            - build-1.10.5-alpine
+            - build-{{ airflow_version }}-{{ distribution }}
       - scan:
-          name: scan-1.10.5-alpine-onbuild
-          airflow_version: 1.10.5
-          distribution_name: alpine-onbuild
+          name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}-onbuild
           requires:
-            - build-1.10.5-alpine
+            - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-1.10.5-alpine
-          airflow_version: 1.10.5
-          distribution_name: alpine
+          name: test-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}
           requires:
-            - build-1.10.5-alpine
+            - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-1.10.5-alpine-onbuild
-          airflow_version: 1.10.5
-          distribution_name: alpine
+          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}
           requires:
-            - build-1.10.5-alpine
+            - build-{{ airflow_version }}-{{ distribution }}
       - publish:
-          name: publish-1.10.5-alpine
-          airflow_version: 1.10.5
-          distribution_name: alpine
-          comma_separated_tags: "1.10.5-alpine"
+          name: publish-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}
+          comma_separated_tags: "{{ airflow_version }}-{{ distribution }}"
           requires:
-            - scan-1.10.5-alpine
-            - test-1.10.5-alpine
+            - scan-{{ airflow_version }}-{{ distribution }}
+            - test-{{ airflow_version }}-{{ distribution }}
           filters:
             branches:
               only: master
       - publish:
-          name: publish-1.10.5-alpine-onbuild
-          airflow_version: 1.10.5
-          distribution_name: alpine
-          comma_separated_tags: "1.10.5-alpine-onbuild"
+          name: publish-{{ airflow_version }}-{{ distribution }}-onbuild
+          airflow_version: {{ airflow_version }}
+          distribution_name: {{ distribution }}
+          comma_separated_tags: "{{ airflow_version }}-{{ distribution }}-onbuild"
           requires:
-            - scan-1.10.5-alpine-onbuild
-            - test-1.10.5-alpine-onbuild
+            - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
               only: master
-
-      - build:
-          name: build-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-      - scan:
-          name: scan-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          requires:
-            - build-1.10.5-rhel7
-      - scan:
-          name: scan-1.10.5-rhel7-onbuild
-          airflow_version: 1.10.5
-          distribution_name: rhel7-onbuild
-          requires:
-            - build-1.10.5-rhel7
-      - test:
-          name: test-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          requires:
-            - build-1.10.5-rhel7
-      - test:
-          name: test-1.10.5-rhel7-onbuild
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          requires:
-            - build-1.10.5-rhel7
-      - publish:
-          name: publish-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          comma_separated_tags: "1.10.5-rhel7"
-          requires:
-            - scan-1.10.5-rhel7
-            - test-1.10.5-rhel7
-          filters:
-            branches:
-              only: master
-      - publish:
-          name: publish-1.10.5-rhel7-onbuild
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          comma_separated_tags: "1.10.5-rhel7-onbuild"
-          requires:
-            - scan-1.10.5-rhel7-onbuild
-            - test-1.10.5-rhel7-onbuild
-          filters:
-            branches:
-              only: master
-
-      - build:
-          name: build-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
-      - scan:
-          name: scan-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
-          requires:
-            - build-1.10.5-buster
-      - scan:
-          name: scan-1.10.5-buster-onbuild
-          airflow_version: 1.10.5
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.5-buster
-      - test:
-          name: test-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
-          requires:
-            - build-1.10.5-buster
-      - test:
-          name: test-1.10.5-buster-onbuild
-          airflow_version: 1.10.5
-          distribution_name: buster
-          requires:
-            - build-1.10.5-buster
-      - publish:
-          name: publish-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
-          comma_separated_tags: "1.10.5-buster"
-          requires:
-            - scan-1.10.5-buster
-            - test-1.10.5-buster
-          filters:
-            branches:
-              only: master
-      - publish:
-          name: publish-1.10.5-buster-onbuild
-          airflow_version: 1.10.5
-          distribution_name: buster
-          comma_separated_tags: "1.10.5-buster-onbuild"
-          requires:
-            - scan-1.10.5-buster-onbuild
-            - test-1.10.5-buster-onbuild
-          filters:
-            branches:
-              only: master
-
-
-
-      - build:
-          name: build-1.10.6-alpine
-          airflow_version: 1.10.6
-          distribution_name: alpine
-      - scan:
-          name: scan-1.10.6-alpine
-          airflow_version: 1.10.6
-          distribution_name: alpine
-          requires:
-            - build-1.10.6-alpine
-      - scan:
-          name: scan-1.10.6-alpine-onbuild
-          airflow_version: 1.10.6
-          distribution_name: alpine-onbuild
-          requires:
-            - build-1.10.6-alpine
-      - test:
-          name: test-1.10.6-alpine
-          airflow_version: 1.10.6
-          distribution_name: alpine
-          requires:
-            - build-1.10.6-alpine
-      - test:
-          name: test-1.10.6-alpine-onbuild
-          airflow_version: 1.10.6
-          distribution_name: alpine
-          requires:
-            - build-1.10.6-alpine
-      - publish:
-          name: publish-1.10.6-alpine
-          airflow_version: 1.10.6
-          distribution_name: alpine
-          comma_separated_tags: "1.10.6-alpine"
-          requires:
-            - scan-1.10.6-alpine
-            - test-1.10.6-alpine
-          filters:
-            branches:
-              only: master
-      - publish:
-          name: publish-1.10.6-alpine-onbuild
-          airflow_version: 1.10.6
-          distribution_name: alpine
-          comma_separated_tags: "1.10.6-alpine-onbuild"
-          requires:
-            - scan-1.10.6-alpine-onbuild
-            - test-1.10.6-alpine-onbuild
-          filters:
-            branches:
-              only: master
-
-      - build:
-          name: build-1.10.6-rhel7
-          airflow_version: 1.10.6
-          distribution_name: rhel7
-      - scan:
-          name: scan-1.10.6-rhel7
-          airflow_version: 1.10.6
-          distribution_name: rhel7
-          requires:
-            - build-1.10.6-rhel7
-      - scan:
-          name: scan-1.10.6-rhel7-onbuild
-          airflow_version: 1.10.6
-          distribution_name: rhel7-onbuild
-          requires:
-            - build-1.10.6-rhel7
-      - test:
-          name: test-1.10.6-rhel7
-          airflow_version: 1.10.6
-          distribution_name: rhel7
-          requires:
-            - build-1.10.6-rhel7
-      - test:
-          name: test-1.10.6-rhel7-onbuild
-          airflow_version: 1.10.6
-          distribution_name: rhel7
-          requires:
-            - build-1.10.6-rhel7
-      - publish:
-          name: publish-1.10.6-rhel7
-          airflow_version: 1.10.6
-          distribution_name: rhel7
-          comma_separated_tags: "1.10.6-rhel7"
-          requires:
-            - scan-1.10.6-rhel7
-            - test-1.10.6-rhel7
-          filters:
-            branches:
-              only: master
-      - publish:
-          name: publish-1.10.6-rhel7-onbuild
-          airflow_version: 1.10.6
-          distribution_name: rhel7
-          comma_separated_tags: "1.10.6-rhel7-onbuild"
-          requires:
-            - scan-1.10.6-rhel7-onbuild
-            - test-1.10.6-rhel7-onbuild
-          filters:
-            branches:
-              only: master
-
-      - build:
-          name: build-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
-      - scan:
-          name: scan-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
-          requires:
-            - build-1.10.6-buster
-      - scan:
-          name: scan-1.10.6-buster-onbuild
-          airflow_version: 1.10.6
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.6-buster
-      - test:
-          name: test-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
-          requires:
-            - build-1.10.6-buster
-      - test:
-          name: test-1.10.6-buster-onbuild
-          airflow_version: 1.10.6
-          distribution_name: buster
-          requires:
-            - build-1.10.6-buster
-      - publish:
-          name: publish-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
-          comma_separated_tags: "1.10.6-buster"
-          requires:
-            - scan-1.10.6-buster
-            - test-1.10.6-buster
-          filters:
-            branches:
-              only: master
-      - publish:
-          name: publish-1.10.6-buster-onbuild
-          airflow_version: 1.10.6
-          distribution_name: buster
-          comma_separated_tags: "1.10.6-buster-onbuild"
-          requires:
-            - scan-1.10.6-buster-onbuild
-            - test-1.10.6-buster-onbuild
-          filters:
-            branches:
-              only: master
-
-
+{% endfor %}
+{% endfor %}
 jobs:
   build:
     executor: docker-executor

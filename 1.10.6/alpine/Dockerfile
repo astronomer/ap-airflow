@@ -49,7 +49,7 @@ ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Install packages
-RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.6/alpine3.10/apks/repo >> /etc/apk/repositories \
+RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.6/alpine/apks/repo >> /etc/apk/repositories \
 	&& apk update \
 	&& apk add --no-cache --virtual .build-deps \
 		build-base \
