@@ -1,6 +1,6 @@
 # Astronomer Certified Airflow Docker Images
 
-[![CircleCI](https://circleci.com/gh/astronomer/ap-airflow/tree/master.svg?style=svg)](https://circleci.com/gh/astronomer/ap-airflow/tree/master) [![docker-pulls](https://img.shields.io/docker/pulls/astronomerinc/ap-airflow.svg)](https://hub.docker.com/r/astronomerinc/ap-airflow)
+[![docker-pulls](https://img.shields.io/docker/pulls/astronomerinc/ap-airflow.svg)](https://hub.docker.com/r/astronomerinc/ap-airflow)
 
 Astronomer makes it easy to run, monitor, and scale [Apache Airflow](https://github.com/apache/airflow) deployments in our cloud or yours. Source code is made available for the benefit of customers.
 
