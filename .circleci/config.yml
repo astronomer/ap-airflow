@@ -39,7 +39,7 @@ workflows:
           name: publish-1.10.5-alpine3.10
           airflow_version: 1.10.5
           distribution_name: alpine3.10
-          comma_separated_tags: "1.10.5-alpine3.10"
+          comma_separated_tags: "1.10.5-alpine3.10,1.10.5-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-alpine3.10
             - test-1.10.5-alpine3.10
@@ -50,7 +50,7 @@ workflows:
           name: publish-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
           distribution_name: alpine3.10
-          comma_separated_tags: "1.10.5-alpine3.10-onbuild"
+          comma_separated_tags: "1.10.5-alpine3.10-onbuild,1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-onbuild
@@ -90,7 +90,7 @@ workflows:
           name: publish-1.10.5-rhel7
           airflow_version: 1.10.5
           distribution_name: rhel7
-          comma_separated_tags: "1.10.5-rhel7"
+          comma_separated_tags: "1.10.5-rhel7,1.10.5-rhel7-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-rhel7
             - test-1.10.5-rhel7
@@ -101,7 +101,7 @@ workflows:
           name: publish-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
           distribution_name: rhel7
-          comma_separated_tags: "1.10.5-rhel7-onbuild"
+          comma_separated_tags: "1.10.5-rhel7-onbuild,1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-rhel7-onbuild
             - test-1.10.5-rhel7-onbuild
@@ -141,7 +141,7 @@ workflows:
           name: publish-1.10.5-buster
           airflow_version: 1.10.5
           distribution_name: buster
-          comma_separated_tags: "1.10.5-buster"
+          comma_separated_tags: "1.10.5-buster,1.10.5-buster-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-buster
             - test-1.10.5-buster
@@ -152,7 +152,7 @@ workflows:
           name: publish-1.10.5-buster-onbuild
           airflow_version: 1.10.5
           distribution_name: buster
-          comma_separated_tags: "1.10.5-buster-onbuild"
+          comma_separated_tags: "1.10.5-buster-onbuild,1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-buster-onbuild
             - test-1.10.5-buster-onbuild
@@ -194,7 +194,7 @@ workflows:
           name: publish-1.10.6-alpine3.10
           airflow_version: 1.10.6
           distribution_name: alpine3.10
-          comma_separated_tags: "1.10.6-alpine3.10"
+          comma_separated_tags: "1.10.6-alpine3.10,1.10.6-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-alpine3.10
             - test-1.10.6-alpine3.10
@@ -205,7 +205,7 @@ workflows:
           name: publish-1.10.6-alpine3.10-onbuild
           airflow_version: 1.10.6
           distribution_name: alpine3.10
-          comma_separated_tags: "1.10.6-alpine3.10-onbuild"
+          comma_separated_tags: "1.10.6-alpine3.10-onbuild,1.10.6-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-alpine3.10-onbuild
             - test-1.10.6-alpine3.10-onbuild
@@ -245,7 +245,7 @@ workflows:
           name: publish-1.10.6-rhel7
           airflow_version: 1.10.6
           distribution_name: rhel7
-          comma_separated_tags: "1.10.6-rhel7"
+          comma_separated_tags: "1.10.6-rhel7,1.10.6-rhel7-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-rhel7
             - test-1.10.6-rhel7
@@ -256,7 +256,7 @@ workflows:
           name: publish-1.10.6-rhel7-onbuild
           airflow_version: 1.10.6
           distribution_name: rhel7
-          comma_separated_tags: "1.10.6-rhel7-onbuild"
+          comma_separated_tags: "1.10.6-rhel7-onbuild,1.10.6-rhel7-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-rhel7-onbuild
             - test-1.10.6-rhel7-onbuild
@@ -296,7 +296,7 @@ workflows:
           name: publish-1.10.6-buster
           airflow_version: 1.10.6
           distribution_name: buster
-          comma_separated_tags: "1.10.6-buster"
+          comma_separated_tags: "1.10.6-buster,1.10.6-buster-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-buster
             - test-1.10.6-buster
@@ -307,7 +307,7 @@ workflows:
           name: publish-1.10.6-buster-onbuild
           airflow_version: 1.10.6
           distribution_name: buster
-          comma_separated_tags: "1.10.6-buster-onbuild"
+          comma_separated_tags: "1.10.6-buster-onbuild,1.10.6-buster-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-buster-onbuild
             - test-1.10.6-buster-onbuild

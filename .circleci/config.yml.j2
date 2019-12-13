@@ -37,7 +37,7 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
-          comma_separated_tags: "{{ airflow_version }}-{{ distribution }}"
+          comma_separated_tags: "{{ airflow_version }}-{{ distribution }},{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}
@@ -48,7 +48,7 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
-          comma_separated_tags: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          comma_separated_tags: "{{ airflow_version }}-{{ distribution }}-onbuild,{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
