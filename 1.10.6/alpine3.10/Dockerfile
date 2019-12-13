@@ -42,14 +42,14 @@ ENV ASTRONOMER_GROUP=${ASTRONOMER_GROUP}
 RUN addgroup -S ${ASTRONOMER_GROUP} \
 	&& adduser -S -G ${ASTRONOMER_GROUP} ${ASTRONOMER_USER}
 
-COPY apks/keys/humans@astronomer.io.rsa.pub /etc/apk/keys
+COPY ../../prebuilt-binaries/alpine3.10/apks@astronomer.io.rsa.pub /etc/apk/keys
 
 # Force pip to install these specific versions when ever it installs a module
 ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Install packages
-RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.6/alpine3.10/apks/repo >> /etc/apk/repositories \
+RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/prebuilt-binaries/alpine3.10/apks/repo >> /etc/apk/repositories \
   && apk update \
 	&& apk add --no-cache --virtual .build-deps \
 		build-base \
