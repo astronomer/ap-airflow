@@ -529,7 +529,7 @@ commands:
           command: docker load -i /tmp/workspace/<< parameters.image_name >>.tar
       - modified-orb:
           whitelist: "<< parameters.whitelist >>"
-          image: "<< parameters.image_name >>:latest"
+          image: "<< parameters.image_name >>"
   # TODO: move to an Astronomer orbs repo, publish orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
