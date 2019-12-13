@@ -50,7 +50,7 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Install packages
 RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.5/alpine3.10/apks/repo >> /etc/apk/repositories \
-	&& apk update \
+  && apk update \
 	&& apk add --no-cache --virtual .build-deps \
 		build-base \
 		cyrus-sasl-dev \
