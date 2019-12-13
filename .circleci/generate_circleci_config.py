@@ -8,7 +8,8 @@ import os
 from jinja2 import Template
 
 AIRFLOW_VERSIONS = ["1.10.5", "1.10.6"]
-DISTRIBUTIONS = ["alpine3.10", "rhel7", "buster"]
+DISTRIBUTIONS = ["alpine3.10", "buster"]
+
 
 def main():
     """ Render the Jinja2 template file
@@ -29,6 +30,7 @@ def main():
     with open(config_path, "w") as circle_ci_config_file:
         circle_ci_config_file.write(warning_header)
         circle_ci_config_file.write(config)
+
 
 if __name__ == "__main__":
     main()
