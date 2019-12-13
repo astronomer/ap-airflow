@@ -3,7 +3,7 @@ workflows:
   version: 2.1
   certified-airflow:
     jobs:
-{% for airflow_version in airflow_versions %}
+{% for airflow_version, distributions in image_map.items() %}
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}

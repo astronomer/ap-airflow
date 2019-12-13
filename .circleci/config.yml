@@ -109,6 +109,57 @@ workflows:
             branches:
               only: master
 
+      - build:
+          name: build-1.10.5-rhel7
+          airflow_version: 1.10.5
+          distribution_name: rhel7
+      - scan:
+          name: scan-1.10.5-rhel7
+          airflow_version: 1.10.5
+          distribution_name: rhel7
+          requires:
+            - build-1.10.5-rhel7
+      - scan:
+          name: scan-1.10.5-rhel7-onbuild
+          airflow_version: 1.10.5
+          distribution_name: rhel7-onbuild
+          requires:
+            - build-1.10.5-rhel7
+      - test:
+          name: test-1.10.5-rhel7
+          airflow_version: 1.10.5
+          distribution_name: rhel7
+          requires:
+            - build-1.10.5-rhel7
+      - test:
+          name: test-1.10.5-rhel7-onbuild
+          airflow_version: 1.10.5
+          distribution_name: rhel7
+          requires:
+            - build-1.10.5-rhel7
+      - publish:
+          name: publish-1.10.5-rhel7
+          airflow_version: 1.10.5
+          distribution_name: rhel7
+          comma_separated_tags: "1.10.5-rhel7,1.10.5-rhel7-${CIRCLE_BUILD_NUM}"
+          requires:
+            - scan-1.10.5-rhel7
+            - test-1.10.5-rhel7
+          filters:
+            branches:
+              only: master
+      - publish:
+          name: publish-1.10.5-rhel7-onbuild
+          airflow_version: 1.10.5
+          distribution_name: rhel7
+          comma_separated_tags: "1.10.5-rhel7-onbuild,1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM}"
+          requires:
+            - scan-1.10.5-rhel7-onbuild
+            - test-1.10.5-rhel7-onbuild
+          filters:
+            branches:
+              only: master
+
 
 
       - build:
