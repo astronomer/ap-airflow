@@ -7,9 +7,10 @@ so that we can stay DRY.
 import os
 from jinja2 import Template
 
-AIRFLOW_VERSIONS = ["1.10.5", "1.10.6"]
-DISTRIBUTIONS = ["alpine3.10", "buster"]
-
+IMAGE_MAP = {
+    "1.10.5": ["alpine3.10", "buster", "rhel7"],
+    "1.10.6": ["alpine3.10", "buster"],
+}
 
 def main():
     """ Render the Jinja2 template file
@@ -22,8 +23,7 @@ def main():
         templated_file_content = circle_ci_config_template.read()
     template = Template(templated_file_content)
     config = template.render(
-        airflow_versions=AIRFLOW_VERSIONS,
-        distributions=DISTRIBUTIONS
+        image_map=IMAGE_MAP
     )
     warning_header = "# Warning: automatically generated file\n" + \
                      "# Please edit config.yml.j2, and use the script generate_circleci_config.py\n"
