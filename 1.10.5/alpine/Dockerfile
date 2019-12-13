@@ -47,10 +47,10 @@ COPY apks/keys/humans@astronomer.io.rsa.pub /etc/apk/keys
 # Force pip to install these specific versions when ever it installs a module
 ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
+COPY apks/repo /etc/apk/repositories
 
 # Install packages
-RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.5/alpine/apks/repo >> /etc/apk/repositories \
-	&& apk update \
+RUN  apk update \
 	&& apk add --no-cache --virtual .build-deps \
 		build-base \
 		cyrus-sasl-dev \
