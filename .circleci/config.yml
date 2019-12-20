@@ -37,9 +37,8 @@ workflows:
             - build-1.10.5-alpine3.10
       - publish:
           name: publish-1.10.5-alpine3.10
-          airflow_version: 1.10.5
-          distribution_name: alpine3.10
-          comma_separated_tags: "1.10.5-alpine3.10,1.10.5-alpine3.10-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.5-alpine3.10"
+          extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-alpine3.10
             - test-1.10.5-alpine3.10
@@ -48,9 +47,8 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.5-alpine3.10-onbuild
-          airflow_version: 1.10.5
-          distribution_name: alpine3.10
-          comma_separated_tags: "1.10.5-alpine3.10-onbuild,1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.5-alpine3.10-onbuild"
+          extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-onbuild
@@ -88,9 +86,8 @@ workflows:
             - build-1.10.5-buster
       - publish:
           name: publish-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
-          comma_separated_tags: "1.10.5-buster,1.10.5-buster-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.5-buster"
+          extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-buster
             - test-1.10.5-buster
@@ -99,9 +96,8 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.5-buster-onbuild
-          airflow_version: 1.10.5
-          distribution_name: buster
-          comma_separated_tags: "1.10.5-buster-onbuild,1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.5-buster-onbuild"
+          extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-buster-onbuild
             - test-1.10.5-buster-onbuild
@@ -139,9 +135,8 @@ workflows:
             - build-1.10.5-rhel7
       - publish:
           name: publish-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          comma_separated_tags: "1.10.5-rhel7,1.10.5-rhel7-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.5-rhel7"
+          extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-rhel7
             - test-1.10.5-rhel7
@@ -150,9 +145,8 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.5-rhel7-onbuild
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          comma_separated_tags: "1.10.5-rhel7-onbuild,1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.5-rhel7-onbuild"
+          extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.5-rhel7-onbuild
             - test-1.10.5-rhel7-onbuild
@@ -192,9 +186,8 @@ workflows:
             - build-1.10.6-alpine3.10
       - publish:
           name: publish-1.10.6-alpine3.10
-          airflow_version: 1.10.6
-          distribution_name: alpine3.10
-          comma_separated_tags: "1.10.6-alpine3.10,1.10.6-alpine3.10-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.6-alpine3.10"
+          extra_tags: "1.10.6-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-alpine3.10
             - test-1.10.6-alpine3.10
@@ -203,9 +196,8 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.6-alpine3.10-onbuild
-          airflow_version: 1.10.6
-          distribution_name: alpine3.10
-          comma_separated_tags: "1.10.6-alpine3.10-onbuild,1.10.6-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.6-alpine3.10-onbuild"
+          extra_tags: "1.10.6-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-alpine3.10-onbuild
             - test-1.10.6-alpine3.10-onbuild
@@ -243,9 +235,8 @@ workflows:
             - build-1.10.6-buster
       - publish:
           name: publish-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
-          comma_separated_tags: "1.10.6-buster,1.10.6-buster-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.6-buster"
+          extra_tags: "1.10.6-buster-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-buster
             - test-1.10.6-buster
@@ -254,9 +245,8 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.6-buster-onbuild
-          airflow_version: 1.10.6
-          distribution_name: buster
-          comma_separated_tags: "1.10.6-buster-onbuild,1.10.6-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          tag: "1.10.6-buster-onbuild"
+          extra_tags: "1.10.6-buster-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-1.10.6-buster-onbuild
             - test-1.10.6-buster-onbuild
@@ -272,11 +262,9 @@ jobs:
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
-        default: "1.10.5"
         type: string
       distribution_name:
         description: "The base distribution of the container"
-        default: "alpine"
         type: string
     steps:
       - docker-build-base-and-onbuild:
@@ -288,56 +276,44 @@ jobs:
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
-        default: "1.10.5"
         type: string
       distribution_name:
         description: "The base distribution of the container"
-        default: "alpine"
         type: string
     steps:
       - airflow-image-test:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan:
     executor: clair-scanner/default
     description: Test Airflow images
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
-        default: "1.10.5"
         type: string
       distribution_name:
         description: "The base distribution of the container"
-        default: "alpine"
         type: string
     steps:
       - clair-scan:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   publish:
     executor: docker-executor
     description: Publish Airflow images
     parameters:
-      airflow_version:
-        description: "The Airflow version, for example '1.10.5'"
-        default: "1.10.5"
+      tag:
         type: string
-      distribution_name:
-        description: "The base distribution of the container"
-        default: "alpine"
+      extra_tags:
         type: string
-      comma_separated_tags:
-        default: "alpine"
-        type: string
+        default: ""
     steps:
       - push:
-          comma_separated_tags: "<< parameters.comma_separated_tags >>"
-          image_name_load: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
-          image_repo: ap-airflow
+          extra_tags: "<< parameters.extra_tags >>"
+          tag: "<< parameters.tag >>"
+          image_name: "astronomerinc/ap-airflow"
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
   docker-executor:
-    environment:
-      GIT_ORG: astronomerinc
     docker:
       - image: circleci/python:3
 commands:
@@ -356,15 +332,15 @@ commands:
       - setup_remote_docker:
           docker_layer_caching: true
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
-      - run:
-          name: "Tag image"
-          command: |
-            docker tag ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >> ${GIT_ORG}/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>/onbuild"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - saved-images/
   docker-build:
     description: "Build a Docker image"
     parameters:
@@ -382,13 +358,9 @@ commands:
           name: Build the Docker image
           command: |
             set -xe
-            image_name="<< parameters.image_name >>"
-            docker build -t $image_name --file << parameters.path>>/<< parameters.dockerfile >> --build-arg BUILD_NUMBER=${CIRCLE_BUILD_NUM} --build-arg REPO_BRANCH=${CIRCLE_BRANCH} << parameters.path >>
-            docker save -o << parameters.image_name >>.tar $image_name
-      - persist_to_workspace:
-          root: .
-          paths:
-            - './*.tar'
+            mkdir -p saved-images/"$(dirname "<< parameters.image_name >>")"
+            docker build -t "<< parameters.image_name >>" --file << parameters.path>>/<< parameters.dockerfile >> --build-arg BUILD_NUMBER=${CIRCLE_BUILD_NUM} --build-arg REPO_BRANCH=${CIRCLE_BRANCH} << parameters.path >>
+            docker save -o saved-images/<< parameters.image_name >>.tar << parameters.image_name >>
   airflow-image-test:
     description: Test an Airflow image
     parameters:
@@ -402,7 +374,7 @@ commands:
       - setup_remote_docker
       - run:
           name: Load archived Airflow Docker image
-          command: docker load -i /tmp/workspace/<< parameters.image_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
       - run:
           name: Set up test environment
           command: |
@@ -426,25 +398,20 @@ commands:
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
-      comma_separated_tags:
+      extra_tags:
         type: string
-        default: latest
-      organization:
+        default: ""
+      tag:
         type: string
-        default: $GIT_ORG
-      image_name_load:
+      image_name:
         type: string
-        default: $CIRCLE_PROJECT_REPONAME
-      image_repo:
-        type: string
-        default: $CIRCLE_PROJECT_REPONAME
     steps:
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/<< parameters.image_name_load >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
       - run:
           name: Login to DockerHub
           command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
@@ -452,11 +419,15 @@ commands:
           name: Push Docker image(s)
           command: |
             set -e
-            for tag in $(echo "<< parameters.comma_separated_tags >>" | sed "s/,/ /g");
+            image="<< parameters.image_name >>:<< parameters.tag >>"
+            set -x
+            docker push "$image"
+            set +x
+            for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
               set -x
-              docker tag << parameters.image_name_load >> << parameters.organization >>/<< parameters.image_repo >>:${tag}
-              docker push << parameters.organization >>/<< parameters.image_repo >>:${tag}
+              docker tag "$image" "<< parameters.image_name >>:${tag}"
+              docker push "<< parameters.image_name >>:${tag}"
               set +x
             done
   clair-scan:
@@ -475,7 +446,7 @@ commands:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/<< parameters.image_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
       - modified-orb:
           whitelist: "<< parameters.whitelist >>"
           image: "<< parameters.image_name >>"
