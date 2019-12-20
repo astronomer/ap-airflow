@@ -211,7 +211,7 @@ commands:
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
+          command: docker load -i '/tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>.tar'
       - run:
           name: Login to DockerHub
           command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
