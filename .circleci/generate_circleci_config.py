@@ -12,6 +12,7 @@ IMAGE_MAP = {
     "1.10.6": ["alpine3.10", "buster"],
 }
 
+
 def main():
     """ Render the Jinja2 template file
     """
