@@ -1,5 +1,7 @@
 FROM registry.access.redhat.com/ubi7/ubi
-MAINTAINER Arun Kumar
+MAINTAINER Astronomer <humans@astronomer.io>
+
+LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
