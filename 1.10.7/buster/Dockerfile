@@ -102,6 +102,7 @@ RUN apt-get update \
         libpq-dev \
         libsasl2-dev \
         libssl-dev \
+        libpq-dev \
         nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

@@ -61,6 +61,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.7/alpi
 		libffi-dev \
 		libxml2-dev \
 		libxslt-dev \
+		libpq-dev \
 		linux-headers \
 		nodejs \
 		nodejs-npm \
