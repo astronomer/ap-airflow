@@ -23,7 +23,7 @@ LABEL io.astronomer.docker.component="airflow"
 LABEL io.astronomer.docker.airflow.version="1.10.7"
 
 ARG ORG="astronomer"
-ARG VERSION="1.10.7-2"
+ARG VERSION="1.10.7-3"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG REPO_BRANCH=master
 
