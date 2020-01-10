@@ -158,6 +158,9 @@ RUN visudo --check --file=/etc/sudoers.d/astro
 # Copy entrypoint to root
 COPY include/entrypoint /
 
+# Copy "cron" scripts
+COPY include/clean-airflow-logs /usr/local/bin/clean-airflow-logs
+
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
 # with this
