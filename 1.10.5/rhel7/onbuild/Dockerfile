@@ -13,9 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM astronomerinc/ap-airflow:1.10.5-rhel7
+FROM ianstanton/ap-airflow:rhel7-v9
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.airflow.onbuild=true
 
+# Install RHEL packages
+ONBUILD COPY packages.txt .
+ONBUILD RUN if [[ -s packages.txt ]]; then \
+    yum update -y && cat packages.txt | xargs yum install -y; \
+  fi
+
+# Install python packages
+ONBUILD COPY requirements.txt .
+ONBUILD RUN pip install --no-cache-dir -q -r requirements.txt
+
+# Copy entire project directory
+ONBUILD COPY . .
