@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ianstanton/ap-airflow:rhel7-v9
+FROM ianstanton/ap-airflow:rhel7-v10
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 LABEL io.astronomer.docker=true

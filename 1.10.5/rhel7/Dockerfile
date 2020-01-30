@@ -64,7 +64,8 @@ RUN pip3.6 install --no-cache-dir cryptography  \
      &&  pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
      &&  cd /usr/local/lib/python3.6/site-packages/airflow/www_rbac \
      &&  /node-v12.13.1-linux-x64/bin/npm install \
-     &&  /node-v12.13.1-linux-x64/bin/npm run build
+     &&  /node-v12.13.1-linux-x64/bin/npm run build \
+     && update-alternatives --install /usr/bin/python3 python3 $(which python3.6) 0
 
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs
