@@ -55,16 +55,16 @@ RUN chmod 750 ./install-python && \
 #    cp /usr/share/zoneinfo/UTC /etc/localtime && \
 
 RUN pip3.6 install --no-cache-dir cryptography  \
-     &&  pip3.6 install --no-cache-dir  pymssql==2.1.4 \
-     &&  pip3.6 install --no-cache-dir --upgrade pip==19.3.1 \
-     &&  pip3.6 install --no-cache-dir --upgrade setuptools==41.0.1 \
-     &&  pip3.6 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
-     &&  pip3.6 install --no-cache-dir "${AIRFLOW_MODULE}" \
-     &&  pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
-     &&  pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
-     &&  cd /usr/local/lib/python3.6/site-packages/airflow/www_rbac \
-     &&  /node-v12.13.1-linux-x64/bin/npm install \
-     &&  /node-v12.13.1-linux-x64/bin/npm run build \
+     && pip3.6 install --no-cache-dir  pymssql==2.1.4 \
+     && pip3.6 install --no-cache-dir --upgrade pip==19.3.1 \
+     && pip3.6 install --no-cache-dir --upgrade setuptools==41.0.1 \
+     && pip3.6 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
+     && pip3.6 install --no-cache-dir "${AIRFLOW_MODULE}" \
+     && pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
+     && pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
+     && cd /usr/local/lib/python3.6/site-packages/airflow/www_rbac \
+     && /node-v12.13.1-linux-x64/bin/npm install \
+     && /node-v12.13.1-linux-x64/bin/npm run build \
      && update-alternatives --install /usr/bin/python3 python3 $(which python3.6) 0
 
 # Create logs directory so we can own it when we mount volumes
