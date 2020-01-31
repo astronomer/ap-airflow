@@ -60,7 +60,7 @@ RUN yum install -y \
       nodejs \
       nodejs-npm \
       python3-dev \
-      tzdata  \
+      tzdata \
       wget \
       libaio \
       zlib-devel \
@@ -69,9 +69,9 @@ RUN yum install -y \
       python-virtualenv \
       bzip2-devel \
       openssl-devel \
-      ncurses-devel  \
+      ncurses-devel \
       libxml2-devel \
-      libxslt-devel  \
+      libxslt-devel \
       sqlite \
       sqlite-devel \
       gcc \
