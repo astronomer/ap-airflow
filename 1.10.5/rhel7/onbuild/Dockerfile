@@ -27,7 +27,9 @@ ONBUILD RUN if [[ -s packages.txt ]]; then \
 
 # Install python packages
 ONBUILD COPY requirements.txt .
-ONBUILD RUN pip install --no-cache-dir -q -r requirements.txt
+ONBUILD RUN if [[ -s requirements.txt ]]; then \
+    pip install --no-cache-dir -q -r requirements.txt; \
+  fi
 
 # Copy entire project directory
 ONBUILD COPY . .
