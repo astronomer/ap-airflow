@@ -43,8 +43,45 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
     rpm -ivh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 
 
-RUN yum install -y epel-release cyrus-sasl-devel krb5-libs python-devel mysql-devel make tini build-base git krb5-dev openssl-devel libffi-dev linux-headers nodejs nodejs-npm python3-dev tzdata  wget libaio  zlib-devel libcurl-devel python-setuptools python-virtualenv bzip2-devel openssl-devel ncurses-devel  libxml2-devel libxslt-devel  sqlite sqlite-devel gcc sharutils unzip bash tar gcc-c++ nmap-ncat && \
-    yum groupinstall -y "Development Tools"
+RUN yum install -y \
+      epel-release \
+      cyrus-sasl-devel \
+      krb5-libs \
+      python-devel \
+      mysql-devel \
+      make \
+      tini \
+      build-base \
+      git \
+      krb5-dev \
+      openssl-devel \
+      libffi-dev \
+      linux-headers \
+      nodejs \
+      nodejs-npm \
+      python3-dev \
+      tzdata  \
+      wget \
+      libaio  \
+      zlib-devel \
+      libcurl-devel \
+      python-setuptools \
+      python-virtualenv \
+      bzip2-devel \
+      openssl-devel \
+      ncurses-devel  \
+      libxml2-devel \
+      libxslt-devel  \
+      sqlite \
+      sqlite-devel \
+      gcc \
+      sharutils \
+      unzip \
+      bash \
+      tar \
+      gcc-c++ \
+      nmap-ncat \
+    && yum groupinstall -y "Development Tools"
 
 RUN wget https://nodejs.org/dist/v12.13.1/node-v12.13.1-linux-x64.tar.xz && \
     tar -xvf /node-v12.13.1-linux-x64.tar.xz
