@@ -27,7 +27,7 @@ ARG ASTRONOMER_GROUP="astro"
 ENV ASTRONOMER_USER=${ASTRONOMER_USER}
 ENV ASTRONOMER_GROUP=${ASTRONOMER_GROUP}
 
-RUN useradd  ${ASTRONOMER_USER}
+RUN useradd  ${ASTRONOMER_USER} -u 100
 RUN usermod -g ${ASTRONOMER_GROUP} ${ASTRONOMER_USER}
 
 ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
@@ -43,8 +43,45 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
     rpm -ivh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 
 
-RUN yum install -y epel-release cyrus-sasl-devel krb5-libs python-devel mysql-devel make tini build-base git krb5-dev openssl-devel libffi-dev linux-headers nodejs nodejs-npm python3-dev tzdata  wget libaio  zlib-devel libcurl-devel python-setuptools python-virtualenv bzip2-devel openssl-devel ncurses-devel  libxml2-devel libxslt-devel  sqlite sqlite-devel gcc sharutils unzip bash tar gcc-c++ && \
-    yum groupinstall -y "Development Tools"
+RUN yum install -y \
+      epel-release \
+      cyrus-sasl-devel \
+      krb5-libs \
+      python-devel \
+      mysql-devel \
+      make \
+      tini \
+      build-base \
+      git \
+      krb5-dev \
+      openssl-devel \
+      libffi-dev \
+      linux-headers \
+      nodejs \
+      nodejs-npm \
+      python3-dev \
+      tzdata \
+      wget \
+      libaio \
+      zlib-devel \
+      libcurl-devel \
+      python-setuptools \
+      python-virtualenv \
+      bzip2-devel \
+      openssl-devel \
+      ncurses-devel \
+      libxml2-devel \
+      libxslt-devel \
+      sqlite \
+      sqlite-devel \
+      gcc \
+      sharutils \
+      unzip \
+      bash \
+      tar \
+      gcc-c++ \
+      nmap-ncat \
+    && yum groupinstall -y "Development Tools"
 
 RUN wget https://nodejs.org/dist/v12.13.1/node-v12.13.1-linux-x64.tar.xz && \
     tar -xvf /node-v12.13.1-linux-x64.tar.xz
@@ -55,16 +92,17 @@ RUN chmod 750 ./install-python && \
 #    cp /usr/share/zoneinfo/UTC /etc/localtime && \
 
 RUN pip3.6 install --no-cache-dir cryptography  \
-     &&  pip3.6 install --no-cache-dir  pymssql==2.1.4 \
-     &&  pip3.6 install --no-cache-dir --upgrade pip==19.3.1 \
-     &&  pip3.6 install --no-cache-dir --upgrade setuptools==41.0.1 \
-     &&  pip3.6 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
-     &&  pip3.6 install --no-cache-dir "${AIRFLOW_MODULE}" \
-     &&  pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
-     &&  pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
-     &&  cd /usr/local/lib/python3.6/site-packages/airflow/www_rbac \
-     &&  /node-v12.13.1-linux-x64/bin/npm install \
-     &&  /node-v12.13.1-linux-x64/bin/npm run build
+     && pip3.6 install --no-cache-dir  pymssql==2.1.4 \
+     && pip3.6 install --no-cache-dir --upgrade pip==19.3.1 \
+     && pip3.6 install --no-cache-dir --upgrade setuptools==41.0.1 \
+     && pip3.6 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
+     && pip3.6 install --no-cache-dir "${AIRFLOW_MODULE}" \
+     && pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
+     && pip3.6 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
+     && cd /usr/local/lib/python3.6/site-packages/airflow/www_rbac \
+     && /node-v12.13.1-linux-x64/bin/npm install \
+     && /node-v12.13.1-linux-x64/bin/npm run build \
+     && update-alternatives --install /usr/bin/python3 python3 $(which python3.6) 0
 
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs

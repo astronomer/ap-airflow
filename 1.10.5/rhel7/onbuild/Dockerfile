@@ -19,3 +19,17 @@ LABEL maintainer="Astronomer <humans@astronomer.io>"
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.airflow.onbuild=true
 
+# Install RHEL packages
+ONBUILD COPY packages.txt .
+ONBUILD RUN if [[ -s packages.txt ]]; then \
+    yum update -y && cat packages.txt | xargs yum install -y; \
+  fi
+
+# Install python packages
+ONBUILD COPY requirements.txt .
+ONBUILD RUN if [[ -s requirements.txt ]]; then \
+    pip install --no-cache-dir -q -r requirements.txt; \
+  fi
+
+# Copy entire project directory
+ONBUILD COPY . .
