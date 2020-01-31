@@ -62,7 +62,7 @@ RUN yum install -y \
       python3-dev \
       tzdata  \
       wget \
-      libaio  \
+      libaio \
       zlib-devel \
       libcurl-devel \
       python-setuptools \
