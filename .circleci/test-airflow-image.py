@@ -54,6 +54,17 @@ def test_elasticsearch_version(webserver):
         "elasticsearch module must be version 5.5.3 or greater"
 
 
+def test_redis_version(webserver):
+    """ Astronomer requires a specific version of redis
+    """
+    try:
+        redis_module = webserver.pip_package.get_packages()['redis']
+    except KeyError:
+        raise Exception("redis pip module is not installed")
+    version = redis_module['version']
+    assert semantic_version(version) == semantic_version('3.3.11'), \
+        "redis module must be version 3.3.11"
+
 @pytest.fixture(scope='session')
 def webserver(request):
     """ This is the host fixture for testinfra. To read more, please see
