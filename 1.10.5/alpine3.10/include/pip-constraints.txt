@@ -2,3 +2,4 @@
 azure-storage-blob<12.0
 pymssql<3.0
 kombu>=4.6.7, <5.0
+redis!=3.4.0
