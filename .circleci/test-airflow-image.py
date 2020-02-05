@@ -62,7 +62,7 @@ def test_redis_version(webserver):
     except KeyError:
         raise Exception("redis pip module is not installed")
     version = redis_module['version']
-    assert semantic_version(version) != semantic_version('3.4.0'),
+    assert semantic_version(version) != semantic_version('3.4.0'), \
            "redis module must not be 3.4.0"
 
 @pytest.fixture(scope='session')
