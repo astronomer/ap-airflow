@@ -65,7 +65,7 @@ def test_redis_version(webserver):
     version = redis_module['version']
     assert semantic_version(version) >= semantic_version('3.4.1') or \
            semantic_version(version) == semantic_version('3.3.11'), \
-           "redis module must be version 3.4.1 or greater"
+           "redis module must be version 3.3.11 or greater than or equal to 3.4.1"
 
 @pytest.fixture(scope='session')
 def webserver(request):
