@@ -55,17 +55,15 @@ def test_elasticsearch_version(webserver):
 
 
 def test_redis_version(webserver):
-    """ Astronomer requires a version of redis greater than or equal to 3.4.1,
-    or exactly equal to 3.3.11
+    """ Redis pip module version 3.4.0 has an issue in the Astronomer platform
     """
     try:
         redis_module = webserver.pip_package.get_packages()['redis']
     except KeyError:
         raise Exception("redis pip module is not installed")
     version = redis_module['version']
-    assert semantic_version(version) >= semantic_version('3.4.1') or \
-           semantic_version(version) == semantic_version('3.3.11'), \
-           "redis module must be version 3.3.11 or greater than or equal to 3.4.1"
+    assert semantic_version(version) != semantic_version('3.4.0'),
+           "redis module must not be 3.4.0"
 
 @pytest.fixture(scope='session')
 def webserver(request):
