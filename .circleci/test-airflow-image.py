@@ -55,7 +55,7 @@ def test_elasticsearch_version(webserver):
 
 
 def test_redis_version(webserver):
-    """ Astronomer requires a version of redis greater than 3.4.1
+    """ Astronomer requires a version of redis greater than or equal to 3.4.1
     """
     try:
         redis_module = webserver.pip_package.get_packages()['redis']
