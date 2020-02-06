@@ -14,6 +14,7 @@ import pytest
 import subprocess
 import testinfra
 import docker
+from time import sleep
 
 from packaging.version import parse as semantic_version
 
@@ -89,6 +90,19 @@ def webserver(request):
          '--name', 'webserver',
          '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
          '-d', get_image_name(), 'airflow', 'webserver']).decode().strip()
+
+    # It takes Docker a short time to start
+    # the container. We want to make sure it's up
+    # and running before handing off to be tested.
+    found_container = False
+    for _ in range(0, 100):
+        output = subprocess.check_output("docker ps", shell=True).decode()
+        if docker_id[:5] in output:
+            found_container = True
+            break
+        sleep(0.1)
+    if not found_container:
+        raise Exception("Error: Docker container did not start running within 10 seconds. It did not show up in the docker ps output")
 
     yield testinfra.get_host("docker://" + docker_id)
 
