@@ -24,6 +24,17 @@ def test_airflow_in_path(webserver):
     assert webserver.exists('airflow'), \
         "Expected 'airflow' to be in PATH"
 
+def test_tini_in_path(webserver):
+    """ Ensure 'tini' is in PATH
+    """
+    assert webserver.exists('tini'), \
+        "Expected 'tini' to be in PATH"
+
+def test_entrypoint(webserver):
+    """ There should be a file '/entrypoint'
+    """
+    assert webserver.file("/entrypoint").exists, \
+        "Expected to find /entrypoint"
 
 def test_maintainer(webserver, docker_client):
     """ Ensure the Docker image label 'maintainer' is set correctly
