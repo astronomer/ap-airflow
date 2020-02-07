@@ -73,6 +73,7 @@ RUN apt-get update \
            rsync \
            sasl2-bin \
            sudo \
+           tini \
     && apt-get autoremove -yqq --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -169,5 +170,5 @@ USER ${ASTRONOMER_USER}
 # Switch to AIRFLOW_HOME
 WORKDIR ${AIRFLOW_HOME}
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--", "/entrypoint"]
+ENTRYPOINT ["tini", "--", "/entrypoint"]
 CMD ["airflow", "--help"]
