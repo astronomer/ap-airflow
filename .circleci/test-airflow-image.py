@@ -94,6 +94,7 @@ def webserver(request):
     https://testinfra.readthedocs.io/en/latest/examples.html#test-docker-images
     """
     docker_id_db = start_postgres()
+    wait_for_container(docker_id_db)
     db_connection_string = f"postgres://postgres:notsecretpassword@{get_ip_from_id(docker_id_db)}:5432"
     docker_id = subprocess.check_output(
         ['docker', 'run', '--rm',
@@ -101,18 +102,7 @@ def webserver(request):
          '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
          '-d', get_image_name(), 'airflow', 'webserver']).decode().strip()
 
-    # It takes Docker a short time to start
-    # the container. We want to make sure it's up
-    # and running before handing off to be tested.
-    found_container = False
-    for _ in range(0, 100):
-        output = subprocess.check_output("docker ps", shell=True).decode()
-        if docker_id[:5] in output:
-            found_container = True
-            break
-        sleep(0.1)
-    if not found_container:
-        raise Exception("Error: Docker container did not start running within 10 seconds. It did not show up in the docker ps output")
+    wait_for_container(docker_id)
 
     yield testinfra.get_host("docker://" + docker_id)
 
@@ -176,3 +166,17 @@ def get_ip_from_id(_id):
          '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',
          _id]
     ).decode().strip()
+
+def wait_for_container(_id):
+    # It takes Docker a short time to start
+    # the container. We want to make sure it's up
+    # and running before handing off to be tested.
+    found_container = False
+    for _ in range(0, 100):
+        output = subprocess.check_output("docker ps", shell=True).decode()
+        if _id[:5] in output:
+            found_container = True
+            break
+        sleep(0.1)
+    if not found_container:
+        raise Exception("Error: Docker container did not start running within 10 seconds. It did not show up in the docker ps output")
