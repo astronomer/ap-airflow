@@ -65,6 +65,16 @@ def test_elasticsearch_version(webserver):
     assert semantic_version(version) >= semantic_version('5.5.3'), \
         "elasticsearch module must be version 5.5.3 or greater"
 
+def test_werkzeug_version(webserver):
+    """ Werkzeug pip module version >= 1.0.0 has an issue
+    """
+    try:
+        werkzeug_module = webserver.pip_package.get_packages()['Werkzeug']
+    except KeyError:
+        raise Exception("Werkzeug pip module is not installed")
+    version = werkzeug_module['version']
+    assert semantic_version(version) < semantic_version('1.0.0'), \
+           "Werkzeug pip module version must be less than 1.0.0"
 
 def test_redis_version(webserver):
     """ Redis pip module version 3.4.0 has an issue in the Astronomer platform
@@ -86,7 +96,7 @@ def webserver(request):
     docker_id_db = start_postgres()
     db_connection_string = f"postgres://postgres:notsecretpassword@{get_ip_from_id(docker_id_db)}:5432"
     docker_id = subprocess.check_output(
-        ['docker', 'run',
+        ['docker', 'run', '--rm',
          '--name', 'webserver',
          '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
          '-d', get_image_name(), 'airflow', 'webserver']).decode().strip()
@@ -150,7 +160,7 @@ def start_postgres():
         postgres = docker_client.containers.get('postgres')
     except docker.errors.NotFound:
         return subprocess.check_output(
-            ['docker', 'run',
+            ['docker', 'run', '--rm',
              '--name', 'postgres',
              '-e', 'POSTGRES_PASSWORD=notsecretpassword',
              '-d', 'postgres:9.6.15']
