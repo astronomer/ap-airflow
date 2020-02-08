@@ -35,7 +35,7 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+RUN chmod +x /tini && cp /tini /usr/local/sbin/
 
 RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 && \

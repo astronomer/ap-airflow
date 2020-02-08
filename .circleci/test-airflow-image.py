@@ -14,6 +14,7 @@ import pytest
 import subprocess
 import testinfra
 import docker
+from time import sleep
 
 from packaging.version import parse as semantic_version
 
@@ -24,6 +25,17 @@ def test_airflow_in_path(webserver):
     assert webserver.exists('airflow'), \
         "Expected 'airflow' to be in PATH"
 
+def test_tini_in_path(webserver):
+    """ Ensure 'tini' is in PATH
+    """
+    assert webserver.exists('tini'), \
+        "Expected 'tini' to be in PATH"
+
+def test_entrypoint(webserver):
+    """ There should be a file '/entrypoint'
+    """
+    assert webserver.file("/entrypoint").exists, \
+        "Expected to find /entrypoint"
 
 def test_maintainer(webserver, docker_client):
     """ Ensure the Docker image label 'maintainer' is set correctly
@@ -53,6 +65,16 @@ def test_elasticsearch_version(webserver):
     assert semantic_version(version) >= semantic_version('5.5.3'), \
         "elasticsearch module must be version 5.5.3 or greater"
 
+def test_werkzeug_version(webserver):
+    """ Werkzeug pip module version >= 1.0.0 has an issue
+    """
+    try:
+        werkzeug_module = webserver.pip_package.get_packages()['Werkzeug']
+    except KeyError:
+        raise Exception("Werkzeug pip module is not installed")
+    version = werkzeug_module['version']
+    assert semantic_version(version) < semantic_version('1.0.0'), \
+           "Werkzeug pip module version must be less than 1.0.0"
 
 def test_redis_version(webserver):
     """ Redis pip module version 3.4.0 has an issue in the Astronomer platform
@@ -72,12 +94,20 @@ def webserver(request):
     https://testinfra.readthedocs.io/en/latest/examples.html#test-docker-images
     """
     docker_id_db = start_postgres()
+    wait_for_container(docker_id_db)
     db_connection_string = f"postgres://postgres:notsecretpassword@{get_ip_from_id(docker_id_db)}:5432"
+    db_initializer = subprocess.check_output(
+        ['docker', 'run', '--rm',
+         '--name', 'initdb',
+         '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
+         get_image_name(), 'airflow', 'initdb']).decode().strip()
     docker_id = subprocess.check_output(
-        ['docker', 'run',
+        ['docker', 'run', '--rm',
          '--name', 'webserver',
          '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
          '-d', get_image_name(), 'airflow', 'webserver']).decode().strip()
+
+    wait_for_container(docker_id)
 
     yield testinfra.get_host("docker://" + docker_id)
 
@@ -125,7 +155,7 @@ def start_postgres():
         postgres = docker_client.containers.get('postgres')
     except docker.errors.NotFound:
         return subprocess.check_output(
-            ['docker', 'run',
+            ['docker', 'run', '--rm',
              '--name', 'postgres',
              '-e', 'POSTGRES_PASSWORD=notsecretpassword',
              '-d', 'postgres:9.6.15']
@@ -141,3 +171,17 @@ def get_ip_from_id(_id):
          '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',
          _id]
     ).decode().strip()
+
+def wait_for_container(_id):
+    # It takes Docker a short time to start
+    # the container. We want to make sure it's up
+    # and running before handing off to be tested.
+    found_container = False
+    for _ in range(0, 100):
+        output = subprocess.check_output("docker ps", shell=True).decode()
+        if _id[:5] in output:
+            found_container = True
+            break
+        sleep(0.1)
+    if not found_container:
+        raise Exception("Error: Docker container did not start running within 10 seconds. It did not show up in the docker ps output")
