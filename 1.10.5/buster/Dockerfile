@@ -58,7 +58,6 @@ RUN apt-get update \
            apt-utils \
            curl \
            libmariadb3 \
-           dumb-init \
            freetds-bin \
            git \
            gosu \
