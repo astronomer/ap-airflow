@@ -96,6 +96,11 @@ def webserver(request):
     docker_id_db = start_postgres()
     wait_for_container(docker_id_db)
     db_connection_string = f"postgres://postgres:notsecretpassword@{get_ip_from_id(docker_id_db)}:5432"
+    db_initializer = subprocess.check_output(
+        ['docker', 'run', '--rm',
+         '--name', 'initdb',
+         '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
+         get_image_name(), 'airflow', 'initdb']).decode().strip()
     docker_id = subprocess.check_output(
         ['docker', 'run', '--rm',
          '--name', 'webserver',
