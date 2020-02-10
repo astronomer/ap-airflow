@@ -62,12 +62,11 @@ pip install -r .circleci/test-requirements.txt
 Build the image you want to test
 ```
 docker build -t airflow ./1.10.5/buster
-export AIRFLOW_IMAGE=airflow:latest
 ```
 
 Run system testing
 ```
-.circleci/bin/test-airflow
+.circleci/bin/test-airflow airflow
 ```
 
 The first time you do the build, and the first time you do the system test it will take longer than subsequent runs. The system testing will install the tested versions of CI tools in /tmp/bin (helm, kubectl, kind). It will leave an airflow cluster running on your kind cluster in 'test-cluster'. When you run it again, it will delete the namespace of your most recent deployment and redeploy into a new namespace. If you make changes in the image, don't forget to re-build the image before testing it.
