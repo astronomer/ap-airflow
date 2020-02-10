@@ -168,18 +168,11 @@ commands:
           name: Load archived Airflow Docker image
           command: docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>.tar
       - run:
-          name: Set up test environment
-          command: |
-            set -xe
-            pip install virtualenv
-            virtualenv --python=python3 ./venv
-            source ./venv/bin/activate
-            pip install -r .circleci/test-requirements.txt
-      - run:
           name: Test Airflow Docker image
           command: |
             set -e
-            source ./venv/bin/activate
+            pyenv global 3.7.0
+            pip install -r .circleci/test-requirements.txt
             .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
       - store_test_results:
           path: /tmp/test-reports
