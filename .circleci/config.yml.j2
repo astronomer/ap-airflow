@@ -190,8 +190,7 @@ commands:
           command: |
             set -e
             source ./venv/bin/activate
-            export AIRFLOW_IMAGE=<< parameters.repository >>:<< parameters.tag >>
-            .circleci/bin/test-airflow
+            .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
       - store_test_results:
           path: /tmp/test-reports
   push:
