@@ -26,8 +26,8 @@ workflows:
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-{{ airflow_version }}-{{ distribution }}
-            - test-{{ airflow_version }}-{{ distribution }}
+            - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
               only: master

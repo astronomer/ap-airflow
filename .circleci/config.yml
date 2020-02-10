@@ -28,8 +28,8 @@ workflows:
           tag: "1.10.5-alpine3.10"
           extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.5-alpine3.10
-            - test-1.10.5-alpine3.10
+            - scan-1.10.5-alpine3.10-onbuild
+            - test-1.10.5-alpine3.10-onbuild
           filters:
             branches:
               only: master
@@ -65,8 +65,8 @@ workflows:
           tag: "1.10.5-buster"
           extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.5-buster
-            - test-1.10.5-buster
+            - scan-1.10.5-buster-onbuild
+            - test-1.10.5-buster-onbuild
           filters:
             branches:
               only: master
@@ -102,8 +102,8 @@ workflows:
           tag: "1.10.5-rhel7"
           extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.5-rhel7
-            - test-1.10.5-rhel7
+            - scan-1.10.5-rhel7-onbuild
+            - test-1.10.5-rhel7-onbuild
           filters:
             branches:
               only: master
@@ -141,8 +141,8 @@ workflows:
           tag: "1.10.6-alpine3.10"
           extra_tags: "1.10.6-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.6-alpine3.10
-            - test-1.10.6-alpine3.10
+            - scan-1.10.6-alpine3.10-onbuild
+            - test-1.10.6-alpine3.10-onbuild
           filters:
             branches:
               only: master
@@ -178,8 +178,8 @@ workflows:
           tag: "1.10.6-buster"
           extra_tags: "1.10.6-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.6-buster
-            - test-1.10.6-buster
+            - scan-1.10.6-buster-onbuild
+            - test-1.10.6-buster-onbuild
           filters:
             branches:
               only: master
@@ -217,8 +217,8 @@ workflows:
           tag: "1.10.7-alpine3.10"
           extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.7-alpine3.10
-            - test-1.10.7-alpine3.10
+            - scan-1.10.7-alpine3.10-onbuild
+            - test-1.10.7-alpine3.10-onbuild
           filters:
             branches:
               only: master
@@ -254,8 +254,8 @@ workflows:
           tag: "1.10.7-buster"
           extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.7-buster
-            - test-1.10.7-buster
+            - scan-1.10.7-buster-onbuild
+            - test-1.10.7-buster-onbuild
           filters:
             branches:
               only: master
