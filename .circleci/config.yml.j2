@@ -71,7 +71,7 @@ jobs:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
   test:
-    executor: docker-executor
+    executor: machine-executor
     description: Test Airflow images
     parameters:
       airflow_version:
@@ -117,6 +117,9 @@ executors:
   docker-executor:
     docker:
       - image: circleci/python:3
+  machine-executor:
+    machine:
+      image: ubuntu-1604:201903-01
 commands:
 
   docker-build-base-and-onbuild:
@@ -173,7 +176,6 @@ commands:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
       - run:
           name: Load archived Airflow Docker image
           command: docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>.tar
