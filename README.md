@@ -1,4 +1,4 @@
-# Astronomer Certified Airflow Docker Images
+# Astronomer CEA Docker Images
 
 [![docker-pulls](https://img.shields.io/docker/pulls/astronomerinc/ap-airflow.svg)](https://hub.docker.com/r/astronomerinc/ap-airflow)
 
@@ -8,12 +8,12 @@ If you'd like to see the platform in action, [start a free trial on our SaaS ser
 
 ## Docker images
 
-Docker images for deploying and running Astronomer Certified Airflow are currently available on
+Docker images for deploying and running Astronomer CEA are currently available on
 [DockerHub](https://hub.docker.com/u/astronomerinc/).
 
 ## Contents of this repo
 
-* The official Dockerfiles that build Astronomer Certified Airflow Images
+* The official Dockerfiles that build Astronomer CEA Images
 * Example docker-compose files for running various pieces and configurations of
   the platform.
 
