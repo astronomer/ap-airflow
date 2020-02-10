@@ -1,0 +1,68 @@
+#!/bin/bash
+
+export REPOSITORY=$1
+if [[ -z "$2" ]]; then
+  export TAG="latest"
+else
+  export TAG=$2
+fi
+
+function get_debugging_info {
+  for pod in $(kubectl get pods -n $NAMESPACE --no-headers=true | awk '{ print $1 }'); do
+    echo "======================="
+    set -x
+    kubectl logs -n $NAMESPACE $pod | tail -n 30
+    set +x
+    echo "======================="
+  done
+}
+
+# set DIR to the directory of this script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+source $DIR/install-ci-tools
+source $DIR/start-kind-cluster
+
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add astronomer https://helm.astronomer.io
+helm repo update
+
+set +e
+
+# Delete all namespaces starting with 'airflow-', if any exist
+kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs kubectl delete namespaces --wait=false > /dev/null 2>&1
+
+kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TAG
+
+export NAMESPACE=airflow-$RANDOM
+export RELEASE_NAME=$NAMESPACE
+echo "Installing Airflow into kind as $RELEASE_NAME"
+
+kubectl get pods -n $NAMESPACE -w &
+WATCH_PID=$!
+
+kubectl create namespace $NAMESPACE
+helm install --namespace $NAMESPACE \
+  --set defaultAirflowRepository=$REPOSITORY \
+  --set defaultAirflowTag=$TAG \
+  --set images.airflow.pullPolicy=Never \
+  --set images.flower.pullPolicy=Never \
+  --set executor=KubernetesExecutor \
+  --wait \
+  $RELEASE_NAME astronomer/airflow
+
+if [ ! $? -eq 0 ]; then
+  echo "Airflow image failed to work with latest Helm chart."
+  get_debugging_info
+  exit 1
+fi
+
+kill $WATCH_PID
+
+echo "Deployed Airflow into latest Helm chart."
+
+export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ print $1 }')
+export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
+
+mkdir -p /tmp/test-reports
+pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml

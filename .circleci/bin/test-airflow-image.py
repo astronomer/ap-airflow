@@ -93,25 +93,20 @@ def webserver(request):
     the testinfra documentation:
     https://testinfra.readthedocs.io/en/latest/examples.html#test-docker-images
     """
-    docker_id_db = start_postgres()
-    wait_for_container(docker_id_db)
-    db_connection_string = f"postgres://postgres:notsecretpassword@{get_ip_from_id(docker_id_db)}:5432"
-    db_initializer = subprocess.check_output(
-        ['docker', 'run', '--rm',
-         '--name', 'initdb',
-         '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
-         get_image_name(), 'airflow', 'initdb']).decode().strip()
-    docker_id = subprocess.check_output(
-        ['docker', 'run', '--rm',
-         '--name', 'webserver',
-         '-e', f"AIRFLOW__CORE__SQL_ALCHEMY_CONN={db_connection_string}",
-         '-d', get_image_name(), 'airflow', 'webserver']).decode().strip()
+    namespace = os.environ.get('NAMESPACE')
+    pod = os.environ.get('WEBSERVER_POD')
+    yield testinfra.get_host(f'kubectl://{pod}?container=webserver&namespace={namespace}')
 
-    wait_for_container(docker_id)
 
-    yield testinfra.get_host("docker://" + docker_id)
-
-    subprocess.check_call(['docker', 'rm', '-f', docker_id, docker_id_db])
+@pytest.fixture(scope='session')
+def scheduler(request):
+    """ This is the host fixture for testinfra. To read more, please see
+    the testinfra documentation:
+    https://testinfra.readthedocs.io/en/latest/examples.html#test-docker-images
+    """
+    namespace = os.environ.get('NAMESPACE')
+    pod = os.environ.get('SCHEDULER_POD')
+    yield testinfra.get_host(f'kubectl://{pod}?container=scheduler&namespace={namespace}')
 
 
 @pytest.fixture(scope='session')
@@ -123,8 +118,6 @@ def docker_client(request):
     yield client
     client.close()
 
-
-## Utility functions below
 
 def get_image_name():
     """ Fetch image name from an environment variable
