@@ -16,7 +16,9 @@ if ! kind get clusters | grep $CLUSTER_NAME; then
     kind create cluster --name $CLUSTER_NAME --image kindest/node:${KUBE_VERSION}
   fi
 else
-  kubectl config use-context kind-$CLUSTER_NAME
   echo "kind cluster '$CLUSTER_NAME' already created"
 fi
 set -e
+
+kubectl config use-context kind-$CLUSTER_NAME
+kubectl cluster-info --context kind-$CLUSTER_NAME
