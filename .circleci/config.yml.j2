@@ -10,21 +10,9 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
       - scan:
-          name: scan-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          distribution_name: {{ distribution }}
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
-      - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}-onbuild
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
-      - test:
-          name: test-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          distribution_name: {{ distribution }}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
@@ -38,8 +26,8 @@ workflows:
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-{{ airflow_version }}-{{ distribution }}
-            - test-{{ airflow_version }}-{{ distribution }}
+            - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
               only: master
@@ -71,7 +59,7 @@ jobs:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
   test:
-    executor: docker-executor
+    executor: machine-executor
     description: Test Airflow images
     parameters:
       airflow_version:
@@ -82,7 +70,8 @@ jobs:
         type: string
     steps:
       - airflow-image-test:
-          image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          repository: "astronomerinc/ap-airflow"
+          tag: "<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan:
     executor: clair-scanner/default
     description: Test Airflow images
@@ -116,6 +105,9 @@ executors:
   docker-executor:
     docker:
       - image: circleci/python:3
+  machine-executor:
+    machine:
+      image: ubuntu-1604:201903-01
 commands:
 
   docker-build-base-and-onbuild:
@@ -164,37 +156,26 @@ commands:
   airflow-image-test:
     description: Test an Airflow image
     parameters:
-      image_name:
+      repository:
         type: string
-        default: $CIRCLE_PROJECT_REPONAME
+      tag:
+        type: string
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
       - run:
           name: Load archived Airflow Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
-      - run:
-          name: Set up test environment
-          command: |
-            set -xe
-            pip install virtualenv
-            virtualenv --python=python3 ./venv
-            source ./venv/bin/activate
-            pip install -r .circleci/test-requirements.txt
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>.tar
       - run:
           name: Test Airflow Docker image
           command: |
-            set -xe
-            source ./venv/bin/activate
-            export AIRFLOW_IMAGE='<< parameters.image_name >>'
-            mkdir -p test-reports
-            pytest .circleci/test-airflow-image.py --junitxml=test-reports/airflow-test-<< parameters.image_name >>.xml
+            set -e
+            pyenv global 3.7.0
+            pip install -r .circleci/test-requirements.txt
+            .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
       - store_test_results:
-          path: test-reports
-      - store_artifacts:
-          path: test-reports
+          path: /tmp/test-reports
   push:
     description: "Push a Docker image to DockerHub"
     parameters:

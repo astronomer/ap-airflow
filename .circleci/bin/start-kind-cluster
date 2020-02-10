@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if [[ -z "${KUBE_VERSION}" ]]; then
+  export KUBE_VERSION='v1.15.6'
+fi
+
+set +e
+# Start a cluster, if it does not already exist
+export CLUSTER_NAME=test-cluster
+if ! kind get clusters | grep $CLUSTER_NAME; then
+  kind create cluster --name $CLUSTER_NAME --image kindest/node:${KUBE_VERSION}
+  # Kind will fail sometimes, it's worth retrying once.
+  if ! [[ $? -eq 0 ]]; then
+    echo "Failed to create kind cluster, trying one more time"
+    kind delete cluster --name $CLUSTER_NAME || true
+    kind create cluster --name $CLUSTER_NAME --image kindest/node:${KUBE_VERSION}
+  fi
+  echo "kind cluster '$CLUSTER_NAME' created"
+else
+  echo "kind cluster '$CLUSTER_NAME' already created"
+fi
+
+kubectl config use-context kind-$CLUSTER_NAME
+kubectl cluster-info --context kind-$CLUSTER_NAME
+
+for i in {0..10}; do
+  if kubectl get nodes; then
+    echo "kind kube API ready to go"
+    break
+  else
+    echo "Waiting for kind kube API to become available..."
+  fi
+  sleep 1
+done
+set -e

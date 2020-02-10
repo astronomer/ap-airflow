@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Fail script if anything fails
+set -e
+
+if [[ -z "${KIND_VERSION}" ]]; then
+  KIND_VERSION="0.7.0"
+fi
+if [[ -z "${HELM_VERSION}" ]]; then
+  HELM_VERSION="3.0.3"
+fi
+
+OS=$(uname | tr '[:upper:]' '[:lower:]')
+STARTING_DIR=$(pwd)
+
+# Set up a bin location
+mkdir -p /tmp/bin
+PATH=/tmp/bin:$PATH
+
+if [[ -f /tmp/bin/kind ]]; then
+  echo "kind already installed."
+else
+  echo "Installing kind"
+  cd /tmp
+  curl -Lo ./kind https://github.com/kubernetes-sigs/kind/releases/download/v${KIND_VERSION}/kind-${OS}-amd64 > /dev/null 2>&1
+  chmod +x ./kind
+  mv ./kind /tmp/bin/
+fi
+
+if [[ -f /tmp/bin/helm ]]; then
+  echo "helm is already installed."
+else
+  echo "Installing helm"
+  wget https://get.helm.sh/helm-v${HELM_VERSION}-${OS}-amd64.tar.gz > /dev/null 2>&1
+  tar -zxvf ./helm-v${HELM_VERSION}-${OS}-amd64.tar.gz
+  mv ${OS}-amd64/helm /tmp/bin/
+fi
+
+if [[ -f /tmp/bin/kubectl ]]; then
+  echo "kubectl is already installed."
+else
+  echo "Installing kubectl"
+  cd /tmp/bin
+  curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/${OS}/amd64/kubectl
+  chmod +x ./kubectl
+fi
+
+cd $STARTING_DIR

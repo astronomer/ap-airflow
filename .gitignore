@@ -23,3 +23,4 @@ java/.settings/
 .vscode/*
 .python-version
 temp
+kubeconfig

@@ -12,21 +12,9 @@ workflows:
           airflow_version: 1.10.5
           distribution_name: alpine3.10
       - scan:
-          name: scan-1.10.5-alpine3.10
-          airflow_version: 1.10.5
-          distribution_name: alpine3.10
-          requires:
-            - build-1.10.5-alpine3.10
-      - scan:
           name: scan-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
           distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.5-alpine3.10
-      - test:
-          name: test-1.10.5-alpine3.10
-          airflow_version: 1.10.5
-          distribution_name: alpine3.10
           requires:
             - build-1.10.5-alpine3.10
       - test:
@@ -40,8 +28,8 @@ workflows:
           tag: "1.10.5-alpine3.10"
           extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.5-alpine3.10
-            - test-1.10.5-alpine3.10
+            - scan-1.10.5-alpine3.10-onbuild
+            - test-1.10.5-alpine3.10-onbuild
           filters:
             branches:
               only: master
@@ -61,21 +49,9 @@ workflows:
           airflow_version: 1.10.5
           distribution_name: buster
       - scan:
-          name: scan-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
-          requires:
-            - build-1.10.5-buster
-      - scan:
           name: scan-1.10.5-buster-onbuild
           airflow_version: 1.10.5
           distribution_name: buster-onbuild
-          requires:
-            - build-1.10.5-buster
-      - test:
-          name: test-1.10.5-buster
-          airflow_version: 1.10.5
-          distribution_name: buster
           requires:
             - build-1.10.5-buster
       - test:
@@ -89,8 +65,8 @@ workflows:
           tag: "1.10.5-buster"
           extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.5-buster
-            - test-1.10.5-buster
+            - scan-1.10.5-buster-onbuild
+            - test-1.10.5-buster-onbuild
           filters:
             branches:
               only: master
@@ -110,21 +86,9 @@ workflows:
           airflow_version: 1.10.5
           distribution_name: rhel7
       - scan:
-          name: scan-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
-          requires:
-            - build-1.10.5-rhel7
-      - scan:
           name: scan-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
           distribution_name: rhel7-onbuild
-          requires:
-            - build-1.10.5-rhel7
-      - test:
-          name: test-1.10.5-rhel7
-          airflow_version: 1.10.5
-          distribution_name: rhel7
           requires:
             - build-1.10.5-rhel7
       - test:
@@ -138,8 +102,8 @@ workflows:
           tag: "1.10.5-rhel7"
           extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.5-rhel7
-            - test-1.10.5-rhel7
+            - scan-1.10.5-rhel7-onbuild
+            - test-1.10.5-rhel7-onbuild
           filters:
             branches:
               only: master
@@ -161,21 +125,9 @@ workflows:
           airflow_version: 1.10.6
           distribution_name: alpine3.10
       - scan:
-          name: scan-1.10.6-alpine3.10
-          airflow_version: 1.10.6
-          distribution_name: alpine3.10
-          requires:
-            - build-1.10.6-alpine3.10
-      - scan:
           name: scan-1.10.6-alpine3.10-onbuild
           airflow_version: 1.10.6
           distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.6-alpine3.10
-      - test:
-          name: test-1.10.6-alpine3.10
-          airflow_version: 1.10.6
-          distribution_name: alpine3.10
           requires:
             - build-1.10.6-alpine3.10
       - test:
@@ -189,8 +141,8 @@ workflows:
           tag: "1.10.6-alpine3.10"
           extra_tags: "1.10.6-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.6-alpine3.10
-            - test-1.10.6-alpine3.10
+            - scan-1.10.6-alpine3.10-onbuild
+            - test-1.10.6-alpine3.10-onbuild
           filters:
             branches:
               only: master
@@ -210,21 +162,9 @@ workflows:
           airflow_version: 1.10.6
           distribution_name: buster
       - scan:
-          name: scan-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
-          requires:
-            - build-1.10.6-buster
-      - scan:
           name: scan-1.10.6-buster-onbuild
           airflow_version: 1.10.6
           distribution_name: buster-onbuild
-          requires:
-            - build-1.10.6-buster
-      - test:
-          name: test-1.10.6-buster
-          airflow_version: 1.10.6
-          distribution_name: buster
           requires:
             - build-1.10.6-buster
       - test:
@@ -238,8 +178,8 @@ workflows:
           tag: "1.10.6-buster"
           extra_tags: "1.10.6-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.6-buster
-            - test-1.10.6-buster
+            - scan-1.10.6-buster-onbuild
+            - test-1.10.6-buster-onbuild
           filters:
             branches:
               only: master
@@ -261,21 +201,9 @@ workflows:
           airflow_version: 1.10.7
           distribution_name: alpine3.10
       - scan:
-          name: scan-1.10.7-alpine3.10
-          airflow_version: 1.10.7
-          distribution_name: alpine3.10
-          requires:
-            - build-1.10.7-alpine3.10
-      - scan:
           name: scan-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
           distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.7-alpine3.10
-      - test:
-          name: test-1.10.7-alpine3.10
-          airflow_version: 1.10.7
-          distribution_name: alpine3.10
           requires:
             - build-1.10.7-alpine3.10
       - test:
@@ -289,8 +217,8 @@ workflows:
           tag: "1.10.7-alpine3.10"
           extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.7-alpine3.10
-            - test-1.10.7-alpine3.10
+            - scan-1.10.7-alpine3.10-onbuild
+            - test-1.10.7-alpine3.10-onbuild
           filters:
             branches:
               only: master
@@ -310,21 +238,9 @@ workflows:
           airflow_version: 1.10.7
           distribution_name: buster
       - scan:
-          name: scan-1.10.7-buster
-          airflow_version: 1.10.7
-          distribution_name: buster
-          requires:
-            - build-1.10.7-buster
-      - scan:
           name: scan-1.10.7-buster-onbuild
           airflow_version: 1.10.7
           distribution_name: buster-onbuild
-          requires:
-            - build-1.10.7-buster
-      - test:
-          name: test-1.10.7-buster
-          airflow_version: 1.10.7
-          distribution_name: buster
           requires:
             - build-1.10.7-buster
       - test:
@@ -338,8 +254,8 @@ workflows:
           tag: "1.10.7-buster"
           extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.7-buster
-            - test-1.10.7-buster
+            - scan-1.10.7-buster-onbuild
+            - test-1.10.7-buster-onbuild
           filters:
             branches:
               only: master
@@ -371,7 +287,7 @@ jobs:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
   test:
-    executor: docker-executor
+    executor: machine-executor
     description: Test Airflow images
     parameters:
       airflow_version:
@@ -382,7 +298,8 @@ jobs:
         type: string
     steps:
       - airflow-image-test:
-          image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          repository: "astronomerinc/ap-airflow"
+          tag: "<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan:
     executor: clair-scanner/default
     description: Test Airflow images
@@ -416,6 +333,9 @@ executors:
   docker-executor:
     docker:
       - image: circleci/python:3
+  machine-executor:
+    machine:
+      image: ubuntu-1604:201903-01
 commands:
 
   docker-build-base-and-onbuild:
@@ -464,37 +384,26 @@ commands:
   airflow-image-test:
     description: Test an Airflow image
     parameters:
-      image_name:
+      repository:
         type: string
-        default: $CIRCLE_PROJECT_REPONAME
+      tag:
+        type: string
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
       - run:
           name: Load archived Airflow Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
-      - run:
-          name: Set up test environment
-          command: |
-            set -xe
-            pip install virtualenv
-            virtualenv --python=python3 ./venv
-            source ./venv/bin/activate
-            pip install -r .circleci/test-requirements.txt
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>.tar
       - run:
           name: Test Airflow Docker image
           command: |
-            set -xe
-            source ./venv/bin/activate
-            export AIRFLOW_IMAGE='<< parameters.image_name >>'
-            mkdir -p test-reports
-            pytest .circleci/test-airflow-image.py --junitxml=test-reports/airflow-test-<< parameters.image_name >>.xml
+            set -e
+            pyenv global 3.7.0
+            pip install -r .circleci/test-requirements.txt
+            .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
       - store_test_results:
-          path: test-reports
-      - store_artifacts:
-          path: test-reports
+          path: /tmp/test-reports
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
