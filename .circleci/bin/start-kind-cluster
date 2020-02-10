@@ -15,10 +15,21 @@ if ! kind get clusters | grep $CLUSTER_NAME; then
     kind delete cluster --name $CLUSTER_NAME || true
     kind create cluster --name $CLUSTER_NAME --image kindest/node:${KUBE_VERSION}
   fi
+  echo "kind cluster '$CLUSTER_NAME' created"
 else
   echo "kind cluster '$CLUSTER_NAME' already created"
 fi
-set -e
 
 kubectl config use-context kind-$CLUSTER_NAME
 kubectl cluster-info --context kind-$CLUSTER_NAME
+
+for i in {0..10}; do
+  if kubectl get nodes; then
+    echo "kind kube API ready to go"
+    break
+  else
+    echo "Waiting for kind kube API to become available..."
+  fi
+  sleep 1
+done
+set -e
