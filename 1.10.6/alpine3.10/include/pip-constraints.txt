@@ -4,3 +4,4 @@ pymssql<3.0
 kombu>=4.6.7, <5.0
 redis!=3.4.0
 Werkzeug < 1.0.0
+papermill<2.0
