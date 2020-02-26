@@ -94,6 +94,8 @@ ENV PIP_NO_CACHE_DIR="true"
 
 RUN apt-get update \
     && curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
     && apt-get install -y --no-install-recommends \
         build-essential \
         default-libmysqlclient-dev \
@@ -103,6 +105,7 @@ RUN apt-get update \
         libsasl2-dev \
         libssl-dev \
         nodejs \
+        yarn \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -120,9 +123,8 @@ RUN pip install "${AIRFLOW_MODULE}" \
   && pip install "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl"
 
 RUN cd usr/local/lib/python3.7/site-packages/airflow/www_rbac \
-  && rm package-lock.json \
-  && npm install \
-  && npm run prod \
+  && yarn install --frozen-lockfile \
+  && yarn run build \
   && rm -rf node_modules
 
 

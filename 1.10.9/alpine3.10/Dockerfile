@@ -63,7 +63,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.9/alpi
 		libxslt-dev \
 		linux-headers \
 		nodejs \
-		nodejs-npm \
+		yarn \
 		python3-dev \
 		tzdata \
 	&& apk add --no-cache \
@@ -97,9 +97,8 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.9/alpi
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
 	&& cd /usr/lib/python3.7/site-packages/airflow/www_rbac \
-	&& rm package-lock.json \
-	&& npm install \
-	&& npm run build \
+	&& yarn install --frozen-lockfile \
+	&& yarn run build \
 	&& rm -rf node_modules \
 	&& apk del .build-deps py3-numpy-dev \
 	&& ln -sf /usr/bin/python3 /usr/bin/python \
