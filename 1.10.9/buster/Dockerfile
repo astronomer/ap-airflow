@@ -105,6 +105,8 @@ RUN apt-get update \
         libsasl2-dev \
         libssl-dev \
         nodejs \
+    && apt update \
+    && apt install \
         yarn \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
