@@ -123,7 +123,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
   && pip install "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl"
 
 RUN cd usr/local/lib/python3.7/site-packages/airflow/www_rbac \
-  && yarn install --frozen-lockfile \
+  && yarn install \
   && yarn run build \
   && rm -rf node_modules
 
