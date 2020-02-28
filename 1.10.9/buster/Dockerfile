@@ -59,7 +59,6 @@ RUN apt-get update \
            curl \
            libmariadb3 \
            freetds-bin \
-           git \
            gosu \
            libffi6 \
            libkrb5-3 \
@@ -104,35 +103,25 @@ RUN apt-get update \
         libpq-dev \
         libsasl2-dev \
         libssl-dev \
-        nodejs \
     && apt update \
     && apt install \
         yarn \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.9-1"
+ARG VERSION="1.10.9.dev1+astro.1"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
-ENV AIRFLOW_MODULE="git+${AIRFLOW_REPOSITORY}@${VERSION}#egg=apache-airflow[${SUBMODULES}]"
+ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==1!$VERSION"
 
-# Force pip to install these specific versions when ever it installs a module
-ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
+# Make pip look at our pip repo too, and force it to install these specific
+# versions when ever it installs a module.
+COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager
 RUN pip install "${AIRFLOW_MODULE}" \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
-  && pip install "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl"
-
-RUN cd usr/local/lib/python3.7/site-packages/airflow/www_rbac \
-  && yarn install \
-  && yarn run build \
-  && rm -rf node_modules
-
-
-################################
-# Installing node_node modules #
-################################
+  && pip install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2"
 
 ## move this to same layer as airflow because its from tag.
 
@@ -150,7 +139,7 @@ COPY --from=devel /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.
 COPY --from=devel /usr/local/bin /usr/local/bin
 
 # Force pip to install these specific versions when ever it installs a module
-ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
+COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Create logs directory, so we can own it when we mount volumes

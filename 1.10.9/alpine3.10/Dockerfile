@@ -23,16 +23,12 @@ LABEL io.astronomer.docker.component="airflow"
 LABEL io.astronomer.docker.airflow.version="1.10.9"
 
 ARG ORG="astronomer"
-ARG VERSION="1.10.9-1"
+ARG VERSION="1.10.9.dev1+astro.1"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG REPO_BRANCH=master
 
-ENV AIRFLOW_REPOSITORY="https://github.com/${ORG}/airflow"
-ENV AIRFLOW_MODULE="git+${AIRFLOW_REPOSITORY}@${VERSION}#egg=apache-airflow[${SUBMODULES}]"
 ENV AIRFLOW_HOME="/usr/local/airflow"
-ENV PYMSSQL_BUILD_WITH_BUNDLED_FREETDS=1
 ENV PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}${AIRFLOW_HOME}
-ENV AIRFLOW_GPL_UNIDECODE="True"
 
 ARG ASTRONOMER_USER="astro"
 ARG ASTRONOMER_GROUP="astro"
@@ -44,8 +40,9 @@ RUN addgroup -S ${ASTRONOMER_GROUP} \
 
 COPY apks/keys/humans@astronomer.io.rsa.pub /etc/apk/keys
 
-# Force pip to install these specific versions when ever it installs a module
-ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
+# Make pip look at our pip repo too, and force it to install these specific
+# versions when ever it installs a module.
+COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Install packages
@@ -56,14 +53,11 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.9/alpi
 		cyrus-sasl-dev \
 		freetds-dev \
 		freetype-dev \
-		git \
 		krb5-dev \
 		libffi-dev \
 		libxml2-dev \
 		libxslt-dev \
 		linux-headers \
-		nodejs \
-		yarn \
 		python3-dev \
 		tzdata \
 	&& apk add --no-cache \
@@ -95,11 +89,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.9/alpi
 	&& pip3 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
 	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" \
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
-	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl" \
-	&& cd /usr/lib/python3.7/site-packages/airflow/www_rbac \
-	&& yarn install --frozen-lockfile \
-	&& yarn run build \
-	&& rm -rf node_modules \
+	&& pip3 install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2" \
 	&& apk del .build-deps py3-numpy-dev \
 	&& ln -sf /usr/bin/python3 /usr/bin/python \
 	&& ln -sf /usr/bin/pip3 /usr/bin/pip \
