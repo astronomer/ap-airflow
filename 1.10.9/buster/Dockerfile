@@ -104,7 +104,7 @@ RUN apt-get update \
         libsasl2-dev \
         libssl-dev \
     && apt update \
-    && apt install \
+    && apt -y install \
         yarn \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
