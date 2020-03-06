@@ -8,8 +8,7 @@ If you'd like to see the platform in action, [start a free trial on our SaaS ser
 
 ## Docker images
 
-Docker images for deploying and running Astronomer 
-are currently available on
+Docker images for deploying and running Astronomer are currently available on
 [DockerHub](https://hub.docker.com/u/astronomerinc/).
 
 ## Contents of this repo
