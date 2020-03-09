@@ -20,7 +20,7 @@ LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
-LABEL io.astronomer.docker.airflow.version="1.10.9"
+LABEL io.astronomer.docker.airflow.version="1.10.9.dev"
 
 ARG ORG="astronomer"
 ARG VERSION="1.10.9.dev1+astro.1"
@@ -47,7 +47,7 @@ COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Install packages
-RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.9/alpine3.10/apks/repo >> /etc/apk/repositories \
+RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/1.10.9.dev/alpine3.10/apks/repo >> /etc/apk/repositories \
   && apk update \
 	&& apk add --no-cache --virtual .build-deps \
 		build-base \

@@ -127,7 +127,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
 
 FROM ${APT_DEPS_IMAGE} as main
 
-LABEL io.astronomer.docker.airflow.version="1.10.9"
+LABEL io.astronomer.docker.airflow.version="1.10.9.dev"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
