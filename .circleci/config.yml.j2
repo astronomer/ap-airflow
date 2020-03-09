@@ -16,7 +16,7 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
-          name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
+          name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}-onbuild
           requires:
@@ -33,6 +33,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -43,6 +44,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -109,7 +111,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/ap-<< parameters.directory >>.tar
+          command: docker load -i /tmp/workspace/saved-images/astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
       - run:
           name: Install trivy
           command: |
@@ -118,7 +120,7 @@ jobs:
       - run:
           name: Scan the local image with trivy
           command: |
-            trivy --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>")
+            trivy --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   publish:
     executor: docker-executor
     description: Publish Airflow images
