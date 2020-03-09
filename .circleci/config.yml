@@ -17,6 +17,12 @@ workflows:
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.5-alpine3.10
+      - scan-trivy:
+          name: scan-1.10.5-alpine3.10-onbuild
+          airflow_version: 1.10.5
+          distribution_name: alpine3.10-onbuild
+          requires:
+            - build-1.10.5-alpine3.10
       - test:
           name: test-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
@@ -54,6 +60,12 @@ workflows:
           distribution_name: buster-onbuild
           requires:
             - build-1.10.5-buster
+      - scan-trivy:
+          name: scan-1.10.5-buster-onbuild
+          airflow_version: 1.10.5
+          distribution_name: buster-onbuild
+          requires:
+            - build-1.10.5-buster
       - test:
           name: test-1.10.5-buster-onbuild
           airflow_version: 1.10.5
@@ -86,6 +98,12 @@ workflows:
           airflow_version: 1.10.5
           distribution_name: rhel7
       - scan:
+          name: scan-1.10.5-rhel7-onbuild
+          airflow_version: 1.10.5
+          distribution_name: rhel7-onbuild
+          requires:
+            - build-1.10.5-rhel7
+      - scan-trivy:
           name: scan-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
           distribution_name: rhel7-onbuild
@@ -130,6 +148,12 @@ workflows:
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.6-alpine3.10
+      - scan-trivy:
+          name: scan-1.10.6-alpine3.10-onbuild
+          airflow_version: 1.10.6
+          distribution_name: alpine3.10-onbuild
+          requires:
+            - build-1.10.6-alpine3.10
       - test:
           name: test-1.10.6-alpine3.10-onbuild
           airflow_version: 1.10.6
@@ -162,6 +186,12 @@ workflows:
           airflow_version: 1.10.6
           distribution_name: buster
       - scan:
+          name: scan-1.10.6-buster-onbuild
+          airflow_version: 1.10.6
+          distribution_name: buster-onbuild
+          requires:
+            - build-1.10.6-buster
+      - scan-trivy:
           name: scan-1.10.6-buster-onbuild
           airflow_version: 1.10.6
           distribution_name: buster-onbuild
@@ -206,6 +236,12 @@ workflows:
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.7-alpine3.10
+      - scan-trivy:
+          name: scan-1.10.7-alpine3.10-onbuild
+          airflow_version: 1.10.7
+          distribution_name: alpine3.10-onbuild
+          requires:
+            - build-1.10.7-alpine3.10
       - test:
           name: test-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
@@ -238,6 +274,12 @@ workflows:
           airflow_version: 1.10.7
           distribution_name: buster
       - scan:
+          name: scan-1.10.7-buster-onbuild
+          airflow_version: 1.10.7
+          distribution_name: buster-onbuild
+          requires:
+            - build-1.10.7-buster
+      - scan-trivy:
           name: scan-1.10.7-buster-onbuild
           airflow_version: 1.10.7
           distribution_name: buster-onbuild
@@ -313,6 +355,34 @@ jobs:
     steps:
       - clair-scan:
           image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+  scan-trivy:
+    docker:
+      - image: docker:18.09-git
+    description: "Trivy: Vulnerability scanner a Docker image"
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/ap-<< parameters.directory >>.tar
+      - run:
+          name: Install trivy
+          command: |
+            apk add --update-cache --upgrade curl rpm
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - run:
+          name: Scan the local image with trivy
+          command: |
+            trivy --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>")
   publish:
     executor: docker-executor
     description: Publish Airflow images
