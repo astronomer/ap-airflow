@@ -357,7 +357,7 @@ commands:
       - docker-build:
           image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
           path: "common/"
-          dockerfile: "common/Dockerfile.onbuild-<< parameters.distribution_name >>"
+          dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
           extra_args: "--build-arg baseimage=astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - persist_to_workspace:
           root: .
