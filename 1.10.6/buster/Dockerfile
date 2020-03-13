@@ -152,14 +152,17 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 RUN install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}" \
     && install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}/logs"
 
-COPY include/sudoers /etc/sudoers.d/astro
-RUN visudo --check --file=/etc/sudoers.d/astro
-
 # Copy entrypoint to root
 COPY include/entrypoint /
 
 # Copy "cron" scripts
 COPY include/clean-airflow-logs /usr/local/bin/clean-airflow-logs
+
+# Set it up so that _apt/UID 100 can `gosu`, but no other users can
+RUN groupadd gosuers \
+    && usermod --append --groups gosuers _apt \
+    && chgrp gosuers /usr/sbin/gosu \
+    && chmod u+s,g+sx,o-rx /usr/sbin/gosu
 
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
@@ -169,5 +172,5 @@ USER ${ASTRONOMER_USER}
 # Switch to AIRFLOW_HOME
 WORKDIR ${AIRFLOW_HOME}
 
-ENTRYPOINT ["tini", "--", "/entrypoint"]
+ENTRYPOINT ["/entrypoint"]
 CMD ["airflow", "--help"]

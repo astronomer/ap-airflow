@@ -35,4 +35,4 @@ ONBUILD RUN pip install --no-cache-dir -q -r requirements.txt
 ONBUILD USER astro
 
 # Copy entire project directory
-ONBUILD COPY . .
+ONBUILD COPY --chown=astro:astro . .

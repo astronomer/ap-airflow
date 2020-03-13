@@ -1,10 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-# Sudo _explicitly_ filters out PYTHONPATH, even when env_reset is disabled. but we want it
-[[ $UID == ${ASTRONOMER_UID:-1000} ]] || exec sudo -H -u ${ASTRONOMER_USER} PYTHONPATH=$PYTHONPATH "$0" "$@"
-# Make sure logs folder is writable by the right user.
-[ -O "$AIRFLOW_HOME/logs" ] || sudo chown $ASTRONOMER_USER "$AIRFLOW_HOME/logs"
+if [[ -n "$EXECUTOR" && -z "$AIRFLOW__CORE__EXECUTOR" ]]; then
+  # Support for puckle style of defining configs
+  export AIRFLOW__CORE__EXECUTOR "${EXECUTOR}Executor"
+fi
+
+if [[ $UID == "${ASTRONOMER_UID:-1000}" ]]; then
+  # Since we need to support running tini as another user, we can't put tini in
+  # the ENTRYPOINT command, we have to run it here, if we haven't already
+  if [[ -z "$__TINIFIED" ]]; then
+    __TINIFIED=1 exec tini -- "$0" "$@"
+  fi
+else
+  __TINIFIED=1 exec gosu "${ASTRONOMER_USER}" tini -- "$0" "$@"
+fi
 
 # Airflow subcommand
 CMD=$2
