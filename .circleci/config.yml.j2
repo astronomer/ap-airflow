@@ -124,6 +124,11 @@ jobs:
             # ignore in old airflow versions; it's fixed ONLY in new airflow version
             # lodash: Prototype pollution in utilities function fixed in >=4.17.11
             CVE-2018-16487
+            #   # These kernel vulnerabilities aren't a problem in a docker image, as they
+                # don't use this kernel; but the hosts' kernel
+            CVE-2016-5195
+            CVE-2016-7039
+            CVE-2016-8666
             EOF
             trivy --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   publish:
