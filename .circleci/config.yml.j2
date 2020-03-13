@@ -120,6 +120,11 @@ jobs:
       - run:
           name: Scan the local image with trivy
           command: |
+            cat <<EOF > .trivyignore
+            # ignore in old airflow versions; it's fixed ONLY in new airflow version
+            # lodash: Prototype pollution in utilities function fixed in >=4.17.11
+            CVE-2018-16487
+            EOF
             trivy --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   publish:
     executor: docker-executor
