@@ -394,7 +394,8 @@ jobs:
             apk add --update-cache --upgrade curl rpm
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
       - restore_cache:
-        key: trivy-cache
+          keys:
+            - trivy-cache
       - run:
           name: Scan the local image with trivy
           command: |
@@ -410,9 +411,9 @@ jobs:
             EOF
             trivy --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
-        key: trivy-cache
-        paths:
-          - /tmp/workspace/
+          key: trivy-cache
+          paths:
+            - /tmp/workspace/
   publish:
     executor: docker-executor
     description: Publish Airflow images
