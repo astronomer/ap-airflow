@@ -20,6 +20,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.6-alpine3.10-onbuild
           airflow_version: 1.10.6
+          distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.6-alpine3.10
@@ -65,6 +66,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.6-buster-onbuild
           airflow_version: 1.10.6
+          distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.6-buster
@@ -112,6 +114,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
+          distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.7-alpine3.10
@@ -157,6 +160,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.7-buster-onbuild
           airflow_version: 1.10.7
+          distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.7-buster
@@ -204,6 +208,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
+          distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.5-alpine3.10
@@ -249,6 +254,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.5-buster-onbuild
           airflow_version: 1.10.5
+          distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.5-buster
@@ -294,6 +300,7 @@ workflows:
       - scan-trivy:
           name: scan-trivy-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
+          distribution: rhel7
           distribution_name: rhel7-onbuild
           requires:
             - build-1.10.5-rhel7
@@ -380,6 +387,9 @@ jobs:
       distribution_name:
         description: "The base distribution of the container"
         type: string
+      distribution:
+        description: "The distribution without onbuild"
+        type: string
     steps:
       - checkout
       - setup_remote_docker
@@ -399,7 +409,7 @@ jobs:
       - run:
           name: Scan the local image with trivy
           command: |
-            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution_name >>/.trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/.trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
           key: trivy-cache
           paths:
