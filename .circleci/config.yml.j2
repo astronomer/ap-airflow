@@ -127,11 +127,11 @@ jobs:
       - run:
           name: Scan the local image with trivy
           command: |
-            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/.trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
           key: trivy-cache
           paths:
-            - /tmp/workspace/
+            - /tmp/workspace/trivy-cache
   publish:
     executor: docker-executor
     description: Publish Airflow images
