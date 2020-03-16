@@ -1,0 +1,3 @@
+# ignore in old airflow versions; it's fixed ONLY in new airflow version
+# lodash: Prototype pollution in utilities function fixed in >=4.17.11
+CVE-2018-16487
