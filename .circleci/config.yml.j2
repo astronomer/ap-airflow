@@ -15,6 +15,13 @@ workflows:
           distribution_name: {{ distribution }}-onbuild
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
+      - scan-trivy:
+          name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+          airflow_version: {{ airflow_version }}
+          distribution: {{ distribution }}
+          distribution_name: {{ distribution }}-onbuild
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -27,6 +34,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -37,6 +45,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
+            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -85,6 +94,44 @@ jobs:
     steps:
       - clair-scan:
           image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+  scan-trivy:
+    docker:
+      - image: docker:18.09-git
+    description: "Trivy: Vulnerability scanner a Docker image"
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        type: string
+      distribution:
+        description: "The distribution without onbuild"
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/saved-images/astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+      - run:
+          name: Install trivy
+          command: |
+            apk add --update-cache --upgrade curl rpm
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - restore_cache:
+          keys:
+            - trivy-cache
+      - run:
+          name: Scan the local image with trivy
+          command: |
+            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+      - save_cache:
+          key: trivy-cache
+          paths:
+            - /tmp/workspace/trivy-cache
   publish:
     executor: docker-executor
     description: Publish Airflow images
