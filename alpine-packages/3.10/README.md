@@ -15,7 +15,7 @@ If you need to generate a new private key then you will need to copy the new key
 
 ```
 for dir in */alpine3.10; do
-  cp ./alpine-packages/3.10/keys/humans@astronomer.io.rsa.pub "$dir/include/apk-humans@astronomer.io.rsa.pub"
+  cp ./alpine-packages/3.10/keys/humans@astronomer.io.rsa.pub "$dir/include/"
 done
 ```
 

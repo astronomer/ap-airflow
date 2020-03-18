@@ -42,7 +42,7 @@ ENV ASTRONOMER_GROUP=${ASTRONOMER_GROUP}
 RUN addgroup -S ${ASTRONOMER_GROUP} \
 	&& adduser -S -G ${ASTRONOMER_GROUP} ${ASTRONOMER_USER}
 
-COPY include/apk-humans@astronomer.io.rsa.pub /etc/apk/keys
+COPY include/humans@astronomer.io.rsa.pub /etc/apk/keys
 
 # Force pip to install these specific versions when ever it installs a module
 ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
