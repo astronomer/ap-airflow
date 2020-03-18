@@ -11,6 +11,14 @@ Running `make` in this folder should rebuild all that is needed. The only requir
 
 We don't commit the private key, so each time we need to build new packages we will generate a new keypair if one is not found. (This is fine, as we don't leave the image with our repo configured, so we don't ever push out updates that we expect `apk update` to pick up.)
 
+If you need to generate a new private key then you will need to copy the new key to all the images that use it:
+
+```
+for dir in */alpine3.10; do
+  cp ./alpine-packages/3.10/keys/humans@astronomer.io.rsa.pub "$dir/include/apk-humans@astronomer.io.rsa.pub"
+done
+```
+
 ## Updating a package
 
 If we need to update to a new version of one of the packages there are two ways it can be done:
