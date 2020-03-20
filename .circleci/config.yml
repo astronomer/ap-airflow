@@ -457,7 +457,9 @@ commands:
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
       - docker-build:
           image_name: "astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
-          path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>/onbuild"
+          path: "common/"
+          dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=astronomerinc/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - persist_to_workspace:
           root: .
           paths:
@@ -474,13 +476,16 @@ commands:
       image_name:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
+      extra_args:
+        type: string
+        default: ""
     steps:
       - run:
           name: Build the Docker image
           command: |
             set -xe
             mkdir -p saved-images/"$(dirname "<< parameters.image_name >>")"
-            docker build -t "<< parameters.image_name >>" --file << parameters.path>>/<< parameters.dockerfile >> --build-arg BUILD_NUMBER=${CIRCLE_BUILD_NUM} --build-arg REPO_BRANCH=${CIRCLE_BRANCH} << parameters.path >>
+            docker build -t "<< parameters.image_name >>" --file << parameters.path>>/<< parameters.dockerfile >> --build-arg BUILD_NUMBER=${CIRCLE_BUILD_NUM} --build-arg REPO_BRANCH=${CIRCLE_BRANCH} << parameters.extra_args >> << parameters.path >>
             docker save -o saved-images/<< parameters.image_name >>.tar << parameters.image_name >>
   airflow-image-test:
     description: Test an Airflow image
