@@ -11,7 +11,7 @@ function get_debugging_info {
   for pod in $(kubectl get pods -n $NAMESPACE --no-headers=true | awk '{ print $1 }'); do
     echo "======================="
     set -x
-    kubectl logs -n $NAMESPACE $pod | tail -n 30
+    kubectl logs --all-containers -n  $NAMESPACE $pod | tail -n 30
     set +x
     echo "======================="
   done
@@ -45,6 +45,8 @@ kubectl create namespace $NAMESPACE
 helm install --namespace $NAMESPACE \
   --set defaultAirflowRepository=$REPOSITORY \
   --set defaultAirflowTag=$TAG \
+  --set images.airflow.repository=$REPOSITORY \
+  --set images.airflow.tag=$TAG \
   --set images.airflow.pullPolicy=Never \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \

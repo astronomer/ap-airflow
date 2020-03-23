@@ -32,7 +32,6 @@ LABEL io.astronomer.docker.uid="${ASTRONOMER_UID}"
 ARG ORG="astronomer"
 
 
-ENV AIRFLOW_REPOSITORY="https://github.com/${ORG}/airflow"
 ENV AIRFLOW_HOME="/usr/local/airflow"
 ENV PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}${AIRFLOW_HOME}
 
@@ -66,7 +65,6 @@ RUN apt-get update \
            libsasl2-2 \
            libsasl2-modules \
            libssl1.1 \
-           libcurl4 \
            locales  \
            netcat \
            rsync \
@@ -105,9 +103,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.7+astro.6"
+ARG VERSION="<1.10.11,>=1.10.10"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
-ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==1!$VERSION"
+ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]$VERSION"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -115,7 +113,7 @@ COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" \
+RUN pip install "${AIRFLOW_MODULE}" --pre \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
 	&& pip install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2"
 
@@ -124,7 +122,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
 
 FROM ${APT_DEPS_IMAGE} as main
 
-LABEL io.astronomer.docker.airflow.version="1.10.7"
+LABEL io.astronomer.docker.airflow.version="1.10.10.dev"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
