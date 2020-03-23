@@ -482,6 +482,120 @@ workflows:
               only: master
 
 
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          name: build-1.10.10.dev-alpine3.10
+          airflow_version: 1.10.10.dev
+          distribution_name: alpine3.10
+          docker_repo: 
+      - scan:
+          name: scan-1.10.10.dev-alpine3.10-onbuild
+          airflow_version: 1.10.10.dev
+          distribution_name: alpine3.10-onbuild
+          docker_repo: 
+          requires:
+            - build-1.10.10.dev-alpine3.10
+      - scan-trivy:
+          name: scan-trivy-1.10.10.dev-alpine3.10-onbuild
+          airflow_version: 1.10.10.dev
+          docker_repo: 
+          distribution: alpine3.10
+          distribution_name: alpine3.10-onbuild
+          requires:
+            - build-1.10.10.dev-alpine3.10
+      - test:
+          name: test-1.10.10.dev-alpine3.10-onbuild
+          airflow_version: 1.10.10.dev
+          docker_repo: 
+          distribution_name: alpine3.10
+          requires:
+            - build-1.10.10.dev-alpine3.10
+      - publish:
+          name: publish-1.10.10.dev-alpine3.10
+          docker_repo: 
+          tag: "1.10.10.dev-alpine3.10"
+          extra_tags: "1.10.10.dev-alpine3.10-${CIRCLE_BUILD_NUM}"
+          requires:
+            - scan-1.10.10.dev-alpine3.10-onbuild
+            - scan-trivy-1.10.10.dev-alpine3.10-onbuild
+            - test-1.10.10.dev-alpine3.10-onbuild
+          filters:
+            branches:
+              only: master
+      - publish:
+          name: publish-1.10.10.dev-alpine3.10-onbuild
+          docker_repo: 
+          tag: "1.10.10.dev-alpine3.10-onbuild"
+          extra_tags: "1.10.10.dev-alpine3.10-onbuild-${CIRCLE_BUILD_NUM}"
+          requires:
+            - scan-1.10.10.dev-alpine3.10-onbuild
+            - scan-trivy-1.10.10.dev-alpine3.10-onbuild
+            - test-1.10.10.dev-alpine3.10-onbuild
+          filters:
+            branches:
+              only: master
+      - build:
+          name: build-1.10.10.dev-buster
+          airflow_version: 1.10.10.dev
+          distribution_name: buster
+          docker_repo: 
+      - scan:
+          name: scan-1.10.10.dev-buster-onbuild
+          airflow_version: 1.10.10.dev
+          distribution_name: buster-onbuild
+          docker_repo: 
+          requires:
+            - build-1.10.10.dev-buster
+      - scan-trivy:
+          name: scan-trivy-1.10.10.dev-buster-onbuild
+          airflow_version: 1.10.10.dev
+          docker_repo: 
+          distribution: buster
+          distribution_name: buster-onbuild
+          requires:
+            - build-1.10.10.dev-buster
+      - test:
+          name: test-1.10.10.dev-buster-onbuild
+          airflow_version: 1.10.10.dev
+          docker_repo: 
+          distribution_name: buster
+          requires:
+            - build-1.10.10.dev-buster
+      - publish:
+          name: publish-1.10.10.dev-buster
+          docker_repo: 
+          tag: "1.10.10.dev-buster"
+          extra_tags: "1.10.10.dev-buster-${CIRCLE_BUILD_NUM}"
+          requires:
+            - scan-1.10.10.dev-buster-onbuild
+            - scan-trivy-1.10.10.dev-buster-onbuild
+            - test-1.10.10.dev-buster-onbuild
+          filters:
+            branches:
+              only: master
+      - publish:
+          name: publish-1.10.10.dev-buster-onbuild
+          docker_repo: 
+          tag: "1.10.10.dev-buster-onbuild"
+          extra_tags: "1.10.10.dev-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          requires:
+            - scan-1.10.10.dev-buster-onbuild
+            - scan-trivy-1.10.10.dev-buster-onbuild
+            - test-1.10.10.dev-buster-onbuild
+          filters:
+            branches:
+              only: master
+
+
 jobs:
   build:
     executor: docker-executor
