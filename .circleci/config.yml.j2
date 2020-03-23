@@ -76,18 +76,18 @@ workflows:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
-          docker_repo: {{ docker_repo }}
+          docker_repo: "astronomerio/ap-airflow"
       - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}-onbuild
-          docker_repo: {{ docker_repo }}
+          docker_repo: "astronomerio/ap-airflow"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
-          docker_repo: {{ docker_repo }}
+          docker_repo: "astronomerio/ap-airflow"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           requires:
@@ -95,13 +95,13 @@ workflows:
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
-          docker_repo: {{ docker_repo }}
+          docker_repo: "astronomerio/ap-airflow"
           distribution_name: {{ distribution }}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - publish:
           name: publish-{{ airflow_version }}-{{ distribution }}
-          docker_repo: {{ docker_repo }}
+          docker_repo: "astronomerio/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
@@ -113,7 +113,7 @@ workflows:
               only: master
       - publish:
           name: publish-{{ airflow_version }}-{{ distribution }}-onbuild
-          docker_repo: {{ docker_repo }}
+          docker_repo: "astronomerio/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
           requires:
