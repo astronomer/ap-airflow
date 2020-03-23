@@ -45,6 +45,8 @@ kubectl create namespace $NAMESPACE
 helm install --namespace $NAMESPACE \
   --set defaultAirflowRepository=$REPOSITORY \
   --set defaultAirflowTag=$TAG \
+  --set images.airflow.repository=$REPOSITORY \
+  --set images.airflow.tag=$TAG \
   --set images.airflow.pullPolicy=Never \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
