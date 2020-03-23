@@ -105,9 +105,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.7+astro.6"
+ARG VERSION="1.10.7-7"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
-ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==1!$VERSION"
+ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
