@@ -66,6 +66,7 @@ RUN apt-get update \
            libsasl2-2 \
            libsasl2-modules \
            libssl1.1 \
+           libcurl4 \
            locales  \
            netcat \
            rsync \
