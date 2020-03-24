@@ -6,7 +6,7 @@ so that we can stay DRY.
 
 import collections
 import os
-from jinja2 import Template
+from jinja2 import Environment, FileSystemLoader
 
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.5", ["alpine3.10", "buster", "rhel7"]),
@@ -16,16 +16,21 @@ IMAGE_MAP = collections.OrderedDict([
 ])
 
 
+def dev_releases(all_releases):
+    """Find dev releases from a list of releases"""
+    return [release for release in all_releases if "dev" in release]
+
+
 def main():
     """ Render the Jinja2 template file
     """
     circle_directory = os.path.dirname(os.path.realpath(__file__))
-    config_template_path = os.path.join(circle_directory, "config.yml.j2")
     config_path = os.path.join(circle_directory, "config.yml")
 
-    with open(config_template_path, "r") as circle_ci_config_template:
-        templated_file_content = circle_ci_config_template.read()
-    template = Template(templated_file_content)
+    template_env = Environment(loader=FileSystemLoader(searchpath="./"), autoescape=True)
+    template_env.filters['dev_releases'] = dev_releases
+    template = template_env.get_template("config.yml.j2")
+
     config = template.render(
         image_map=IMAGE_MAP
     )
