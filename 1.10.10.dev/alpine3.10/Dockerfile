@@ -60,6 +60,8 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 		libxslt-dev \
 		linux-headers \
 		python3-dev \
+		musl-dev \
+		postgresql-dev \
 		tzdata \
 	&& apk add --no-cache \
 		bash \
