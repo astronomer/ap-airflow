@@ -382,7 +382,7 @@ workflows:
           airflow_version: 1.10.10.dev
           distribution_name: alpine3.10
           docker_repo: astronomerio/ap-airflow
-          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.10.build)"
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.10.build)"
       - scan:
           name: scan-1.10.10.dev-alpine3.10-onbuild
           airflow_version: 1.10.10.dev
@@ -435,7 +435,7 @@ workflows:
           airflow_version: 1.10.10.dev
           distribution_name: buster
           docker_repo: astronomerio/ap-airflow
-          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.10.build)"
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.10.build)"
       - scan:
           name: scan-1.10.10.dev-buster-onbuild
           airflow_version: 1.10.10.dev
