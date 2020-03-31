@@ -12,7 +12,7 @@ workflows:
           distribution_name: {{ distribution }}
           docker_repo: {{ docker_repo }}
           {%- if "dev" in airflow_version %}
-          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/apache-airflow/latest-{{ airflow_version | replace('.dev', '') }}.build)"
+          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
       - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -80,7 +80,7 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           docker_repo: "astronomerio/ap-airflow"
-          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/apache-airflow/latest-{{ airflow_version | replace('.dev', '') }}.build)"
+          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
       - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
