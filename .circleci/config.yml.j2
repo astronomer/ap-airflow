@@ -11,6 +11,9 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           docker_repo: {{ docker_repo }}
+          {%- if "dev" in airflow_version %}
+          extra_args: "--build-arg VERSION='=='$(curl https://pip.astronomer.io/simple/apache-airflow/latest-{{ airflow_version | replace('.dev', '') }}.build)"
+          {%- endif %}
       - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
