@@ -77,6 +77,7 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           docker_repo: "astronomerio/ap-airflow"
+          extra_args: "--build-arg VERSION="$(curl https://pip.astronomer.io/simple/apache-airflow/latest-{{ airflow_version | replace(".dev", "") }}.build)""
       - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -141,11 +142,16 @@ jobs:
       docker_repo:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
+      extra_args:
+        description: "Extra args to pass to pass to Docker build command"
+        default: ""
+        type: string
     steps:
       - docker-build-base-and-onbuild:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
           docker_repo: "<< parameters.docker_repo >>"
+          extra_args: "<< parameters.extra_args >>"
   test:
     executor: machine-executor
     description: Test Airflow images
@@ -261,6 +267,10 @@ commands:
         default: "astronomerinc/ap-airflow"
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
+      extra_args:
+        description: "Extra args to pass to pass to Docker build command"
+        default: ""
+        type: string
     steps:
       - checkout
       - setup_remote_docker:
@@ -268,6 +278,7 @@ commands:
       - docker-build:
           image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
+          extra_args: "<< parameters.extra_args >>"
       - docker-build:
           image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
           path: "common/"
