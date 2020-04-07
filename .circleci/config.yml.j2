@@ -3,7 +3,8 @@ workflows:
   version: 2.1
   certified-airflow:
     jobs:
-{% for airflow_version, distributions in image_map.items() %}
+{% for ac_version, distributions in image_map.items() %}
+{% set airflow_version = ac_version.split('-')[0] -%}
 {% set docker_repo = "astronomerio/ap-airflow" if "dev" in airflow_version else "astronomerinc/ap-airflow" -%}
 {% for distribution in distributions %}
       - build:
@@ -40,7 +41,11 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}
           docker_repo: {{ docker_repo }}
           tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
+          {%- else %}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
+          {%- endif %}
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -52,7 +57,11 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}-onbuild
           docker_repo: {{ docker_repo }}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          {%- else %}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- endif %}
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
