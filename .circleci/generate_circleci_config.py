@@ -6,12 +6,14 @@ so that we can stay DRY.
 
 import collections
 import os
+import re
+
 from jinja2 import Environment, FileSystemLoader
 
 IMAGE_MAP = collections.OrderedDict([
-    ("1.10.5", ["alpine3.10", "buster", "rhel7"]),
-    ("1.10.6", ["alpine3.10", "buster"]),
-    ("1.10.7", ["alpine3.10", "buster"]),
+    ("1.10.5-6", ["alpine3.10", "buster", "rhel7"]),
+    ("1.10.6-2", ["alpine3.10", "buster"]),
+    ("1.10.7-7", ["alpine3.10", "buster"]),
     ("1.10.10.dev", ["alpine3.10", "buster"]),
 ])
 
@@ -22,8 +24,12 @@ def dev_releases(all_releases):
 
 
 def main():
-    """ Render the Jinja2 template file
     """
+    Render the Jinja2 template file
+    """
+
+    replace_version_info()
+
     circle_directory = os.path.dirname(os.path.realpath(__file__))
     config_path = os.path.join(circle_directory, "config.yml")
 
@@ -39,6 +45,31 @@ def main():
     with open(config_path, "w") as circle_ci_config_file:
         circle_ci_config_file.write(warning_header)
         circle_ci_config_file.write(config)
+
+
+def replace_version_info():
+    """
+    Replace the VERSION in all the Dockerfiles with the corresponding VERSION in IMAGE_MAP
+    """
+
+    for ac_version, distros in IMAGE_MAP.items():
+        airflow_version = ac_version.split('-')[0]
+        for distro in distros:
+            file_name = os.path.join("..", airflow_version, distro, "Dockerfile")
+
+            if "dev" in ac_version:
+                ac_version = ac_version.replace("dev", "*")
+
+            with open(file_name) as f:
+                file_contents = f.read()
+
+                new_text = re.sub(
+                    r'ARG VERSION=(.*)', f'ARG VERSION="{ac_version}"', file_contents,
+                    flags=re.MULTILINE
+                )
+
+            with open(file_name, "w") as f:
+                f.write(new_text)
 
 
 if __name__ == "__main__":
