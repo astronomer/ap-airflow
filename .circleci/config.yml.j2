@@ -41,11 +41,7 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}
           docker_repo: {{ docker_repo }}
           tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
-          {%- else %}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
-          {%- endif %}
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -57,11 +53,7 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}-onbuild
           docker_repo: {{ docker_repo }}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          {%- else %}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
-          {%- endif %}
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -374,6 +366,22 @@ commands:
             set -x
             docker push "$image"
             set +x
+
+            {%- raw %}
+            # Tag AC Version for non-dev images
+            if [[ "<< parameters.image_name >>" != *"dev"* ]]; then
+                ac_version=$(docker image inspect $image -f '{{index .Config.Labels "io.astronomer.docker.ac.version"}}')
+                distro=$(docker image inspect $image -f '{{index .Config.Labels "io.astronomer.docker.distro"}}')
+                on_build=$(docker image inspect $image -f '{{index .Config.Labels "io.astronomer.docker.airflow.onbuild"}}')
+
+                if [[ "$on_build" == "true" ]]; then
+                    docker tag "$image" "<< parameters.image_name >>:${ac_version}-${distro}-onbuild"
+                else
+                    docker tag "$image" "<< parameters.image_name >>:${ac_version}-${distro}"
+                fi
+                docker push "<< parameters.image_name >>:${ac_version}"
+            fi
+            {%- endraw %}
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
               set -x
