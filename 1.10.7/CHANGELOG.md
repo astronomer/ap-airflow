@@ -1,5 +1,15 @@
 # Changelog
 
+Astronomer Certified 1.10.7-8, 2020-04-11
+-----------------------------------------------
+
+### Bug Fixes
+
+- Fix issue with SQLAlchemy 1.3.16 ([commit](https://github.com/astronomer/airflow/commit/3b6cf61e0f2de3fe3be98c8ff5809060d6e42ba4)) 
+- [AIRFLOW-7113] Fix gantt render error ([commit](https://github.com/astronomer/airflow/commit/dc015a0f3a836fe519f97acc75a26873a226695a))
+- Add prestop hook to prevent logging issue ([commit](https://github.com/astronomer/airflow/commit/328705f5f74e49be0ab251705172be45c19635f3))
+- [AIRFLOW-6584] Pin cassandra driver ([commit](https://github.com/astronomer/airflow/commit/21fd6fb56ee23c0a287874ed094e42fb22385916))
+
 Astronomer Certified 1.10.7-7, 2020-03-13
 -----------------------------------------------
 
