@@ -1,4 +1,7 @@
 # Constraint the version pip will install, if it ever needs to install a module
 redis!=3.4.0
 Werkzeug < 1.0.0
+
+# Make sure we don't get pyarrow installed, libarrow is difficult to get working in Alpine
 papermill<2.0
+nteract-scrapbook<0.4
