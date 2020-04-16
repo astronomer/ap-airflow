@@ -377,8 +377,12 @@ commands:
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
               set -x
-              docker tag "$image" "<< parameters.image_name >>:${tag}"
-              docker push "<< parameters.image_name >>:${tag}"
+              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $image:$tag >/dev/null; then
+                echo "Image with Tag ($image:$tag) already exists"
+              else
+                docker tag "$image" "<< parameters.image_name >>:${tag}"
+                docker push "<< parameters.image_name >>:${tag}"
+              fi
               set +x
             done
   clair-scan:
