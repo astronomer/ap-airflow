@@ -17,7 +17,7 @@ FROM alpine:3.10
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 ARG ORG="astronomer"
-ARG VERSION="1.10.10.*"
+ARG VERSION="1.10.10-1"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG REPO_BRANCH=master
@@ -26,7 +26,7 @@ LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
-LABEL io.astronomer.docker.airflow.version="1.10.10.dev"
+LABEL io.astronomer.docker.airflow.version="1.10.10"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 ENV AIRFLOW_HOME="/usr/local/airflow"
