@@ -4,3 +4,5 @@ elasticsearch>=5.5.3,<6.0.0
 pymssql<3.0
 redis!=3.4.0
 Werkzeug < 1.0.0
+
+WTforms<2.3.0
