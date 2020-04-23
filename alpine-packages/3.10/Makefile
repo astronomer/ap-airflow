@@ -5,7 +5,7 @@ APK_FILES=$(patsubst %/APKBUILD,%/.built,$(APKBUILD_FILES))
 
 .PHONY: all
 
-all: $(APK_FILES)
+all: $(APK_FILES) keys/humans@astronomer.io.rsa.pub
 
 # Explict deps: we need our cython and numpy built before we can build these packages
 py3-cassandra-driver/.built py3-grpcio/.built py3-numpy: cython/.built

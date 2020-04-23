@@ -1,0 +1,113 @@
+# Maintainer: Carlo Landmeter <clandmeter@gmail.com>
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+pkgname=sqlite
+pkgver=3.30.1
+pkgrel=1
+pkgdesc="C library that implements an SQL database engine"
+url="https://www.sqlite.org/"
+arch="all"
+license="Public-Domain"
+makedepends="readline-dev"
+subpackages="$pkgname-static $pkgname-doc $pkgname-dev $pkgname-libs"
+
+# compute _ver
+_a=${pkgver%%.*}
+_b=${pkgver#${_a}.}
+_b=${_b%%.*}
+_c=${pkgver#${_a}.${_b}.}
+_c=${_c%%.*}
+case $pkgver in
+	*.*.*.*)_d=${pkgver##*.};;
+	*.*.*)	_d=0;;
+esac
+[ $_b -lt 10 ] && _b=0$_b
+[ $_c -lt 10 ] && _c=0$_c
+[ $_d -lt 10 ] && _d=0$_d
+_ver=${_a}${_b}${_c}${_d}
+
+# these variables depend on _ver being set
+builddir="$srcdir/$pkgname-autoconf-$_ver"
+source="https://www.sqlite.org/2019/$pkgname-autoconf-$_ver.tar.gz
+	license.txt
+	CVE-2019-19242.patch
+	CVE-2019-19244.patch
+	"
+
+# secfixes:
+#   3.30.1-r1:
+#     - CVE-2019-19242
+#     - CVE-2019-19242
+#   3.28.0-r0:
+#     - CVE-2019-5018
+#     - CVE-2019-8457
+
+# additional CFLAGS to set
+_amalgamation="-DSQLITE_ENABLE_FTS4 \
+	-DSQLITE_ENABLE_FTS3_PARENTHESIS \
+	-DSQLITE_ENABLE_FTS3 \
+	-DSQLITE_ENABLE_FTS5 \
+	-DSQLITE_ENABLE_COLUMN_METADATA \
+	-DSQLITE_SECURE_DELETE \
+	-DSQLITE_ENABLE_UNLOCK_NOTIFY \
+	-DSQLITE_ENABLE_RTREE \
+	-DSQLITE_ENABLE_GEOPOLY \
+	-DSQLITE_USE_URI \
+	-DSQLITE_ENABLE_DBSTAT_VTAB \
+	-DSQLITE_MAX_VARIABLE_NUMBER=250000 \
+	-DSQLITE_ENABLE_JSON1"
+
+build() {
+	cd "$builddir"
+
+	export CFLAGS="$CFLAGS $_amalgamation"
+	./configure \
+		--build="$CBUILD" \
+		--host="$CHOST" \
+		--prefix=/usr \
+		--enable-threadsafe \
+		--enable-readline \
+		--enable-static \
+		--enable-dynamic-extensions \
+		--enable-fts3
+
+	# rpath removal
+	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+
+	make -j1 DESTDIR="$pkgdir" install
+
+	install -Dm0644 sqlite3.1 \
+		"$pkgdir"/usr/share/man/man1/sqlite3.1
+	install -Dm644 "$srcdir"/license.txt \
+		"$pkgdir"/usr/share/licenses/$pkgname/license.txt
+}
+
+libs() {
+	replaces="sqlite"
+	pkgdesc="Sqlite3 library"
+
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/lib "$subpkgdir"/usr/
+}
+
+static() {
+	pkgdesc="Sqlite3 static library"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/lib*.a "$subpkgdir"/usr/lib/
+}
+
+sha512sums="9ec0283c417fb0323b0e43550af2a49e9a63988e4212c27ea62cc9da3534caa6faf5bdc7e051b6772c4ce61560a433b3d3288b68e05e9ba8495f61a3bcebda3e  sqlite-autoconf-3300100.tar.gz
+5bde14bec5bf18cc686b8b90a8b2324c8c6600bca1ae56431a795bb34b8b5ae85527143f3b5f0c845c776bce60eaa537624104cefc3a47b3820d43083f40c6e9  license.txt
+c4e8123da7d85d59c9d2d1d07e443185cbc82102805361f2dd24da0482b683da57b7032f2c27273b46e6ed1b12f3714590cfc1258720bcb4e8405f67da214fe6  CVE-2019-19242.patch
+e7982014a62b4fa465918fd65384cec406ea09598f3e0511eb2b68f618983b2f29a932267397aff9b88b97367dc8e05c4074fa8e276e3f4294ac019df498a724  CVE-2019-19244.patch"
