@@ -22,6 +22,12 @@ Docker images for deploying and running Astronomer Certified are currently avail
 * Source Code: <https://github.com/astronomer/ap-airflow>
 * Issue Tracker: <https://github.com/astronomer/ap-airflow/issues>
 
+## Changelog
+
+All changes applied to available point releases will be documented in the `CHANGELOG.md` files within each version folder:
+- [1.10.5 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.5/CHANGELOG.md)
+- [1.10.7 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.7/CHANGELOG.md)
+
 ### Local testing
 
 This testing will run automatically in CI, but it will save some time to try it out locally first.
