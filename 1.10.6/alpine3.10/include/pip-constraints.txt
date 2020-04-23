@@ -5,6 +5,9 @@ kombu>=4.6.7, <5.0
 redis!=3.4.0
 Werkzeug < 1.0.0
 
+# Doesn't work with musl
+JPype1<0.7.3
+
 # Make sure we don't get pyarrow installed, libarrow is difficult to get working in Alpine
 papermill<2.0
 nteract-scrapbook<0.4
