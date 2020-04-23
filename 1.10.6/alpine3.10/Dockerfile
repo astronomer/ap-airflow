@@ -67,6 +67,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 		python3-dev \
 		tzdata \
 	&& apk add --no-cache \
+		openssl \
 		bash \
 		ca-certificates \
 		cyrus-sasl \
@@ -88,6 +89,8 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 		py3-typed-ast \
 		python3 \
 		tini \
+	&& apk add --upgrade \
+		openssl \
 	&& update-ca-certificates \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
 	&& pip3 install --no-cache-dir --upgrade pip==19.3.1 \
