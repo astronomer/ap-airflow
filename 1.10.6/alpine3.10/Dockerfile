@@ -67,7 +67,6 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 		python3-dev \
 		tzdata \
 	&& apk add --no-cache \
-		openssl \
 		bash \
 		ca-certificates \
 		cyrus-sasl \
