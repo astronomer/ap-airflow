@@ -9,3 +9,6 @@ papermill<2.0
 nteract-scrapbook<0.4
 
 WTforms<2.3.0
+
+# Details: https://github.com/apache/airflow/issues/8599
+flask-appbuilder<2.3.3
