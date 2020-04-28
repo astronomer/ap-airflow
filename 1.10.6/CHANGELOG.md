@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 1.10.5-7, 2020-04-27
+Astronomer Certified 1.10.6-3, 2020-04-27
 --------------------------------------------
 
 No changes in `astronomer/airflow` repo.
@@ -11,11 +11,3 @@ Dockerfile changes are:
 - Upgrade OpenSSL to mitigate [CVE-2019-16168](https://cve.mitre.org/cgi-bin/cvename.cgi?name=2019-16168) ([commit](https://github.com/astronomer/ap-airflow/commit/6de11c2c87e78b7a3171d8fb222c7278fcb673c9))
 - Constraint version of WTForms to non-broken version ([commit](https://github.com/astronomer/ap-airflow/commit/3cd34236f8a7214434dc313af525160133520bcb))
 - JPype1 0.7.3 no longer installs on Alpline/musl-libc ([commit](https://github.com/astronomer/ap-airflow/commit/44164ba40cd1878cabeec5edc32fe0a7bb7a8e0d))
-
-
-Astronomer Certified 1.10.5-6, 2020-03-30
------------------------------------------------
-
-### Bug Fixes
-
-- Add Prestop hook to prevent logging issue (#469)
