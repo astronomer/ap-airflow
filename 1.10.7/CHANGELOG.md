@@ -1,5 +1,27 @@
 # Changelog
 
+Astronomer Certified 1.10.7-10, 2020-04-29
+--------------------------------------------
+
+### New Features
+
+- Allow setting Airflow Variable values to empty string ('') ([commit](https://github.com/astronomer/airflow/commit/d6d666c33)) 
+- Get Airflow Variables from AWS Systems Manager Parameter Store ([commit](https://github.com/astronomer/airflow/commit/6a7130f55)) 
+- Get Airflow Variables from GCP Secrets Manager ([commit](https://github.com/astronomer/airflow/commit/595ede548)) 
+- Get Airflow Variables from Hashicorp Vault ([commit](https://github.com/astronomer/airflow/commit/59435bb88)) 
+- Get Airflow Variables from Environment Variables ([commit](https://github.com/astronomer/airflow/commit/fe1a6a3bd)) 
+- [AIRFLOW-6987] Avoid creating default connections ([commit](https://github.com/astronomer/airflow/commit/89052690e)) 
+- Make BaseSecretsBackend.build_path generic ([commit](https://github.com/astronomer/airflow/commit/1623b80bc)) 
+- Fix CloudSecretsManagerBackend invalid connections_prefix ([commit](https://github.com/astronomer/airflow/commit/fe0a9d850)) 
+- Standardize SecretBackend class names ([commit](https://github.com/astronomer/airflow/commit/008cb6ebe)) 
+- [AIRFLOW-7105] Unify Secrets Backend method interfaces ([commit](https://github.com/astronomer/airflow/commit/5ddff01e8)) 
+- [AIRFLOW-7104] Add Secret backend for GCP Secrets Manager ([commit](https://github.com/astronomer/airflow/commit/19bcf781b)) 
+- [AIRFLOW-5705] Make AwsSsmSecretsBackend consistent with VaultBackend ([commit](https://github.com/astronomer/airflow/commit/cff559cbb)) 
+- [AIRFLOW-7076] Add support for HashiCorp Vault as Secrets Backend ([commit](https://github.com/astronomer/airflow/commit/99bb2a7ef)) 
+- [AIRFLOW-5705] Fix bugs in AWS SSM Secrets Backend ([commit](https://github.com/astronomer/airflow/commit/afae4b62b)) 
+- [AIRFLOW-5705] Fix bug in Secrets Backend ([commit](https://github.com/astronomer/airflow/commit/29015f537)) 
+- [AIRFLOW-5705] Add secrets backend and support for AWS SSM ([commit](https://github.com/astronomer/airflow/commit/2a82f5365)) 
+
 Astronomer Certified 1.10.7-9, 2020-04-28
 --------------------------------------------
 
