@@ -9,8 +9,7 @@ Astronomer Certified 1.10.7-10, 2020-04-29
 - Get Airflow Variables from AWS Systems Manager Parameter Store ([commit](https://github.com/astronomer/airflow/commit/6a7130f55)) 
 - Get Airflow Variables from GCP Secrets Manager ([commit](https://github.com/astronomer/airflow/commit/595ede548)) 
 - Get Airflow Variables from Hashicorp Vault ([commit](https://github.com/astronomer/airflow/commit/59435bb88)) 
-- Get Airflow Variables from Environment Variables ([commit](https://github.com/astronomer/airflow/commit/fe1a6a3bd)) 
-- [AIRFLOW-6987] Avoid creating default connections ([commit](https://github.com/astronomer/airflow/commit/89052690e)) 
+- Get Airflow Variables from Environment Variables ([commit](https://github.com/astronomer/airflow/commit/fe1a6a3bd))  
 - Make BaseSecretsBackend.build_path generic ([commit](https://github.com/astronomer/airflow/commit/1623b80bc)) 
 - Fix CloudSecretsManagerBackend invalid connections_prefix ([commit](https://github.com/astronomer/airflow/commit/fe0a9d850)) 
 - Standardize SecretBackend class names ([commit](https://github.com/astronomer/airflow/commit/008cb6ebe)) 
@@ -22,10 +21,16 @@ Astronomer Certified 1.10.7-10, 2020-04-29
 - [AIRFLOW-5705] Fix bug in Secrets Backend ([commit](https://github.com/astronomer/airflow/commit/29015f537)) 
 - [AIRFLOW-5705] Add secrets backend and support for AWS SSM ([commit](https://github.com/astronomer/airflow/commit/2a82f5365)) 
 
+### Improvements
+
+- [AIRFLOW-5167] Update dependencies for GCP packages ([commit](https://github.com/astronomer/airflow/commit/6277fcd499)) 
+
 Astronomer Certified 1.10.7-9, 2020-04-28
 --------------------------------------------
 
-No user-facing changes in `astronomer/airflow` repo.
+### New Features
+
+- Require the AC version check plugin ([commit](https://github.com/astronomer/airflow/commit/3af238f))
 
 Dockerfile changes are:
 
