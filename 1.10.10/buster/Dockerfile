@@ -113,7 +113,7 @@ COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install --no-cache-dir "${AIRFLOW_MODULE}" \
+RUN pip install "${AIRFLOW_MODULE}" \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
 	&& pip install "astronomer-fab-security-manager~=1.2, >=1.2.2"
 
