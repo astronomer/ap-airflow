@@ -25,17 +25,20 @@ def test_airflow_in_path(webserver):
     assert webserver.exists('airflow'), \
         "Expected 'airflow' to be in PATH"
 
+
 def test_tini_in_path(webserver):
     """ Ensure 'tini' is in PATH
     """
     assert webserver.exists('tini'), \
         "Expected 'tini' to be in PATH"
 
+
 def test_entrypoint(webserver):
     """ There should be a file '/entrypoint'
     """
     assert webserver.file("/entrypoint").exists, \
         "Expected to find /entrypoint"
+
 
 def test_maintainer(webserver, docker_client):
     """ Ensure the Docker image label 'maintainer' is set correctly
@@ -65,6 +68,7 @@ def test_elasticsearch_version(webserver):
     assert semantic_version(version) >= semantic_version('5.5.3'), \
         "elasticsearch module must be version 5.5.3 or greater"
 
+
 def test_werkzeug_version(webserver):
     """ Werkzeug pip module version >= 1.0.0 has an issue
     """
@@ -74,7 +78,8 @@ def test_werkzeug_version(webserver):
         raise Exception("Werkzeug pip module is not installed")
     version = werkzeug_module['version']
     assert semantic_version(version) < semantic_version('1.0.0'), \
-           "Werkzeug pip module version must be less than 1.0.0"
+        "Werkzeug pip module version must be less than 1.0.0"
+
 
 def test_redis_version(webserver):
     """ Redis pip module version 3.4.0 has an issue in the Astronomer platform
@@ -85,7 +90,21 @@ def test_redis_version(webserver):
         raise Exception("redis pip module is not installed")
     version = redis_module['version']
     assert semantic_version(version) != semantic_version('3.4.0'), \
-           "redis module must not be 3.4.0"
+        "redis module must not be 3.4.0"
+
+
+def test_astronomer_airflow_check_version(webserver):
+    """ astronomer-airflow-version-check 1.0.0 has an issue in the Astronomer platform
+    """
+    try:
+        version_check_module = webserver.pip_package.get_packages()['astronomer-airflow-version-check']
+    except KeyError:
+        print("astronomer-airflow-version-check pip module is not installed")
+        return
+    version = version_check_module['version']
+    assert semantic_version(version) > semantic_version('1.0.0'), \
+        "astronomer-airflow-version-check module must be greater than 1.0.0"
+
 
 @pytest.fixture(scope='session')
 def webserver(request):
@@ -165,6 +184,7 @@ def get_ip_from_id(_id):
          _id]
     ).decode().strip()
 
+
 def wait_for_container(_id):
     # It takes Docker a short time to start
     # the container. We want to make sure it's up
@@ -177,4 +197,5 @@ def wait_for_container(_id):
             break
         sleep(0.1)
     if not found_container:
-        raise Exception("Error: Docker container did not start running within 10 seconds. It did not show up in the docker ps output")
+        raise Exception("Error: Docker container did not start running within 10 seconds. "
+                        "It did not show up in the docker ps output")
