@@ -93,7 +93,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& pip3 install --no-cache-dir --upgrade pip==19.3.1 \
 	&& pip3 install --no-cache-dir --upgrade setuptools==41.0.1 \
 	&& pip3 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
-	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" --pre \
+	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" \
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
 	&& pip3 install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2" \
 	&& apk del .build-deps py3-numpy-dev \
