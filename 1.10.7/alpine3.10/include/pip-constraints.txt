@@ -13,3 +13,6 @@ WTforms<2.3.0
 
 # Details: https://github.com/apache/airflow/issues/8599
 flask-appbuilder<2.3.3
+
+# Details: https://github.com/apache/airflow/pull/8833
+azure-storage<0.37.0
