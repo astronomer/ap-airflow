@@ -132,33 +132,10 @@ def test_airflow_variables(scheduler):
     assert "" in scheduler.check_output("airflow variables --delete test_key")
 
 
-def create_example_dag(scheduler):
+def test_list_dags(scheduler):
     """
     Create Example DAG and add it to Scheduler POD
     """
-    example_dag = """
-from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
-from airflow.utils.timezone import datetime
-
-dag = DAG(
-    dag_id="example_dag",
-    default_args={"start_date": datetime(2020, 5, 1), "owner": "airflow"},
-    schedule_interval=None,
-)
-
-bash_task = BashOperator(
-    task_id="bash_task",
-    bash_command="echo Test",
-    dag=dag,
-)
-        """
-
-    # Add Example DAG
-    print(scheduler.check_output(f"/entrypoint mkdir -p dags && ls -ltr"))
-    scheduler.check_output(f"/entrypoint touch dags/example_dag.py ")
-    scheduler.check_output(f"/entrypoint chmod 777 dags/example_dag.py ")
-    scheduler.check_output(f"echo '{example_dag}' > dags/example_dag.py ")
     airflow_list_dags_output = scheduler.check_output("airflow list_dags -r")
     assert "Number of DAGs: 1" in airflow_list_dags_output
     assert "example_dag" in airflow_list_dags_output
@@ -166,9 +143,6 @@ bash_task = BashOperator(
 
 def test_airflow_trigger_dags(scheduler):
     """Test Triggering of DAGs & Pausing & Unpausing Dags"""
-
-    # Create Example DAG
-    create_example_dag(scheduler)
 
     timeout = 180
     sleep_count = 0
