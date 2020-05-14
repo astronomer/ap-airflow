@@ -113,11 +113,11 @@ def test_airflow_connections(scheduler):
 
     # Assert Connection can be added
     assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
-        f'airflow connections -a --conn_uri "{test_conn_uri}" --conn_id {test_conn_id}')
+        'airflow connections -a --conn_uri %s --conn_id %s', test_conn_uri, test_conn_id)
 
     # Assert Connection can be removed
     assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
-        f'airflow connections -d --conn_id {test_conn_id}')
+        'airflow connections -d --conn_id %s', test_conn_id)
 
 
 def test_airflow_variables(scheduler):
@@ -144,16 +144,6 @@ def test_list_dags(scheduler):
 def test_airflow_trigger_dags(scheduler):
     """Test Triggering of DAGs & Pausing & Unpausing Dags"""
 
-    timeout = 180
-    sleep_count = 0
-    sleep_time_between_polls = 5
-    while scheduler.run("airflow pause example_dag").exit_status != 0:
-        sleep_count += sleep_time_between_polls
-        sleep(sleep_time_between_polls)
-        if sleep_count >= timeout:
-            print("Timed out waiting for DAG to succeed")
-            break
-
     assert "Dag: example_dag, paused: True" in scheduler.check_output("airflow pause example_dag")
     assert "Created <DagRun example_dag @ 2020-05-01T00:00:00+00:00: " \
            "test_run, externally triggered: True>" \
@@ -164,6 +154,7 @@ def test_airflow_trigger_dags(scheduler):
     # Verify the DAG succeeds in 180 seconds
     timeout = 180
     sleep_count = 0
+    sleep_time_between_polls = 5
     try_count = 0
     while "success" not in scheduler.check_output("airflow dag_state example_dag 2020-05-01"):
         sleep_count += sleep_time_between_polls
