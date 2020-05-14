@@ -32,6 +32,19 @@ set +e
 # Delete all namespaces starting with 'airflow-', if any exist
 kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs kubectl delete namespaces --wait=false > /dev/null 2>&1
 
+if [[ "$TAG" =~ .*-onbuild ]]; then
+cat << EOF > example_project/Dockerfile
+FROM $REPOSITORY:$TAG
+EOF
+else
+cat << EOF > example_project/Dockerfile
+FROM $REPOSITORY:$TAG
+
+ONBUILD USER astro
+ONBUILD COPY --chown=astro:astro . .
+EOF
+fi
+
 docker build -t $REPOSITORY:$TAG $DIR/example_project
 
 kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TAG
