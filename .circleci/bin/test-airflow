@@ -32,20 +32,15 @@ set +e
 # Delete all namespaces starting with 'airflow-', if any exist
 kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs kubectl delete namespaces --wait=false > /dev/null 2>&1
 
-if [[ "$TAG" =~ .*-onbuild ]]; then
-cat << EOF > $DIR/example_project/Dockerfile
-FROM $REPOSITORY:$TAG
-EOF
-else
-cat << EOF > $DIR/example_project/Dockerfile
-FROM $REPOSITORY:$TAG
+export TEST_DOCKERFILE_PATH=$DIR/example_project/Dockerfile
+echo "FROM $REPOSITORY:$TAG" > "$TEST_DOCKERFILE_PATH"
 
-COPY --chown=astro:astro . .
-EOF
+if [[ ! "$TAG" =~ .*-onbuild ]]; then
+  echo "COPY --chown=astro:astro . ." >> "$TEST_DOCKERFILE_PATH"
 fi
 
 echo "Contents of the Dockerfile for example_project: "
-cat $DIR/example_project/Dockerfile
+cat "$TEST_DOCKERFILE_PATH"
 
 export TEST_TAG=$TAG-test
 
