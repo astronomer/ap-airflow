@@ -33,21 +33,25 @@ set +e
 kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs kubectl delete namespaces --wait=false > /dev/null 2>&1
 
 if [[ "$TAG" =~ .*-onbuild ]]; then
-cat << EOF > example_project/Dockerfile
+cat << EOF > $DIR/example_project/Dockerfile
 FROM $REPOSITORY:$TAG
 EOF
 else
-cat << EOF > example_project/Dockerfile
+cat << EOF > $DIR/example_project/Dockerfile
 FROM $REPOSITORY:$TAG
 
-ONBUILD USER astro
-ONBUILD COPY --chown=astro:astro . .
+COPY --chown=astro:astro . .
 EOF
 fi
 
-docker build -t $REPOSITORY:$TAG $DIR/example_project
+echo "Contents of the Dockerfile for example_project: "
+cat $DIR/example_project/Dockerfile
 
-kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TAG
+export TEST_TAG=$TAG-test
+
+docker build -t $REPOSITORY:$TEST_TAG $DIR/example_project
+
+kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TEST_TAG
 
 export NAMESPACE=airflow-$RANDOM
 export RELEASE_NAME=$NAMESPACE
@@ -59,9 +63,9 @@ WATCH_PID=$!
 kubectl create namespace $NAMESPACE
 helm install --namespace $NAMESPACE \
   --set defaultAirflowRepository=$REPOSITORY \
-  --set defaultAirflowTag=$TAG \
+  --set defaultAirflowTag=$TEST_TAG \
   --set images.airflow.repository=$REPOSITORY \
-  --set images.airflow.tag=$TAG \
+  --set images.airflow.tag=$TEST_TAG \
   --set images.airflow.pullPolicy=Never \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
@@ -82,5 +86,5 @@ export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ 
 export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
 
 mkdir -p /tmp/test-reports
-export AIRFLOW_IMAGE="$REPOSITORY:$TAG"
+export AIRFLOW_IMAGE="$REPOSITORY:$TEST_TAG"
 pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
