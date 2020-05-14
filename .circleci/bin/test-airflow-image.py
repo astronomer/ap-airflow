@@ -155,7 +155,10 @@ bash_task = BashOperator(
         """
 
     # Add Example DAG
-    scheduler.check_output(f"echo '{example_dag}' > $AIRFLOW_HOME/dags/example_dag.py ")
+    print(scheduler.check_output(f"/entrypoint mkdir -p dags && ls -ltr"))
+    scheduler.check_output(f"/entrypoint touch dags/example_dag.py ")
+    scheduler.check_output(f"/entrypoint chmod 777 dags/example_dag.py ")
+    scheduler.check_output(f"echo '{example_dag}' > dags/example_dag.py ")
     airflow_list_dags_output = scheduler.check_output("airflow list_dags -r")
     assert "Number of DAGs: 1" in airflow_list_dags_output
     assert "example_dag" in airflow_list_dags_output
@@ -167,19 +170,34 @@ def test_airflow_trigger_dags(scheduler):
     # Create Example DAG
     create_example_dag(scheduler)
 
+    timeout = 180
+    sleep_count = 0
+    sleep_time_between_polls = 5
+    while scheduler.run("airflow pause example_dag").exit_status != 0:
+        sleep_count += sleep_time_between_polls
+        sleep(sleep_time_between_polls)
+        if sleep_count >= timeout:
+            print("Timed out waiting for DAG to succeed")
+            break
+
     assert "Dag: example_dag, paused: True" in scheduler.check_output("airflow pause example_dag")
     assert "Created <DagRun example_dag @ 2020-05-01T00:00:00+00:00: " \
            "test_run, externally triggered: True>" \
-           in scheduler.check_output("airflow trigger_dag -r test_run1 -e 2020-05-01 example_dag")
+           in scheduler.check_output("airflow trigger_dag -r test_run -e 2020-05-01 example_dag")
 
     assert "Dag: example_dag, paused: False" in scheduler.check_output("airflow unpause example_dag")
 
     # Verify the DAG succeeds in 180 seconds
     timeout = 180
     sleep_count = 0
+    try_count = 0
     while "success" not in scheduler.check_output("airflow dag_state example_dag 2020-05-01"):
-        sleep_count += 5
-        sleep(sleep_count)
+        sleep_count += sleep_time_between_polls
+        sleep(sleep_time_between_polls)
+        try_count += 1
+        print("Try: ", try_count)
+        if "failed" in scheduler.check_output("airflow dag_state example_dag 2020-05-01"):
+            raise Exception("DAGRun failed !")
         if sleep_count >= timeout:
             print("Timed out waiting for DAG to succeed")
             break
