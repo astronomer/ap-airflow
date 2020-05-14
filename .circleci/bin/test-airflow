@@ -51,7 +51,7 @@ helm install --namespace $NAMESPACE \
   --set images.airflow.tag=$TAG \
   --set images.airflow.pullPolicy=Never \
   --set images.flower.pullPolicy=Never \
-  --set executor=LocalExecutor \
+  --set executor=KubernetesExecutor \
   --wait \
   $RELEASE_NAME astronomer/airflow
 
