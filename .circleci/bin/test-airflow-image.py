@@ -106,6 +106,87 @@ def test_astronomer_airflow_check_version(webserver):
         "astronomer-airflow-version-check module must be greater than 1.0.0"
 
 
+def test_airflow_connections(scheduler):
+    """Test Connections can be added and deleted"""
+    test_conn_uri = "postgresql://postgres_user:postgres_test@1.1.1.1:5432"
+    test_conn_id = "test"
+
+    # Assert Connection can be added
+    assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
+        f'airflow connections -a --conn_uri "{test_conn_uri}" --conn_id {test_conn_id}')
+
+    # Assert Connection can be removed
+    assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
+        f'airflow connections -d --conn_id {test_conn_id}')
+
+
+def test_airflow_variables(scheduler):
+    """Test Variables can be added, retrieved and deleted"""
+    # Assert Variables can be added
+    assert "" in scheduler.check_output("airflow variables --set test_key test_value")
+
+    # Assert Variables can be retrieved
+    assert "test_value" in scheduler.check_output("airflow variables --get test_key")
+
+    # Assert Variables can be deleted
+    assert "" in scheduler.check_output("airflow variables --delete test_key")
+
+
+def create_example_dag(scheduler):
+    """
+    Create Example DAG and add it to Scheduler POD
+    """
+    example_dag = """
+from airflow import DAG
+from airflow.operators.bash_operator import BashOperator
+from airflow.utils.timezone import datetime
+
+dag = DAG(
+    dag_id="example_dag",
+    default_args={"start_date": datetime(2020, 5, 1), "owner": "airflow"},
+    schedule_interval=None,
+)
+
+bash_task = BashOperator(
+    task_id="bash_task",
+    bash_command="echo Test",
+    dag=dag,
+)
+        """
+
+    # Add Example DAG
+    scheduler.check_output(f"echo '{example_dag}' > $AIRFLOW_HOME/dags/example_dag.py ")
+    airflow_list_dags_output = scheduler.check_output("airflow list_dags -r")
+    assert "Number of DAGs: 1" in airflow_list_dags_output
+    assert "example_dag" in airflow_list_dags_output
+
+
+def test_airflow_trigger_dags(scheduler):
+    """Test Triggering of DAGs & Pausing & Unpausing Dags"""
+
+    # Create Example DAG
+    create_example_dag(scheduler)
+
+    assert "Dag: example_dag, paused: True" in scheduler.check_output("airflow pause example_dag")
+    assert "Created <DagRun example_dag @ 2020-05-01T00:00:00+00:00: " \
+           "test_run, externally triggered: True>" \
+           in scheduler.check_output("airflow trigger_dag -r test_run1 -e 2020-05-01 example_dag")
+
+    assert "Dag: example_dag, paused: False" in scheduler.check_output("airflow unpause example_dag")
+
+    # Verify the DAG succeeds in 180 seconds
+    timeout = 180
+    sleep_count = 0
+    while "success" not in scheduler.check_output("airflow dag_state example_dag 2020-05-01"):
+        sleep_count += 5
+        sleep(sleep_count)
+        if sleep_count >= timeout:
+            print("Timed out waiting for DAG to succeed")
+            break
+
+    assert "success" in scheduler.check_output("airflow dag_state example_dag 2020-05-01")
+
+
 @pytest.fixture(scope='session')
 def webserver(request):
     """ This is the host fixture for testinfra. To read more, please see
