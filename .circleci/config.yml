@@ -745,19 +745,23 @@ commands:
             set -e
             image="<< parameters.image_name >>:<< parameters.tag >>"
             set -x
-            docker push "$image"
-            set +x
+            export NEW_POINT_RELEASE=true
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
-              set -x
               if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.image_name >>:$tag >/dev/null 2>&1; then
                 echo "Image with Tag (<< parameters.image_name >>:$tag) already exists"
+                export NEW_POINT_RELEASE=false
               else
                 docker tag "$image" "<< parameters.image_name >>:${tag}"
                 docker push "<< parameters.image_name >>:${tag}"
               fi
-              set +x
             done
+            if $NEW_POINT_RELEASE ; then
+              docker push "$image"
+            else
+              echo "Image with Tag ($image) not pushed as it is not a new point release"
+            fi
+            set +x
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:
