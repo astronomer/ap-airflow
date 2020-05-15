@@ -3,6 +3,7 @@ workflows:
   version: 2.1
   certified-airflow:
     jobs:
+      - static-checks
 {% for ac_version, distributions in image_map.items() %}
 {% set airflow_version = ac_version.split('-')[0] -%}
 {% set docker_repo = "astronomerio/ap-airflow" if "dev" in airflow_version else "astronomerinc/ap-airflow" -%}
@@ -15,6 +16,8 @@ workflows:
           {%- if "dev" in airflow_version %}
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
+          requires:
+            - static-checks
       - scan:
           name: scan-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -141,6 +144,17 @@ workflows:
 {%- endfor %}
 {% endif %}
 jobs:
+  static-checks:
+    executor: machine-executor
+    description: Static Checks
+    steps:
+      - checkout
+      - run:
+          name: Load archived Docker image
+          command: |
+            pyenv global 3.7.0
+            pip install -r .circleci/test-requirements.txt
+            pre-commit run --all-files
   build:
     executor: docker-executor
     description: Build Airflow images
