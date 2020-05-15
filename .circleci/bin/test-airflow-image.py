@@ -175,7 +175,7 @@ def test_webserver_health_endpoint(webserver):
     """
     Test Webserver is able to reach the Database and check the health of Scheduler & Metadata DB
     """
-    response = webserver.check_output("curl localhost:8080/health")
+    response = webserver.check_output("wget -qO- localhost:8080/health")
     json_response = json.loads(response)
 
     assert "metadatabase" in json_response
