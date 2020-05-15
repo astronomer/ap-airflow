@@ -171,18 +171,6 @@ def test_airflow_trigger_dags(scheduler):
     assert "success" in scheduler.check_output("airflow dag_state example_dag 2020-05-01")
 
 
-def test_webserver_health_endpoint(webserver):
-    """
-    Test Webserver is able to reach the Database and check the health of Scheduler & Metadata DB
-    """
-    response = webserver.check_output("wget -qO- localhost:8080/health")
-    json_response = json.loads(response)
-
-    assert "metadatabase" in json_response
-    assert json_response["metadatabase"]["status"] == "healthy"
-    assert json_response["scheduler"]["status"] == "healthy"
-
-
 @pytest.fixture(scope='session')
 def webserver(request):
     """ This is the host fixture for testinfra. To read more, please see
