@@ -172,8 +172,8 @@ def test_airflow_trigger_dags(scheduler):
 
 
 def test_webserver_health_endpoint(webserver):
-    """Test Webserver is able to reach the Metaa Database
-    and check the health of Scheduler & Metadata DB
+    """
+    Test Webserver is able to reach the Database and check the health of Scheduler & Metadata DB
     """
     response = scheduler.check_output()
     json_response = json.loads(response)
