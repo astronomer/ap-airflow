@@ -1,0 +1,16 @@
+exclude: '^alpine-packages/.*$'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: local
+    hooks:
+      - id: circle-config-yaml
+        name: Checks for consistency between config.yml and config.yml.j2
+        language: python
+        files: "config.yml$|config.yml.j2$"
+        entry: .circleci/generate_circleci_config.py
+        additional_dependencies: ['jinja2']
