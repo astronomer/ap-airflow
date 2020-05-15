@@ -150,7 +150,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Load archived Docker image
+          name: Run pre-commit checks
           command: |
             pyenv global 3.7.0
             pip install -r .circleci/test-requirements.txt
@@ -173,11 +173,27 @@ jobs:
         default: ""
         type: string
     steps:
-      - docker-build-base-and-onbuild:
-          airflow_version: "<< parameters.airflow_version >>"
-          distribution_name: "<< parameters.distribution_name >>"
-          docker_repo: "<< parameters.docker_repo >>"
-          extra_args: "<< parameters.extra_args >>"
+      - run:
+          name: Check if Docker Tag Exists for Point Release
+          command: |
+            export IMAGE_NAME="<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+            export NEW_<< parameters.airflow_version >>_POINT_RELEASE=true
+            for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
+            do
+              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.docker_repo >>:$tag >/dev/null 2>&1; then
+                echo "Image with Tag (<< parameters.docker_repo >>:$tag) already exists"
+                export NEW_<< parameters.airflow_version >>_POINT_RELEASE=false
+              fi
+            done
+            echo "export NEW_<< parameters.airflow_version >>_POINT_RELEASE=$NEW_<< parameters.airflow_version >>_POINT_RELEASE" >> $BASH_ENV
+      - when:
+          condition:
+          steps:
+            - docker-build-base-and-onbuild:
+                airflow_version: "<< parameters.airflow_version >>"
+                distribution_name: "<< parameters.distribution_name >>"
+                docker_repo: "<< parameters.docker_repo >>"
+                extra_args: "<< parameters.extra_args >>"
   test:
     executor: machine-executor
     description: Test Airflow images
