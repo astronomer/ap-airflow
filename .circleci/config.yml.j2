@@ -173,9 +173,10 @@ jobs:
         default: ""
         type: string
     steps:
+      - checkout
       - swissknife/run_if_modified:
           always-run-on-branch: master
-          pattern: ^\<< parameters.airflow_version >>.*$
+          pattern: ^\"<< parameters.airflow_version >>".*$
           use-divergence-point: true
           steps-to-run:
             - docker-build-base-and-onbuild:
