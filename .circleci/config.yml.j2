@@ -198,9 +198,15 @@ jobs:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
     steps:
-      - airflow-image-test:
-          repository: "<< parameters.docker_repo >>"
-          tag: "<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+      - checkout
+      - swissknife/run_if_modified:
+          always-run-on-branch: master
+          pattern: ^\"<< parameters.airflow_version >>".*$
+          use-divergence-point: true
+          steps-to-run:
+              - airflow-image-test:
+                  repository: "<< parameters.docker_repo >>"
+                  tag: "<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan:
     executor: clair-scanner/default
     description: Test Airflow images
@@ -215,8 +221,14 @@ jobs:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
     steps:
-      - clair-scan:
-          image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+      - checkout
+      - swissknife/run_if_modified:
+          always-run-on-branch: master
+          pattern: ^\"<< parameters.airflow_version >>".*$
+          use-divergence-point: true
+          steps-to-run:
+              - clair-scan:
+                  image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan-trivy:
     docker:
       - image: docker:18.09-git
@@ -236,28 +248,33 @@ jobs:
         type: string
     steps:
       - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
-      - run:
-          name: Install trivy
-          command: |
-            apk add --update-cache --upgrade curl rpm
-            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
-      - restore_cache:
-          keys:
-            - trivy-cache
-      - run:
-          name: Scan the local image with trivy
-          command: |
-            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
-      - save_cache:
-          key: trivy-cache
-          paths:
-            - /tmp/workspace/trivy-cache
+      - swissknife/run_if_modified:
+          always-run-on-branch: master
+          pattern: ^\"<< parameters.airflow_version >>".*$
+          use-divergence-point: true
+          steps-to-run:
+              - setup_remote_docker
+              - attach_workspace:
+                  at: /tmp/workspace
+              - run:
+                  name: Load archived Docker image
+                  command: docker load -i /tmp/workspace/saved-images/<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+              - run:
+                  name: Install trivy
+                  command: |
+                    apk add --update-cache --upgrade curl rpm
+                    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
+              - restore_cache:
+                  keys:
+                    - trivy-cache
+              - run:
+                  name: Scan the local image with trivy
+                  command: |
+                    trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+              - save_cache:
+                  key: trivy-cache
+                  paths:
+                    - /tmp/workspace/trivy-cache
   publish:
     executor: docker-executor
     description: Publish Airflow images
@@ -271,10 +288,16 @@ jobs:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
     steps:
-      - push:
-          extra_tags: "<< parameters.extra_tags >>"
-          tag: "<< parameters.tag >>"
-          image_name: "<< parameters.docker_repo >>"
+      - checkout
+      - swissknife/run_if_modified:
+          always-run-on-branch: master
+          pattern: ^\"<< parameters.airflow_version >>".*$
+          use-divergence-point: true
+          steps-to-run:
+              - push:
+                  extra_tags: "<< parameters.extra_tags >>"
+                  tag: "<< parameters.tag >>"
+                  image_name: "<< parameters.docker_repo >>"
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
   swissknife: roopakv/swissknife@0.34.0
@@ -378,34 +401,40 @@ commands:
       image_name:
         type: string
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker
-      - run:
-          name: Load archived Docker image
-          command: docker load -i '/tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>.tar'
-      - run:
-          name: Login to DockerHub
-          command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
-      - run:
-          name: Push Docker image(s)
-          command: |
-            set -e
-            image="<< parameters.image_name >>:<< parameters.tag >>"
-            set -x
-            docker push "$image"
-            set +x
-            for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
-            do
-              set -x
-              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.image_name >>:$tag >/dev/null 2>&1; then
-                echo "Image with Tag (<< parameters.image_name >>:$tag) already exists"
-              else
-                docker tag "$image" "<< parameters.image_name >>:${tag}"
-                docker push "<< parameters.image_name >>:${tag}"
-              fi
-              set +x
-            done
+      - checkout
+      - swissknife/run_if_modified:
+          always-run-on-branch: master
+          pattern: ^\"<< parameters.airflow_version >>".*$
+          use-divergence-point: true
+          steps-to-run:
+              - attach_workspace:
+                  at: /tmp/workspace
+              - setup_remote_docker
+              - run:
+                  name: Load archived Docker image
+                  command: docker load -i '/tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>.tar'
+              - run:
+                  name: Login to DockerHub
+                  command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+              - run:
+                  name: Push Docker image(s)
+                  command: |
+                    set -e
+                    image="<< parameters.image_name >>:<< parameters.tag >>"
+                    set -x
+                    docker push "$image"
+                    set +x
+                    for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
+                    do
+                      set -x
+                      if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.image_name >>:$tag >/dev/null 2>&1; then
+                        echo "Image with Tag (<< parameters.image_name >>:$tag) already exists"
+                      else
+                        docker tag "$image" "<< parameters.image_name >>:${tag}"
+                        docker push "<< parameters.image_name >>:${tag}"
+                      fi
+                      set +x
+                    done
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:
@@ -417,15 +446,20 @@ commands:
         default: cve-whitelist.yaml
     steps:
       - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
-      - modified-orb:
-          whitelist: "<< parameters.whitelist >>"
-          image: "<< parameters.image_name >>"
+      - swissknife/run_if_modified:
+          always-run-on-branch: master
+          pattern: ^\"<< parameters.airflow_version >>".*$
+          use-divergence-point: true
+          steps-to-run:
+              - setup_remote_docker
+              - attach_workspace:
+                  at: /tmp/workspace
+              - run:
+                  name: Load archived Docker image
+                  command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
+              - modified-orb:
+                  whitelist: "<< parameters.whitelist >>"
+                  image: "<< parameters.image_name >>"
   # TODO: move to an Astronomer orbs repo, publish orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
