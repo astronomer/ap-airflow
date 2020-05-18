@@ -41,7 +41,7 @@ workflows:
           name: publish-1.10.5-alpine3.10
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10"
-          extra_tags: "1.10.5-7-alpine3.10"
+          extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-7-alpine3.10"
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
@@ -53,7 +53,7 @@ workflows:
           name: publish-1.10.5-alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10-onbuild"
-          extra_tags: "1.10.5-7-alpine3.10-onbuild"
+          extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-7-alpine3.10-onbuild"
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
@@ -95,7 +95,7 @@ workflows:
           name: publish-1.10.5-buster
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-buster"
-          extra_tags: "1.10.5-7-buster"
+          extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-7-buster"
           requires:
             - scan-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
@@ -107,7 +107,7 @@ workflows:
           name: publish-1.10.5-buster-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-buster-onbuild"
-          extra_tags: "1.10.5-7-buster-onbuild"
+          extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-7-buster-onbuild"
           requires:
             - scan-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
@@ -149,7 +149,7 @@ workflows:
           name: publish-1.10.5-rhel7
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7"
-          extra_tags: "1.10.5-7-rhel7"
+          extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM},1.10.5-7-rhel7"
           requires:
             - scan-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
@@ -161,7 +161,7 @@ workflows:
           name: publish-1.10.5-rhel7-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7-onbuild"
-          extra_tags: "1.10.5-7-rhel7-onbuild"
+          extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM},1.10.5-7-rhel7-onbuild"
           requires:
             - scan-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
@@ -205,7 +205,7 @@ workflows:
           name: publish-1.10.6-alpine3.10
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.6-alpine3.10"
-          extra_tags: "1.10.6-3-alpine3.10"
+          extra_tags: "1.10.6-alpine3.10-${CIRCLE_BUILD_NUM},1.10.6-3-alpine3.10"
           requires:
             - scan-1.10.6-alpine3.10-onbuild
             - scan-trivy-1.10.6-alpine3.10-onbuild
@@ -217,7 +217,7 @@ workflows:
           name: publish-1.10.6-alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.6-alpine3.10-onbuild"
-          extra_tags: "1.10.6-3-alpine3.10-onbuild"
+          extra_tags: "1.10.6-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.6-3-alpine3.10-onbuild"
           requires:
             - scan-1.10.6-alpine3.10-onbuild
             - scan-trivy-1.10.6-alpine3.10-onbuild
@@ -259,7 +259,7 @@ workflows:
           name: publish-1.10.6-buster
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.6-buster"
-          extra_tags: "1.10.6-3-buster"
+          extra_tags: "1.10.6-buster-${CIRCLE_BUILD_NUM},1.10.6-3-buster"
           requires:
             - scan-1.10.6-buster-onbuild
             - scan-trivy-1.10.6-buster-onbuild
@@ -271,7 +271,7 @@ workflows:
           name: publish-1.10.6-buster-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.6-buster-onbuild"
-          extra_tags: "1.10.6-3-buster-onbuild"
+          extra_tags: "1.10.6-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.6-3-buster-onbuild"
           requires:
             - scan-1.10.6-buster-onbuild
             - scan-trivy-1.10.6-buster-onbuild
@@ -315,7 +315,7 @@ workflows:
           name: publish-1.10.7-alpine3.10
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.7-alpine3.10"
-          extra_tags: "1.10.7-10-alpine3.10"
+          extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM},1.10.7-10-alpine3.10"
           requires:
             - scan-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
@@ -327,7 +327,7 @@ workflows:
           name: publish-1.10.7-alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.7-alpine3.10-onbuild"
-          extra_tags: "1.10.7-10-alpine3.10-onbuild"
+          extra_tags: "1.10.7-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.7-10-alpine3.10-onbuild"
           requires:
             - scan-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
@@ -369,7 +369,7 @@ workflows:
           name: publish-1.10.7-buster
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.7-buster"
-          extra_tags: "1.10.7-10-buster"
+          extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM},1.10.7-10-buster"
           requires:
             - scan-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
@@ -381,7 +381,7 @@ workflows:
           name: publish-1.10.7-buster-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.7-buster-onbuild"
-          extra_tags: "1.10.7-10-buster-onbuild"
+          extra_tags: "1.10.7-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.7-10-buster-onbuild"
           requires:
             - scan-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
@@ -425,7 +425,7 @@ workflows:
           name: publish-1.10.10-alpine3.10
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.10-alpine3.10"
-          extra_tags: "1.10.10-1-alpine3.10"
+          extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-1-alpine3.10"
           requires:
             - scan-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
@@ -437,7 +437,7 @@ workflows:
           name: publish-1.10.10-alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.10-alpine3.10-onbuild"
-          extra_tags: "1.10.10-1-alpine3.10-onbuild"
+          extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-1-alpine3.10-onbuild"
           requires:
             - scan-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
@@ -479,7 +479,7 @@ workflows:
           name: publish-1.10.10-buster
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.10-buster"
-          extra_tags: "1.10.10-1-buster"
+          extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-1-buster"
           requires:
             - scan-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
@@ -491,7 +491,7 @@ workflows:
           name: publish-1.10.10-buster-onbuild
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.10-buster-onbuild"
-          extra_tags: "1.10.10-1-buster-onbuild"
+          extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-1-buster-onbuild"
           requires:
             - scan-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
