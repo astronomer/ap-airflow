@@ -264,11 +264,16 @@ jobs:
       docker_repo:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
+      dev_docker_repo:
+        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        default: "astronomerio/ap-airflow"
+        type: string
     steps:
       - push:
           extra_tags: "<< parameters.extra_tags >>"
           tag: "<< parameters.tag >>"
-          image_name: "<< parameters.docker_repo >>"
+          prod_docker_repo: "<< parameters.docker_repo >>"
+          dev_docker_repo: "<< parameters.dev_docker_repo >>"
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
@@ -368,7 +373,10 @@ commands:
         default: ""
       tag:
         type: string
-      image_name:
+      prod_docker_repo:
+        type: string
+      dev_docker_repo:
+        default: "astronomerio/ap-airflow"
         type: string
     steps:
       - attach_workspace:
@@ -376,7 +384,7 @@ commands:
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i '/tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>.tar'
+          command: docker load -i '/tmp/workspace/saved-images/<< parameters.prod_docker_repo >>:<< parameters.tag >>.tar'
       - run:
           name: Login to DockerHub
           command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
@@ -384,17 +392,21 @@ commands:
           name: Push Docker image(s)
           command: |
             set -e
-            image="<< parameters.image_name >>:<< parameters.tag >>"
+            image="<< parameters.prod_docker_repo >>:<< parameters.tag >>"
             set -x
             export NEW_POINT_RELEASE=true
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
-              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.image_name >>:$tag >/dev/null 2>&1; then
-                echo "Image with Tag (<< parameters.image_name >>:$tag) already exists"
+              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.prod_docker_repo >>:$tag >/dev/null 2>&1; then
+                echo "Image with Tag (<< parameters.prod_docker_repo >>:$tag) already exists"
                 export NEW_POINT_RELEASE=false
+              elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]]; then
+                echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo >>"
+                docker tag "$image" "<< parameters.dev_docker_repo >>:${tag}"
+                docker push "<< parameters.dev_docker_repo >>:${tag}"
               else
-                docker tag "$image" "<< parameters.image_name >>:${tag}"
-                docker push "<< parameters.image_name >>:${tag}"
+                docker tag "$image" "<< parameters.prod_docker_repo >>:${tag}"
+                docker push "<< parameters.prod_docker_repo >>:${tag}"
               fi
             done
             if $NEW_POINT_RELEASE ; then
