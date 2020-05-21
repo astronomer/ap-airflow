@@ -13,7 +13,7 @@ from jinja2 import Environment, FileSystemLoader
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.5-7", ["alpine3.10", "buster", "rhel7"]),
     ("1.10.6-3", ["alpine3.10", "buster"]),
-    ("1.10.7-10", ["alpine3.10", "buster"]),
+    ("1.10.7-11.dev", ["alpine3.10", "buster"]),
     ("1.10.10-1", ["alpine3.10", "buster"]),
 ])
 
@@ -55,7 +55,6 @@ def replace_version_info():
     """
     Replace the VERSION in all the Dockerfiles with the corresponding VERSION in IMAGE_MAP
     """
-    current_dir = os.path.dirname(os.path.abspath(__file__))
     for ac_version, distros in IMAGE_MAP.items():
         airflow_version = ac_version.split('-')[0]
         for distro in distros:
