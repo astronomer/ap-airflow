@@ -6,14 +6,14 @@ workflows:
       - static-checks
 {% for ac_version, distributions in image_map.items() %}
 {% set airflow_version = ac_version.split('-')[0] -%}
-{% set docker_repo = "astronomerio/ap-airflow" if "dev" in airflow_version else "astronomerinc/ap-airflow" -%}
+{% set docker_repo = "astronomerio/ap-airflow" if "dev" in ac_version else "astronomerinc/ap-airflow" -%}
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           docker_repo: {{ docker_repo }}
-          {%- if "dev" in airflow_version %}
+          {%- if "dev" in ac_version %}
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
           requires:

@@ -1,7 +1,20 @@
 # Changelog
 
+Astronomer Certified 1.10.7-11.dev [DEV Package]
+-------------------------------------------------
+
+### Bug Fixes
+
+- Pin Version of Azure Cosmos to <4 ([commit](https://github.com/astronomer/airflow/commit/ff74293))
+- Make loading plugins from entrypoint fault-tolerant - 1.10.* Backport ([commit](https://github.com/astronomer/airflow/commit/ae9d5b770d8))
+
+
 Astronomer Certified 1.10.7-10, 2020-04-29
 --------------------------------------------
+
+### Bug Fixes
+
+- Constraint version of Flask-Appbuilder to non-broken version ([commit](https://github.com/astronomer/ap-airflow/commit/33da5f5))
 
 ### New Features
 
