@@ -84,8 +84,9 @@ workflows:
               only:
                 - master
     jobs:
-{%- for airflow_version, distributions in image_map.items() -%}
-{% if "dev" in airflow_version %}
+{%- for ac_version, distributions in image_map.items() %}
+{%- if "dev" in ac_version %}
+{%- set airflow_version = ac_version.split('-')[0] %}
 {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
@@ -131,7 +132,7 @@ workflows:
           name: publish-{{ airflow_version }}-{{ distribution }}-onbuild
           docker_repo: "astronomerio/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
