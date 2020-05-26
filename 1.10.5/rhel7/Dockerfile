@@ -39,7 +39,7 @@ RUN chmod +x /tini && cp /tini /usr/local/sbin/
 
 RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 && \
-    yum -y install https://rhel7.iuscommunity.org/ius-release.rpm && \
+    yum -y install https://repo.ius.io/ius-release-el7.rpm && \
     rpm -ivh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 
 
