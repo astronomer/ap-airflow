@@ -1,13 +1,17 @@
 # Changelog
 
-Astronomer Certified 1.10.7-11.dev [DEV Package]
--------------------------------------------------
+Astronomer Certified 1.10.7-11, 2020-05-28
+--------------------------------------------
 
 ### Bug Fixes
 
+- Make loading plugins from entrypoint fault-tolerant (#628) ([commit](https://github.com/astronomer/airflow/commit/ae9d5b7))
+- Pin Azure storage to <0.37.0 (#8833) ([commit](https://github.com/astronomer/airflow/commit/cd12692))
 - Pin Version of Azure Cosmos to <4 ([commit](https://github.com/astronomer/airflow/commit/ff74293))
-- Make loading plugins from entrypoint fault-tolerant - 1.10.* Backport ([commit](https://github.com/astronomer/airflow/commit/ae9d5b770d8))
+- Stop showing Import Errors for Plugins in Webserver ([commit](https://github.com/astronomer/airflow/commit/69dba65))
 
+### New Features
+- Add support for AWS Secrets Manager as Secrets Backend (#8186)([commit](https://github.com/astronomer/airflow/commit/0dc4736))
 
 Astronomer Certified 1.10.7-10, 2020-04-29
 --------------------------------------------
