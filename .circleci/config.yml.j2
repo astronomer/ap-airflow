@@ -85,8 +85,8 @@ workflows:
                 - master
     jobs:
 {%- for ac_version, distributions in image_map.items() %}
-{%- if "dev" in ac_version %}
 {%- set airflow_version = ac_version | get_airflow_version %}
+{%- if "dev" in ac_version and airflow_version not in dev_whitelist  %}
 {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
