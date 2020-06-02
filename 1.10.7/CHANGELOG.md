@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 1.10.7-12.dev, [DEV Package]
+-----------------------------------------------
+
+### Bug Fixes
+
+- Fix pip install issue caused by Python3.7.7 packages on Alpine-based images
+
 Astronomer Certified 1.10.7-11, 2020-05-28
 --------------------------------------------
 

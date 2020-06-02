@@ -17,7 +17,7 @@ FROM alpine:3.10
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 ARG ORG="astronomer"
-ARG VERSION="1.10.7-11"
+ARG VERSION="1.10.7-12.*"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG REPO_BRANCH=master
@@ -82,14 +82,13 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 		py3-pycryptodome \
 		py3-pynacl \
 		py3-typed-ast \
+		py3-pip \
 		python3 \
 		tini \
 	&& apk add --upgrade \
 		openssl \
 	&& update-ca-certificates \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
-	&& pip3 install --no-cache-dir --upgrade pip==19.3.1 \
-	&& pip3 install --no-cache-dir --upgrade setuptools==41.0.1 \
 	&& pip3 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
 	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" \
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
@@ -97,7 +96,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& apk del .build-deps py3-numpy-dev \
 	&& ln -sf /usr/bin/python3 /usr/bin/python \
 	&& ln -sf /usr/bin/pip3 /usr/bin/pip \
-	&& sed -i -e '\#https://github.com/astronomer/astronomer/#d' /etc/apk/repositories
+	&& sed -i -e '\#https://github.com/astronomer/#d' /etc/apk/repositories
 
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs
