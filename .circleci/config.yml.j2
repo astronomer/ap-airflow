@@ -5,7 +5,7 @@ workflows:
     jobs:
       - static-checks
 {% for ac_version, distributions in image_map.items() %}
-{% set airflow_version = ac_version.split('-')[0] -%}
+{% set airflow_version = ac_version | get_airflow_version -%}
 {% set docker_repo = "astronomerio/ap-airflow" if "dev" in ac_version else "astronomerinc/ap-airflow" -%}
 {% for distribution in distributions %}
       - build:
@@ -13,7 +13,7 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           docker_repo: {{ docker_repo }}
-          {%- if "dev" in ac_version %}
+          {%- if "dev" in ac_version and airflow_version not in dev_whitelist %}
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
           requires:
@@ -86,7 +86,7 @@ workflows:
     jobs:
 {%- for ac_version, distributions in image_map.items() %}
 {%- if "dev" in ac_version %}
-{%- set airflow_version = ac_version.split('-')[0] %}
+{%- set airflow_version = ac_version | get_airflow_version %}
 {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
