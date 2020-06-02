@@ -1,8 +1,22 @@
 # ignore in old airflow versions; it's fixed ONLY in new airflow version
+# Only used in the dev pipeline, not at runtime
 # lodash: Prototype pollution in utilities function fixed in >=4.17.11
+CVE-2019-10744
 CVE-2018-16487
 # These kernel vulnerabilities aren't a problem in a docker image, as they
 # don't use this kernel; but the hosts' kernel
 CVE-2016-5195
 CVE-2016-7039
 CVE-2016-8666
+
+# eslint-utils
+CVE-2019-15657
+
+# handlebars
+CVE-2019-19919
+
+# mixin-deep
+CVE-2019-10746
+
+# nodejs-set-value
+CVE-2019-10747
