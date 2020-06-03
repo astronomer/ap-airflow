@@ -5,7 +5,7 @@ Astronomer Certified 1.10.7-12.dev, 2020-06-03
 
 ### Bug Fixes
 
-- Fix pip install issue caused by Python3.7.7 packages on Alpine-based images
+- Fix pip install issue caused by Python3.7.7 packages on Alpine-based images ([commit](https://github.com/astronomer/ap-airflow/commit/404dce6))
 
 Astronomer Certified 1.10.7-11, 2020-05-28
 --------------------------------------------

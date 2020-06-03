@@ -1,11 +1,11 @@
 # Changelog
 
-Astronomer Certified 1.10.5-8.dev, [DEV Package]
+Astronomer Certified 1.10.5-8.dev, 2020-06-03
 -----------------------------------------------
 
 ### Bug Fixes
 
-- Fix pip install issue caused by Python3.7.7 packages on Alpine-based images
+- Fix pip install issue caused by Python3.7.7 packages on Alpine-based images ([commit](https://github.com/astronomer/ap-airflow/commit/6c400ad))
 
 Astronomer Certified 1.10.5-7, 2020-04-27
 --------------------------------------------
