@@ -1,5 +1,19 @@
 # Changelog
 
+Astronomer Certified 1.10.10-2.dev, [DEV Package]
+--------------------------------------------------
+
+### Bug Fixes
+
+- Fix pip install issue caused by Python3.7.7 packages on Alpine-based images
+- BugFix: DAG trigger via UI error in RBAC UI ([commit](https://github.com/astronomer/airflow/commit/356b7b1))
+- Remove duplicate error message on chart connection failure ([commit](https://github.com/astronomer/airflow/commit/c4ff230))
+- Correctly deserialize dagrun_timeout field on DAGs ([commit](https://github.com/astronomer/airflow/commit/1f12f3f))
+- Correctly store non-default Nones in serialized tasks/dags ([commit](https://github.com/astronomer/airflow/commit/2bf89bf))
+- Correctly restore upstream_task_ids when deserializing Operators ([commit](https://github.com/astronomer/airflow/commit/bf04e3e))
+- Make loading plugins from entrypoint fault-tolerant ([commit](https://github.com/astronomer/airflow/commit/35c068c))
+- Stop showing Import Errors for Plugins in Webserver ([commit](https://github.com/astronomer/airflow/commit/ef70c9c))
+
 Astronomer Certified 1.10.10-1, 2020-04-22
 -----------------------------------------------
 
