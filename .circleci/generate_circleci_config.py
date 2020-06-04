@@ -12,13 +12,12 @@ from jinja2 import Environment, FileSystemLoader
 
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.5-8", ["alpine3.10", "buster", "rhel7"]),
-    ("1.10.6-3", ["alpine3.10", "buster"]),
     ("1.10.7-12", ["alpine3.10", "buster"]),
     ("1.10.10-2.dev", ["alpine3.10", "buster"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
-DEV_WHITELIST = ["1.10.5", "1.10.6"]
+DEV_WHITELIST = ["1.10.5"]
 
 
 def dev_releases(all_releases):
