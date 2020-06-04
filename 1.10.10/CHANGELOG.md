@@ -1,7 +1,7 @@
 # Changelog
 
-Astronomer Certified 1.10.10-2.dev, [DEV Package]
---------------------------------------------------
+Astronomer Certified 1.10.10-2, 2020-06-03
+--------------------------------------------
 
 ### Bug Fixes
 
@@ -13,6 +13,8 @@ Astronomer Certified 1.10.10-2.dev, [DEV Package]
 - Correctly restore upstream_task_ids when deserializing Operators ([commit](https://github.com/astronomer/airflow/commit/bf04e3e))
 - Make loading plugins from entrypoint fault-tolerant ([commit](https://github.com/astronomer/airflow/commit/35c068c))
 - Stop showing Import Errors for Plugins in Webserver ([commit](https://github.com/astronomer/airflow/commit/ef70c9c))
+- Azure storage 0.37.0 is not installable any more ([commit](https://github.com/astronomer/airflow/commit/072f947))
+- Pin Version of Azure Cosmos to <4 ([commit](https://github.com/astronomer/airflow/commit/684653d))
 
 Astronomer Certified 1.10.10-1, 2020-04-22
 -----------------------------------------------
