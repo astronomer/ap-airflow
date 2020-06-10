@@ -34,10 +34,15 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          name: test-{{ airflow_version }}-{{ distribution }}
           docker_repo: {{ docker_repo }}
-          distribution_name: {{ distribution }}
+          tag: "{{ airflow_version }}-{{ distribution }}"
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
+      - test:
+          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
+          docker_repo: {{ docker_repo }}
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - publish:
@@ -52,6 +57,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -68,6 +74,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -110,10 +117,15 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          name: test-{{ airflow_version }}-{{ distribution }}
           docker_repo: "astronomerio/ap-airflow"
-          distribution_name: {{ distribution }}
+          tag: "{{ airflow_version }}-{{ distribution }}"
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
+      - test:
+          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
+          docker_repo: "astronomerio/ap-airflow"
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - publish:
@@ -124,6 +136,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -136,6 +149,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -183,19 +197,15 @@ jobs:
     executor: machine-executor
     description: Test Airflow images
     parameters:
-      airflow_version:
-        description: "The Airflow version, for example '1.10.5'"
-        type: string
-      distribution_name:
-        description: "The base distribution of the container"
-        type: string
       docker_repo:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        type: string
+      tag:
         type: string
     steps:
       - airflow-image-test:
           repository: "<< parameters.docker_repo >>"
-          tag: "<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          tag: "<< parameters.tag >>"
   scan:
     executor: clair-scanner/default
     description: Test Airflow images

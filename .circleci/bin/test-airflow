@@ -7,6 +7,9 @@ else
   export TAG=$2
 fi
 
+mkdir -p /tmp/test-reports
+export AIRFLOW_IMAGE="$REPOSITORY:$TAG"
+
 function get_debugging_info {
   for pod in $(kubectl get pods -n $NAMESPACE --no-headers=true | awk '{ print $1 }'); do
     echo "======================="
@@ -20,66 +23,68 @@ function get_debugging_info {
 # set DIR to the directory of this script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-source $DIR/install-ci-tools
-source $DIR/start-kind-cluster
-
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm repo add astronomer https://helm.astronomer.io
-helm repo update
-
-set +e
-
-# Delete all namespaces starting with 'airflow-', if any exist
-kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs kubectl delete namespaces --wait=false > /dev/null 2>&1
-
-export TEST_DOCKERFILE_PATH=$DIR/example_project/Dockerfile
-echo "FROM $REPOSITORY:$TAG" > "$TEST_DOCKERFILE_PATH"
-
 if [[ ! "$TAG" =~ .*-onbuild ]]; then
+
+  source $DIR/install-ci-tools
+  source $DIR/start-kind-cluster
+
+  helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+  helm repo add astronomer https://helm.astronomer.io
+  helm repo update
+
+  set +e
+
+  # Delete all namespaces starting with 'airflow-', if any exist
+  kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs kubectl delete namespaces --wait=false > /dev/null 2>&1
+
+  export TEST_DOCKERFILE_PATH=$DIR/example_project/Dockerfile
+  echo "FROM $REPOSITORY:$TAG" > "$TEST_DOCKERFILE_PATH"
+
   echo "COPY --chown=astro:astro . ." >> "$TEST_DOCKERFILE_PATH"
+
+  echo "Contents of the Dockerfile for example_project: "
+  cat "$TEST_DOCKERFILE_PATH"
+
+  export TEST_TAG=$TAG-test
+
+  docker build -t $REPOSITORY:$TEST_TAG $DIR/example_project
+
+  kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TEST_TAG
+
+  export NAMESPACE=airflow-$RANDOM
+  export RELEASE_NAME=$NAMESPACE
+  echo "Installing Airflow into kind as $RELEASE_NAME"
+
+  kubectl get pods -n $NAMESPACE -w &
+  WATCH_PID=$!
+
+  kubectl create namespace $NAMESPACE
+  helm install --namespace $NAMESPACE \
+    --set defaultAirflowRepository=$REPOSITORY \
+    --set defaultAirflowTag=$TEST_TAG \
+    --set images.airflow.repository=$REPOSITORY \
+    --set images.airflow.tag=$TEST_TAG \
+    --set images.airflow.pullPolicy=Never \
+    --set images.flower.pullPolicy=Never \
+    --set executor=KubernetesExecutor \
+    --wait \
+    $RELEASE_NAME astronomer/airflow
+
+  if [ ! $? -eq 0 ]; then
+    echo "Airflow image failed to work with latest Helm chart."
+    get_debugging_info
+    exit 1
+  fi
+
+  kill $WATCH_PID
+
+  echo "Deployed Airflow into latest Helm chart."
+
+  export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ print $1 }')
+  export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
+
+  pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
+
+else
+  pytest $DIR/test-airflow-onbuild-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
 fi
-
-echo "Contents of the Dockerfile for example_project: "
-cat "$TEST_DOCKERFILE_PATH"
-
-export TEST_TAG=$TAG-test
-
-docker build -t $REPOSITORY:$TEST_TAG $DIR/example_project
-
-kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TEST_TAG
-
-export NAMESPACE=airflow-$RANDOM
-export RELEASE_NAME=$NAMESPACE
-echo "Installing Airflow into kind as $RELEASE_NAME"
-
-kubectl get pods -n $NAMESPACE -w &
-WATCH_PID=$!
-
-kubectl create namespace $NAMESPACE
-helm install --namespace $NAMESPACE \
-  --set defaultAirflowRepository=$REPOSITORY \
-  --set defaultAirflowTag=$TEST_TAG \
-  --set images.airflow.repository=$REPOSITORY \
-  --set images.airflow.tag=$TEST_TAG \
-  --set images.airflow.pullPolicy=Never \
-  --set images.flower.pullPolicy=Never \
-  --set executor=KubernetesExecutor \
-  --wait \
-  $RELEASE_NAME astronomer/airflow
-
-if [ ! $? -eq 0 ]; then
-  echo "Airflow image failed to work with latest Helm chart."
-  get_debugging_info
-  exit 1
-fi
-
-kill $WATCH_PID
-
-echo "Deployed Airflow into latest Helm chart."
-
-export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ print $1 }')
-export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
-
-mkdir -p /tmp/test-reports
-export AIRFLOW_IMAGE="$REPOSITORY:$TEST_TAG"
-pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
