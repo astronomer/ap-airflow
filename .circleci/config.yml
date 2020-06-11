@@ -871,7 +871,7 @@ commands:
                     -t "<< parameters.severity_threshold >>" \
                     --report "/$sanitised_image_filename" \
                     --log "/log.json" \
-                    --allowlist /allowlist.yml \
+                    --whitelist /allowlist.yml \
                     --reportAll=true \
                     --exit-when-no-features=false \
                     "$image")
