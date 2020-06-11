@@ -24,7 +24,6 @@ LABEL io.astronomer.docker.airflow.onbuild=true
 
 # Install alpine packages
 ONBUILD COPY packages.txt .
-ONBUILD RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 ONBUILD RUN cat packages.txt | xargs apk add --no-cache
 
 # Install python packages

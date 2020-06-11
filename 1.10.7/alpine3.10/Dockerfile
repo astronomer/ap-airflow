@@ -98,6 +98,9 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& ln -sf /usr/bin/pip3 /usr/bin/pip \
 	&& sed -i -e '\#https://github.com/astronomer/#d' /etc/apk/repositories
 
+# Create man directory to solve issues installing JRE
+RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
+
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs
 
