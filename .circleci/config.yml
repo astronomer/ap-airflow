@@ -31,7 +31,7 @@ workflows:
           requires:
             - build-1.10.5-alpine3.10
       - test:
-          name: test-1.10.5-alpine3.10-onbuild
+          name: test-1.10.5-alpine3.10-images
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10"
           requires:
@@ -44,7 +44,7 @@ workflows:
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
-            - test-1.10.5-alpine3.10-onbuild
+            - test-1.10.5-alpine3.10-images
           filters:
             branches:
               only: master
@@ -56,7 +56,7 @@ workflows:
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
-            - test-1.10.5-alpine3.10-onbuild
+            - test-1.10.5-alpine3.10-images
           filters:
             branches:
               only: master
@@ -84,7 +84,7 @@ workflows:
           requires:
             - build-1.10.5-buster
       - test:
-          name: test-1.10.5-buster-onbuild
+          name: test-1.10.5-buster-images
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-buster"
           requires:
@@ -97,7 +97,7 @@ workflows:
           requires:
             - scan-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
-            - test-1.10.5-buster-onbuild
+            - test-1.10.5-buster-images
           filters:
             branches:
               only: master
@@ -109,7 +109,7 @@ workflows:
           requires:
             - scan-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
-            - test-1.10.5-buster-onbuild
+            - test-1.10.5-buster-images
           filters:
             branches:
               only: master
@@ -137,7 +137,7 @@ workflows:
           requires:
             - build-1.10.5-rhel7
       - test:
-          name: test-1.10.5-rhel7-onbuild
+          name: test-1.10.5-rhel7-images
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7"
           requires:
@@ -150,7 +150,7 @@ workflows:
           requires:
             - scan-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
-            - test-1.10.5-rhel7-onbuild
+            - test-1.10.5-rhel7-images
           filters:
             branches:
               only: master
@@ -162,7 +162,7 @@ workflows:
           requires:
             - scan-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
-            - test-1.10.5-rhel7-onbuild
+            - test-1.10.5-rhel7-images
           filters:
             branches:
               only: master
@@ -192,7 +192,7 @@ workflows:
           requires:
             - build-1.10.7-alpine3.10
       - test:
-          name: test-1.10.7-alpine3.10-onbuild
+          name: test-1.10.7-alpine3.10-images
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.7-alpine3.10"
           requires:
@@ -205,7 +205,7 @@ workflows:
           requires:
             - scan-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
-            - test-1.10.7-alpine3.10-onbuild
+            - test-1.10.7-alpine3.10-images
           filters:
             branches:
               only: master
@@ -217,7 +217,7 @@ workflows:
           requires:
             - scan-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
-            - test-1.10.7-alpine3.10-onbuild
+            - test-1.10.7-alpine3.10-images
           filters:
             branches:
               only: master
@@ -245,7 +245,7 @@ workflows:
           requires:
             - build-1.10.7-buster
       - test:
-          name: test-1.10.7-buster-onbuild
+          name: test-1.10.7-buster-images
           docker_repo: astronomerinc/ap-airflow
           tag: "1.10.7-buster"
           requires:
@@ -258,7 +258,7 @@ workflows:
           requires:
             - scan-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
-            - test-1.10.7-buster-onbuild
+            - test-1.10.7-buster-images
           filters:
             branches:
               only: master
@@ -270,7 +270,7 @@ workflows:
           requires:
             - scan-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
-            - test-1.10.7-buster-onbuild
+            - test-1.10.7-buster-images
           filters:
             branches:
               only: master
@@ -301,7 +301,7 @@ workflows:
           requires:
             - build-1.10.10-alpine3.10
       - test:
-          name: test-1.10.10-alpine3.10-onbuild
+          name: test-1.10.10-alpine3.10-images
           docker_repo: astronomerio/ap-airflow
           tag: "1.10.10-alpine3.10"
           requires:
@@ -314,7 +314,7 @@ workflows:
           requires:
             - scan-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
-            - test-1.10.10-alpine3.10-onbuild
+            - test-1.10.10-alpine3.10-images
           filters:
             branches:
               only: master
@@ -326,7 +326,7 @@ workflows:
           requires:
             - scan-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
-            - test-1.10.10-alpine3.10-onbuild
+            - test-1.10.10-alpine3.10-images
           filters:
             branches:
               only: master
@@ -355,7 +355,7 @@ workflows:
           requires:
             - build-1.10.10-buster
       - test:
-          name: test-1.10.10-buster-onbuild
+          name: test-1.10.10-buster-images
           docker_repo: astronomerio/ap-airflow
           tag: "1.10.10-buster"
           requires:
@@ -368,7 +368,7 @@ workflows:
           requires:
             - scan-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
-            - test-1.10.10-buster-onbuild
+            - test-1.10.10-buster-images
           filters:
             branches:
               only: master
@@ -380,7 +380,7 @@ workflows:
           requires:
             - scan-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
-            - test-1.10.10-buster-onbuild
+            - test-1.10.10-buster-images
           filters:
             branches:
               only: master
@@ -418,7 +418,7 @@ workflows:
           requires:
             - build-1.10.10-alpine3.10
       - test:
-          name: test-1.10.10-alpine3.10-onbuild
+          name: test-1.10.10-alpine3.10-images
           docker_repo: "astronomerio/ap-airflow"
           tag: "1.10.10-alpine3.10"
           requires:
@@ -431,7 +431,7 @@ workflows:
           requires:
             - scan-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
-            - test-1.10.10-alpine3.10-onbuild
+            - test-1.10.10-alpine3.10-images
           filters:
             branches:
               only: master
@@ -443,7 +443,7 @@ workflows:
           requires:
             - scan-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
-            - test-1.10.10-alpine3.10-onbuild
+            - test-1.10.10-alpine3.10-images
           filters:
             branches:
               only: master
@@ -469,7 +469,7 @@ workflows:
           requires:
             - build-1.10.10-buster
       - test:
-          name: test-1.10.10-buster-onbuild
+          name: test-1.10.10-buster-images
           docker_repo: "astronomerio/ap-airflow"
           tag: "1.10.10-buster"
           requires:
@@ -482,7 +482,7 @@ workflows:
           requires:
             - scan-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
-            - test-1.10.10-buster-onbuild
+            - test-1.10.10-buster-images
           filters:
             branches:
               only: master
@@ -494,7 +494,7 @@ workflows:
           requires:
             - scan-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
-            - test-1.10.10-buster-onbuild
+            - test-1.10.10-buster-images
           filters:
             branches:
               only: master

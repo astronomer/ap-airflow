@@ -34,7 +34,7 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
+          name: test-{{ airflow_version }}-{{ distribution }}-images
           docker_repo: {{ docker_repo }}
           tag: "{{ airflow_version }}-{{ distribution }}"
           requires:
@@ -51,7 +51,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only: master
@@ -67,7 +67,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only: master
@@ -109,7 +109,7 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-{{ airflow_version }}-{{ distribution }}-onbuild
+          name: test-{{ airflow_version }}-{{ distribution }}-images
           docker_repo: "astronomerio/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}"
           requires:
@@ -122,7 +122,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only: master
@@ -134,7 +134,7 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only: master

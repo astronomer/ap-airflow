@@ -207,7 +207,7 @@ def scheduler(request):
 
 @pytest.fixture(scope='session')
 def docker_client(request):
-    """ This is a text fixture for the docker client, should it be needed in a test """
+    """ This is a test fixture for the docker client, should it be needed in a test """
     client = docker.from_env()
     yield client
     client.close()
