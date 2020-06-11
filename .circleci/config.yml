@@ -712,17 +712,12 @@ commands:
             docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>.tar
             docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>-onbuild.tar
       - run:
-          name: Test Airflow Base Docker image
+          name: Test Airflow Docker images (Base + Onbuild)
           command: |
             set -e
             pyenv global 3.7.0
             pip install -r .circleci/test-requirements.txt
             .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
-      - run:
-          name: Test Airflow Onbuild Docker image
-          command: |
-            set -e
-            .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>-onbuild
       - store_test_results:
           path: /tmp/test-reports
   push:
