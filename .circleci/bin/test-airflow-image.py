@@ -18,6 +18,12 @@ from time import sleep
 from packaging.version import parse as semantic_version
 
 
+is_onbuild = "onbuild" in os.environ.get('AIRFLOW_IMAGE', "")
+skip_for_onbuild = pytest.mark.skipif(is_onbuild, reason="Testing onbuild image")
+skip_for_base = pytest.mark.skipif(not is_onbuild, reason="Testing base image")
+
+
+@skip_for_onbuild
 def test_airflow_in_path(webserver):
     """ Ensure Airflow is in PATH
     """
@@ -25,6 +31,7 @@ def test_airflow_in_path(webserver):
         "Expected 'airflow' to be in PATH"
 
 
+@skip_for_onbuild
 def test_tini_in_path(webserver):
     """ Ensure 'tini' is in PATH
     """
@@ -32,6 +39,7 @@ def test_tini_in_path(webserver):
         "Expected 'tini' to be in PATH"
 
 
+@skip_for_onbuild
 def test_entrypoint(webserver):
     """ There should be a file '/entrypoint'
     """
@@ -39,6 +47,7 @@ def test_entrypoint(webserver):
         "Expected to find /entrypoint"
 
 
+@skip_for_onbuild
 def test_maintainer(webserver, docker_client):
     """ Ensure the Docker image label 'maintainer' is set correctly
     """
@@ -47,6 +56,7 @@ def test_maintainer(webserver, docker_client):
         "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
 
 
+@skip_for_onbuild
 def test_version(webserver, docker_client):
     """ Ensure the version of Airflow matches the Docker image label
     """
@@ -55,6 +65,7 @@ def test_version(webserver, docker_client):
     assert airflow_version in version_output
 
 
+@skip_for_onbuild
 def test_elasticsearch_version(webserver):
     """ Astronomer runs a version of ElasticSearch that requires
     our users to run the client code of version 5.5.3 or greater
@@ -68,6 +79,7 @@ def test_elasticsearch_version(webserver):
         "elasticsearch module must be version 5.5.3 or greater"
 
 
+@skip_for_onbuild
 def test_werkzeug_version(webserver):
     """ Werkzeug pip module version >= 1.0.0 has an issue
     """
@@ -80,6 +92,7 @@ def test_werkzeug_version(webserver):
         "Werkzeug pip module version must be less than 1.0.0"
 
 
+@skip_for_onbuild
 def test_redis_version(webserver):
     """ Redis pip module version 3.4.0 has an issue in the Astronomer platform
     """
@@ -92,6 +105,7 @@ def test_redis_version(webserver):
         "redis module must not be 3.4.0"
 
 
+@skip_for_onbuild
 def test_astronomer_airflow_check_version(webserver):
     """ astronomer-airflow-version-check 1.0.0 has an issue in the Astronomer platform
     """
@@ -105,6 +119,7 @@ def test_astronomer_airflow_check_version(webserver):
         "astronomer-airflow-version-check module must be greater than 1.0.0"
 
 
+@skip_for_onbuild
 def test_airflow_connections(scheduler):
     """Test Connections can be added and deleted"""
     test_conn_uri = "postgresql://postgres_user:postgres_test@1.1.1.1:5432"
@@ -119,6 +134,7 @@ def test_airflow_connections(scheduler):
         'airflow connections -d --conn_id %s', test_conn_id)
 
 
+@skip_for_onbuild
 def test_airflow_variables(scheduler):
     """Test Variables can be added, retrieved and deleted"""
     # Assert Variables can be added
@@ -131,6 +147,7 @@ def test_airflow_variables(scheduler):
     assert "" in scheduler.check_output("airflow variables --delete test_key")
 
 
+@skip_for_onbuild
 def test_list_dags(scheduler):
     """
     Create Example DAG and add it to Scheduler POD
@@ -140,6 +157,7 @@ def test_list_dags(scheduler):
     assert "example_dag" in airflow_list_dags_output
 
 
+@skip_for_onbuild
 def test_airflow_trigger_dags(scheduler):
     """Test Triggering of DAGs & Pausing & Unpausing Dags"""
 
@@ -167,6 +185,14 @@ def test_airflow_trigger_dags(scheduler):
             break
 
     assert "success" in scheduler.check_output("airflow dag_state example_dag 2020-05-01")
+
+
+@skip_for_base
+def test_labels_for_onbuild_image(docker_client):
+    """ Ensure correct labels exists on onbuild image """
+    assert get_label(docker_client, 'io.astronomer.docker.airflow.onbuild') == "true"
+    assert get_label(docker_client, 'maintainer') == "Astronomer <humans@astronomer.io>", \
+        "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
 
 
 @pytest.fixture(scope='session')

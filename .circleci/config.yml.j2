@@ -34,15 +34,9 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-{{ airflow_version }}-{{ distribution }}
-          docker_repo: {{ docker_repo }}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
-      - test:
           name: test-{{ airflow_version }}-{{ distribution }}-onbuild
           docker_repo: {{ docker_repo }}
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          tag: "{{ airflow_version }}-{{ distribution }}"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - publish:
@@ -57,7 +51,6 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -74,7 +67,6 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -117,15 +109,9 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
-          name: test-{{ airflow_version }}-{{ distribution }}
-          docker_repo: "astronomerio/ap-airflow"
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
-      - test:
           name: test-{{ airflow_version }}-{{ distribution }}-onbuild
           docker_repo: "astronomerio/ap-airflow"
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          tag: "{{ airflow_version }}-{{ distribution }}"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - publish:
@@ -136,7 +122,6 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -149,7 +134,6 @@ workflows:
           requires:
             - scan-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}
             - test-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
@@ -206,6 +190,9 @@ jobs:
       - airflow-image-test:
           repository: "<< parameters.docker_repo >>"
           tag: "<< parameters.tag >>"
+      - airflow-image-test:
+          repository: "<< parameters.docker_repo >>"
+          tag: "<< parameters.tag >>-onbuild"
   scan:
     executor: clair-scanner/default
     description: Test Airflow images

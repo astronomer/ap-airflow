@@ -7,9 +7,6 @@ else
   export TAG=$2
 fi
 
-mkdir -p /tmp/test-reports
-export AIRFLOW_IMAGE="$REPOSITORY:$TAG"
-
 function get_debugging_info {
   for pod in $(kubectl get pods -n $NAMESPACE --no-headers=true | awk '{ print $1 }'); do
     echo "======================="
@@ -83,8 +80,8 @@ if [[ ! "$TAG" =~ .*-onbuild ]]; then
   export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ print $1 }')
   export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
 
-  pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
-
-else
-  pytest $DIR/test-airflow-onbuild-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
 fi
+
+mkdir -p /tmp/test-reports
+export AIRFLOW_IMAGE="$REPOSITORY:$TAG"
+pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
