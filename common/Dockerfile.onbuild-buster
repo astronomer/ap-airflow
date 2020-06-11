@@ -22,6 +22,7 @@ LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.airflow.onbuild=true
 
 ONBUILD COPY packages.txt .
+ONBUILD RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 ONBUILD USER root
 ONBUILD RUN if [[ -s packages.txt ]]; then \
     apt-get update && cat packages.txt | xargs apt-get install -y --no-install-recommends \

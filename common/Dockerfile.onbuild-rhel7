@@ -24,6 +24,7 @@ LABEL io.astronomer.docker.airflow.onbuild=true
 
 # Install RHEL packages
 ONBUILD COPY packages.txt .
+ONBUILD RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 ONBUILD RUN if [[ -s packages.txt ]]; then \
     yum update -y && cat packages.txt | xargs yum install -y; \
   fi
