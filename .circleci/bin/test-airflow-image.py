@@ -12,6 +12,7 @@ execs into a running container.
 import os
 import docker
 import pytest
+import subprocess
 import testinfra
 from time import sleep
 from enum import Enum
@@ -181,6 +182,23 @@ def test_labels_for_onbuild_image(docker_client):
     assert labels['io.astronomer.docker.airflow.onbuild'] == "true"
     assert labels['maintainer'] == "Astronomer <humans@astronomer.io>", \
         "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
+
+
+def test_apache_airflow_in_requirements(tmp_path):
+    """
+    Add test to check that docker build errors when apache-airflow is specified
+    in requirements.txt for an onbuild image
+    """
+    test_project = tmp_path / "test_project"
+    test_project.mkdir()
+    image_name = get_image_name(ImageType.ONBUILD.value)
+
+    (test_project / "Dockerfile").write_text(f"FROM {image_name}")
+    (test_project / "requirements.txt").write_text("apache-airflow")
+    (test_project / "packages.txt").touch()
+    output = subprocess.run(['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True)
+    assert output.returncode == 1
+    assert b"Do not upgrade by specifying 'apache-airflow' in your requirements.txt" in output.stderr
 
 
 @pytest.fixture(scope='session')

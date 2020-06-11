@@ -28,7 +28,10 @@ ONBUILD RUN cat packages.txt | xargs apk add --no-cache
 
 # Install python packages
 ONBUILD COPY requirements.txt .
-ONBUILD RUN pip install --no-cache-dir -q -r requirements.txt
+ONBUILD RUN if grep -q 'apache-airflow' requirements.txt; then \
+    echo >&2 "Do not upgrade by specifying 'apache-airflow' in your requirements.txt, change the base image instead!";  exit 1; \
+  fi; \
+  pip install --no-cache-dir -q -r requirements.txt
 
 # Copy entire project directory
 ONBUILD COPY . .
