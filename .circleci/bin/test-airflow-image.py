@@ -9,15 +9,19 @@ testinfra simplifies and provides syntactic sugar for doing
 execs into a running container.
 """
 
-import json
 import os
-import pytest
-import subprocess
-import testinfra
 import docker
+import pytest
+import testinfra
 from time import sleep
+from enum import Enum
 
 from packaging.version import parse as semantic_version
+
+
+class ImageType(Enum):
+    BASE = "base"
+    ONBUILD = "onbuild"
 
 
 def test_airflow_in_path(webserver):
@@ -171,6 +175,14 @@ def test_airflow_trigger_dags(scheduler):
     assert "success" in scheduler.check_output("airflow dag_state example_dag 2020-05-01")
 
 
+def test_labels_for_onbuild_image(docker_client):
+    """ Ensure correct labels exists on onbuild image """
+    labels = get_labels(docker_client, ImageType.ONBUILD.value)
+    assert labels['io.astronomer.docker.airflow.onbuild'] == "true"
+    assert labels['maintainer'] == "Astronomer <humans@astronomer.io>", \
+        "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
+
+
 @pytest.fixture(scope='session')
 def webserver(request):
     """ This is the host fixture for testinfra. To read more, please see
@@ -195,28 +207,29 @@ def scheduler(request):
 
 @pytest.fixture(scope='session')
 def docker_client(request):
-    """ This is a text fixture for the docker client,
-    should it be needed in a test
-    """
+    """ This is a test fixture for the docker client, should it be needed in a test """
     client = docker.from_env()
     yield client
     client.close()
 
 
-def get_image_name():
-    """ Fetch image name from an environment variable
-    and inform the user if they are not using it right
-    """
+def get_image_name(image_type=ImageType.BASE.value):
+    """ Fetch image name from an environment variable and inform the user if they are not using it right """
+    env_name = 'AIRFLOW_IMAGE'
     try:
-        return os.environ['AIRFLOW_IMAGE']
+        if image_type == ImageType.ONBUILD.value:
+            env_name = 'AIRFLOW_ONBUILD_IMAGE'
+            image = os.environ[env_name]
+        else:
+            image = os.environ[env_name]
+        return image
     except KeyError:
-        raise Exception("Please provide docker image name to pytest using environment variable AIRFLOW_IMAGE")
+        raise Exception(f"Please provide docker image name to pytest using environment variable {env_name}")
 
 
-def get_label(client, label):
-    """ Fetch the value of a label from the image
-    """
-    image_name = get_image_name()
+def get_label(client, label, image_type=ImageType.BASE.value):
+    """ Fetch the value of a label from the image """
+    image_name = get_image_name(image_type=image_type)
     image = client.images.get(image_name)
     try:
         return image.labels[label]
@@ -224,43 +237,8 @@ def get_label(client, label):
         raise Exception(f"Image should have a label '{label}'")
 
 
-def start_postgres():
-    """ Idempotently start a Postgres database
-    """
-    docker_client = docker.from_env()
-    try:
-        postgres = docker_client.containers.get('postgres')
-    except docker.errors.NotFound:
-        return subprocess.check_output(
-            ['docker', 'run', '--rm',
-             '--name', 'postgres',
-             '-e', 'POSTGRES_PASSWORD=notsecretpassword',
-             '-d', 'postgres:9.6.15']
-        ).decode().strip()
-    return postgres.short_id
-
-
-def get_ip_from_id(_id):
-    """ Return the Docker private network IP of a given Docker container ID
-    """
-    return subprocess.check_output(
-        ['docker', 'inspect',
-         '-f', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',
-         _id]
-    ).decode().strip()
-
-
-def wait_for_container(_id):
-    # It takes Docker a short time to start
-    # the container. We want to make sure it's up
-    # and running before handing off to be tested.
-    found_container = False
-    for _ in range(0, 100):
-        output = subprocess.check_output("docker ps", shell=True).decode()
-        if _id[:5] in output:
-            found_container = True
-            break
-        sleep(0.1)
-    if not found_container:
-        raise Exception("Error: Docker container did not start running within 10 seconds. "
-                        "It did not show up in the docker ps output")
+def get_labels(client, image_type=ImageType.BASE.value):
+    """ Fetch all the labels from the image """
+    image_name = get_image_name(image_type=image_type)
+    image = client.images.get(image_name)
+    return image.labels

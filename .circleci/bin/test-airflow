@@ -35,9 +35,7 @@ kubectl get namespaces --no-headers=true | awk '/airflow-*/{print $1}' | xargs k
 export TEST_DOCKERFILE_PATH=$DIR/example_project/Dockerfile
 echo "FROM $REPOSITORY:$TAG" > "$TEST_DOCKERFILE_PATH"
 
-if [[ ! "$TAG" =~ .*-onbuild ]]; then
-  echo "COPY --chown=astro:astro . ." >> "$TEST_DOCKERFILE_PATH"
-fi
+echo "COPY --chown=astro:astro . ." >> "$TEST_DOCKERFILE_PATH"
 
 echo "Contents of the Dockerfile for example_project: "
 cat "$TEST_DOCKERFILE_PATH"
@@ -81,5 +79,6 @@ export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ 
 export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
 
 mkdir -p /tmp/test-reports
-export AIRFLOW_IMAGE="$REPOSITORY:$TEST_TAG"
+export AIRFLOW_IMAGE="$REPOSITORY:$TAG"
+export AIRFLOW_ONBUILD_IMAGE="$REPOSITORY:$TAG-onbuild"
 pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
