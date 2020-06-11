@@ -776,9 +776,9 @@ commands:
       image_name:
         type: string
         default: $CIRCLE_PROJECT_REPONAME
-      whitelist:
+      allowlist:
         type: string
-        default: cve-whitelist.yaml
+        default: cve-allowlist.yaml
     steps:
       - checkout
       - setup_remote_docker
@@ -788,7 +788,7 @@ commands:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
       - modified-orb:
-          whitelist: "<< parameters.whitelist >>"
+          allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
   # TODO: move to an Astronomer orbs repo, publish orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
@@ -803,9 +803,9 @@ commands:
         type: "string"
         description: "Path to a file of images to scan"
         default: ""
-      whitelist:
+      allowlist:
         type: "string"
-        description: "Path to a CVE whitelist"
+        description: "Path to a CVE allowlist"
         default: ""
       severity_threshold:
         type: "string"
@@ -852,11 +852,11 @@ commands:
             clair_ip=$(docker exec -it "$CLAIR" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
             scanner_ip=$(docker exec -it "$CLAIR_SCANNER" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
 
-            if [ -n "<< parameters.whitelist >>" ]; then
-                cat "<< parameters.whitelist >>"
-                docker cp "<< parameters.whitelist >>" "$CLAIR_SCANNER:/whitelist.yml"
+            if [ -n "<< parameters.allowlist >>" ]; then
+                cat "<< parameters.allowlist >>"
+                docker cp "<< parameters.allowlist >>" "$CLAIR_SCANNER:/allowlist.yml"
 
-                WHITELIST="-w /whitelist.yml"
+                allowlist="-w /allowlist.yml"
             fi
 
             function scan() {
@@ -871,7 +871,7 @@ commands:
                     -t "<< parameters.severity_threshold >>" \
                     --report "/$sanitised_image_filename" \
                     --log "/log.json" \
-                    --whitelist /whitelist.yml \
+                    --allowlist /allowlist.yml \
                     --reportAll=true \
                     --exit-when-no-features=false \
                     "$image")
