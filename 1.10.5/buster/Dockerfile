@@ -164,6 +164,9 @@ RUN groupadd gosuers \
     && chgrp gosuers /usr/sbin/gosu \
     && chmod u+s,g+sx,o-rx /usr/sbin/gosu
 
+# Create man directory to solve issues installing JRE
+RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
+
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
 # with this
