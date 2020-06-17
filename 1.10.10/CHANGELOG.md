@@ -1,5 +1,20 @@
 # Changelog
 
+Astronomer Certified 1.10.10-3, 2020-06-18
+--------------------------------------------
+
+### Bug Fixes
+
+- [AIRFLOW-6959] Use NULL as dag.description default value ([commit](https://github.com/astronomer/airflow/commit/548f4be32))
+
+### Improvements
+
+- Fix Celery default to no longer allow pickle ([commit](https://github.com/astronomer/airflow/commit/45a2a3315))
+- Don't use the `|safe` filter in code, it's risky ([commit](https://github.com/astronomer/airflow/commit/774a34e12))
+- Further validation that only task commands are run by executors ([commit](https://github.com/astronomer/airflow/commit/c96af8e3f))
+- Add note about using dag_run.conf in BashOperator ([commit](https://github.com/astronomer/airflow/commit/2591294df))
+- Validate only task commands are run by executors ([commit](https://github.com/astronomer/airflow/commit/4aea266a6))
+
 Astronomer Certified 1.10.10-2, 2020-06-03
 --------------------------------------------
 
