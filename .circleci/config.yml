@@ -12,35 +12,35 @@ workflows:
           name: build-1.10.5-alpine3.10
           airflow_version: 1.10.5
           distribution_name: alpine3.10
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
       - scan:
           name: scan-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
           distribution_name: alpine3.10-onbuild
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           requires:
             - build-1.10.5-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.5-alpine3.10
       - test:
           name: test-1.10.5-alpine3.10-images
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10"
           requires:
             - build-1.10.5-alpine3.10
       - publish:
           name: publish-1.10.5-alpine3.10
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10"
-          extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-9.dev-alpine3.10"
+          extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-8-alpine3.10"
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
@@ -50,9 +50,9 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.5-alpine3.10-onbuild
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10-onbuild"
-          extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-9.dev-alpine3.10-onbuild"
+          extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-8-alpine3.10-onbuild"
           requires:
             - scan-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
@@ -65,35 +65,35 @@ workflows:
           name: build-1.10.5-buster
           airflow_version: 1.10.5
           distribution_name: buster
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
       - scan:
           name: scan-1.10.5-buster-onbuild
           airflow_version: 1.10.5
           distribution_name: buster-onbuild
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           requires:
             - build-1.10.5-buster
       - scan-trivy:
           name: scan-trivy-1.10.5-buster-onbuild
           airflow_version: 1.10.5
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.5-buster
       - test:
           name: test-1.10.5-buster-images
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-buster"
           requires:
             - build-1.10.5-buster
       - publish:
           name: publish-1.10.5-buster
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-buster"
-          extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-9.dev-buster"
+          extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-8-buster"
           requires:
             - scan-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
@@ -103,9 +103,9 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.5-buster-onbuild
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-buster-onbuild"
-          extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-9.dev-buster-onbuild"
+          extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-8-buster-onbuild"
           requires:
             - scan-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
@@ -118,35 +118,35 @@ workflows:
           name: build-1.10.5-rhel7
           airflow_version: 1.10.5
           distribution_name: rhel7
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
       - scan:
           name: scan-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
           distribution_name: rhel7-onbuild
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           requires:
             - build-1.10.5-rhel7
       - scan-trivy:
           name: scan-trivy-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           distribution: rhel7
           distribution_name: rhel7-onbuild
           requires:
             - build-1.10.5-rhel7
       - test:
           name: test-1.10.5-rhel7-images
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7"
           requires:
             - build-1.10.5-rhel7
       - publish:
           name: publish-1.10.5-rhel7
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7"
-          extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM},1.10.5-9.dev-rhel7"
+          extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM},1.10.5-8-rhel7"
           requires:
             - scan-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
@@ -156,9 +156,9 @@ workflows:
               only: master
       - publish:
           name: publish-1.10.5-rhel7-onbuild
-          docker_repo: astronomerio/ap-airflow
+          docker_repo: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7-onbuild"
-          extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM},1.10.5-9.dev-rhel7-onbuild"
+          extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM},1.10.5-8-rhel7-onbuild"
           requires:
             - scan-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
