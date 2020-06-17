@@ -12,19 +12,19 @@ from jinja2 import Environment, FileSystemLoader
 
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.5-8", ["alpine3.10", "buster", "rhel7"]),
-    ("1.10.7-12", ["alpine3.10", "buster"]),
+    ("1.10.7-13.dev", ["alpine3.10", "buster"]),
     ("1.10.10-3.dev", ["alpine3.10", "buster"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
-DEV_WHITELIST = ["1.10.5"]
+DEV_ALLOWLIST = ["1.10.5"]
 
 
 def dev_releases(all_releases):
     """Find dev releases from a list of releases"""
     return [
         release for release in all_releases
-        if "dev" in release and get_airflow_version(release) not in DEV_WHITELIST
+        if "dev" in release and get_airflow_version(release) not in DEV_ALLOWLIST
     ]
 
 
@@ -53,7 +53,7 @@ def main():
 
     config = template.render(
         image_map=IMAGE_MAP,
-        dev_whitelist=DEV_WHITELIST,
+        dev_allowlist=DEV_ALLOWLIST,
     )
     warning_header = "# Warning: automatically generated file\n" + \
                      "# Please edit config.yml.j2, and use the script generate_circleci_config.py\n"
@@ -73,7 +73,7 @@ def replace_version_info():
             file_name = os.path.join(project_directory, airflow_version, distro, "Dockerfile")
 
             if "dev" in ac_version:
-                if airflow_version not in DEV_WHITELIST:
+                if airflow_version not in DEV_ALLOWLIST:
                     ac_version = ac_version.replace("dev", "*")
 
             with open(file_name) as f:
