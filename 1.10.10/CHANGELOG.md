@@ -1,14 +1,16 @@
 # Changelog
 
-Astronomer Certified 1.10.10-3, 2020-06-18
+Astronomer Certified 1.10.10-3, 2020-06-17
 --------------------------------------------
 
 ### Bug Fixes
 
 - [AIRFLOW-6959] Use NULL as dag.description default value ([commit](https://github.com/astronomer/airflow/commit/548f4be32))
+- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/airflow/commit/bf517ea))
 
 ### Improvements
 
+- Add man directories to buster images to fix jre install problems ([commit](https://github.com/astronomer/ap-airflow/commit/551995e))
 - Fix Celery default to no longer allow pickle ([commit](https://github.com/astronomer/airflow/commit/45a2a3315))
 - Don't use the `|safe` filter in code, it's risky ([commit](https://github.com/astronomer/airflow/commit/774a34e12))
 - Further validation that only task commands are run by executors ([commit](https://github.com/astronomer/airflow/commit/c96af8e3f))
