@@ -1,5 +1,22 @@
 # Changelog
 
+Astronomer Certified 1.10.7-13, 2020-06-18
+--------------------------------------------
+
+### Bug Fixes
+
+- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/airflow/commit/bf517ea))
+
+### Improvements
+
+- Add man directories to buster images to fix jre install problems ([commit](https://github.com/astronomer/ap-airflow/commit/551995e))
+- Don't use the `|safe` filter in code, it's risky ([commit](https://github.com/astronomer/airflow/commit/e84c4eb))
+- Further validation that only task commands are run by executors ([commit](https://github.com/astronomer/airflow/commit/9405e0b))
+- Validate only task commands are run by executors ([commit](https://github.com/astronomer/airflow/commit/22c5f2b))
+- Fix Celery default to no longer allow pickle ([commit](https://github.com/astronomer/airflow/commit/d819da6))
+- Remove duplicate error message on chart connection failure ([commit](https://github.com/astronomer/airflow/commit/476c44c))
+- Add note about using dag_run.conf in BashOperator ([commit](https://github.com/astronomer/airflow/commit/4d86731))
+
 Astronomer Certified 1.10.7-12, 2020-06-03
 --------------------------------------------
 
