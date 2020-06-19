@@ -6,7 +6,7 @@ Astronomer Certified 1.10.10-3, 2020-06-17
 ### Bug Fixes
 
 - [AIRFLOW-6959] Use NULL as dag.description default value ([commit](https://github.com/astronomer/airflow/commit/548f4be32))
-- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/airflow/commit/bf517ea))
+- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/ap-airflow/commit/bf517ea))
 
 ### Improvements
 
