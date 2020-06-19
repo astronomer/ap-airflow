@@ -5,7 +5,7 @@ Astronomer Certified 1.10.5-9, 2020-06-18
 
 ### Bug Fixes
 
-- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/airflow/commit/bf517ea))
+- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/ap-airflow/commit/bf517ea))
 - Pin azure-storage-blob version to <12 ([commit](https://github.com/astronomer/airflow/commit/1794ea0))
 - Azure storage 0.37.0 is not installable any more ([commit](https://github.com/astronomer/airflow/commit/cf9be33c))
 - Pin Werkzeug < 1.0.0 release - 1.0.0 is not compatible ([commit](https://github.com/astronomer/airflow/commit/8a7549c5ff))
