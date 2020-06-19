@@ -5,7 +5,7 @@ Astronomer Certified 1.10.7-13, 2020-06-18
 
 ### Bug Fixes
 
-- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/airflow/commit/bf517ea))
+- Block people from upgrading Airflow in the image ([commit](https://github.com/astronomer/ap-airflow/commit/bf517ea5bb3))
 
 ### Improvements
 
