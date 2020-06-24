@@ -102,9 +102,6 @@ def update_metadata(unpacked_folder, ver: str):
 
     new_metadata.set_payload(metadata.get_payload())
 
-    #import difflib, sys
-    #sys.stdout.writelines(difflib.context_diff(metadata.as_string().splitlines(keepends=True), new_metadata.as_string().splitlines(keepends=True)))
-
     with open(os.path.join(dist_info_path, 'METADATA'), 'w') as fh:
         fh.write(new_metadata.as_string())
 
@@ -117,7 +114,6 @@ def update_metadata(unpacked_folder, ver: str):
 
     return metadata['Name']
 
-#repack_wheel('https://dist.apache.org/repos/dist/dev/airflow/backport-providers/2020.6.24rc1/apache_airflow_backport_providers_amazon-2020.6.24rc1-py3-none-any.whl')
 
 def main():
     parser = ArgumentParser()
