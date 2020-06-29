@@ -1,5 +1,13 @@
 # Changelog
 
+Astronomer Certified 1.10.10-4.dev, 2020-06-29
+----------------------------------------------
+
+### Improvements
+
+- Enable Dag Serialization by default ([commit](https://github.com/astronomer/airflow/commit/d587b6f))
+
+
 Astronomer Certified 1.10.10-3, 2020-06-17
 --------------------------------------------
 
