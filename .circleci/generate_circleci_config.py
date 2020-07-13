@@ -14,6 +14,7 @@ IMAGE_MAP = collections.OrderedDict([
     ("1.10.5-9", ["alpine3.10", "buster", "rhel7"]),
     ("1.10.7-13", ["alpine3.10", "buster"]),
     ("1.10.10-4.dev", ["alpine3.10", "buster"]),
+    ("1.10.11-1.dev", ["alpine3.10", "buster"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
@@ -79,8 +80,17 @@ def replace_version_info():
             with open(file_name) as f:
                 file_contents = f.read()
 
+                # Replace AC Version
                 new_text = re.sub(
                     r'ARG VERSION=(.*)', f'ARG VERSION="{ac_version}"', file_contents,
+                    flags=re.MULTILINE
+                )
+
+                # Replace Airflow Version
+                new_text = re.sub(
+                    r'LABEL io.astronomer.docker.airflow.version=(.*)',
+                    f'LABEL io.astronomer.docker.airflow.version="{airflow_version}"',
+                    new_text,
                     flags=re.MULTILINE
                 )
 
