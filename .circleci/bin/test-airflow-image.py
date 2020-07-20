@@ -200,6 +200,11 @@ def test_apache_airflow_in_requirements(tmp_path):
     assert output.returncode == 1
     assert b"Do not upgrade by specifying 'apache-airflow' in your requirements.txt" in output.stderr
 
+    # Test that you can still use backport-packages that start with "apache-airflow"
+    (test_project / "requirements.txt").write_text("apache-airflow-backport-providers-amazon")
+    output = subprocess.run(['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True)
+    assert output.returncode == 0
+
 
 @pytest.fixture(scope='session')
 def webserver(request):
