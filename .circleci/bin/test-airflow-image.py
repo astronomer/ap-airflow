@@ -179,20 +179,17 @@ def test_airflow_trigger_dags(scheduler):
 def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
+    get_run_as_user = scheduler.check_output("""
+    python -c "from airflow.configuration import conf; print(conf.get('kubernetes','run_as_user'))"
+    """)
 
     # Confirm that run_as_user is the UID for astro user (and not root) for AC images
     if distro == "debian":
-        assert scheduler.check_output(
-            "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-            "grep '^run_as_user' | awk '{print $3}'") == "50000"
+        assert get_run_as_user == "50000"
     elif distro in ["alpine", "rhel"]:
-        assert scheduler.check_output(
-            "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-            "grep '^run_as_user' | awk '{print $3}'") == "100"
+        assert get_run_as_user == "100"
     else:
-        assert scheduler.check_output(
-            "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-            "grep '^run_as_user' | awk '{print $3}'").strip() == ""
+        assert get_run_as_user == ""
 
 
 def test_labels_for_onbuild_image(docker_client):
