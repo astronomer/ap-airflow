@@ -180,7 +180,7 @@ def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
 
-    # Confirm that run_as_user is not root for Alpine & Debian images
+    # Confirm that run_as_user is the UID for astro user (and not root) for AC images
     if distro == "debian":
         assert scheduler.check_output(
             "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
