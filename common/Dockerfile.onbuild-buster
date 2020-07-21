@@ -31,7 +31,7 @@ ONBUILD RUN if [[ -s packages.txt ]]; then \
 
 # Install python packages
 ONBUILD COPY requirements.txt .
-ONBUILD RUN if grep -q 'apache-airflow' requirements.txt; then \
+ONBUILD RUN if grep -qx 'apache-airflow' requirements.txt; then \
     echo >&2 "Do not upgrade by specifying 'apache-airflow' in your requirements.txt, change the base image instead!";  exit 1; \
   fi; \
   pip install --no-cache-dir -q -r requirements.txt
