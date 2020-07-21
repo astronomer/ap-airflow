@@ -181,7 +181,7 @@ def test_airflow_configs(scheduler, docker_client):
     distro = get_label(docker_client, "io.astronomer.docker.distro")
     get_run_as_user = scheduler.check_output("""
     python -c "from airflow.configuration import conf; print(conf.get('kubernetes','run_as_user'))"
-    """)
+    """.strip())
 
     # Confirm that run_as_user is the UID for astro user (and not root) for AC images
     if distro == "debian":
