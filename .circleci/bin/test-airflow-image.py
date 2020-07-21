@@ -184,15 +184,15 @@ def test_airflow_configs(scheduler, docker_client):
     if distro == "debian":
         assert scheduler.check_output(
             "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-            "grep '^run_as_user'") == "50000"
+            "grep '^run_as_user' | awk '{print $3}'") == "50000"
     elif distro == "alpine":
         assert scheduler.check_output(
             "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-            "grep '^run_as_user'") == "100"
+            "grep '^run_as_user' | awk '{print $3}'") == "100"
     else:
         assert scheduler.check_output(
             "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-            "grep '^run_as_user'").strip() == ""
+            "grep '^run_as_user' | awk '{print $3}'").strip() == ""
 
 
 def test_labels_for_onbuild_image(docker_client):
