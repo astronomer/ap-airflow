@@ -100,6 +100,9 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& ln -sf /usr/bin/pip3 /usr/bin/pip \
 	&& sed -i -e '\#https://github.com/astronomer/#d' /etc/apk/repositories
 
+# Run pods spun up by Kubernetes Executor as astro user
+RUN sed -i -e 's/^run_as_user =.*/run_as_user = 100/g' /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
+
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs
 

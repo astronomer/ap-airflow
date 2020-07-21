@@ -79,8 +79,17 @@ def replace_version_info():
             with open(file_name) as f:
                 file_contents = f.read()
 
+                # Replace AC Version
                 new_text = re.sub(
                     r'ARG VERSION=(.*)', f'ARG VERSION="{ac_version}"', file_contents,
+                    flags=re.MULTILINE
+                )
+
+                # Replace Airflow Version
+                new_text = re.sub(
+                    r'LABEL io.astronomer.docker.airflow.version=(.*)',
+                    f'LABEL io.astronomer.docker.airflow.version="{airflow_version}"',
+                    new_text,
                     flags=re.MULTILINE
                 )
 
