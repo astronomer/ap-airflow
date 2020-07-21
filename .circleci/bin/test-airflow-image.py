@@ -185,7 +185,7 @@ def test_airflow_configs(scheduler, docker_client):
         assert scheduler.check_output(
             "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
             "grep '^run_as_user' | awk '{print $3}'") == "50000"
-    elif distro == "alpine":
+    elif distro in ["alpine", "rhel"]:
         assert scheduler.check_output(
             "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
             "grep '^run_as_user' | awk '{print $3}'") == "100"
