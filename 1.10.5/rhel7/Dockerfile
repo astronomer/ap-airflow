@@ -4,7 +4,7 @@ MAINTAINER Astronomer <humans@astronomer.io>
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 LABEL io.astronomer.docker=true
-LABEL io.astronomer.docker.distro="alpine"
+LABEL io.astronomer.docker.distro="rhel"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
 LABEL io.astronomer.docker.airflow.version="1.10.5"
@@ -103,6 +103,9 @@ RUN pip3.6 install --no-cache-dir cryptography  \
      && /node-v12.13.1-linux-x64/bin/npm install \
      && /node-v12.13.1-linux-x64/bin/npm run build \
      && update-alternatives --install /usr/bin/python3 python3 $(which python3.6) 0
+
+# Run pods spun up by Kubernetes Executor as astro user
+RUN sed -i -e 's/^run_as_user =.*/run_as_user = 100/g' /usr/local/lib/python3.6/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs

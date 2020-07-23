@@ -176,6 +176,29 @@ def test_airflow_trigger_dags(scheduler):
     assert "success" in scheduler.check_output("airflow dag_state example_dag 2020-05-01")
 
 
+def test_airflow_configs(scheduler, docker_client):
+    """Verify certain Airflow configurations"""
+    distro = get_label(docker_client, "io.astronomer.docker.distro")
+
+    # Confirm that run_as_user is the UID for astro user (and not root) for AC images
+    if distro == "debian":
+        assert scheduler.check_output(
+            "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
+            "grep '^run_as_user' | awk '{print $3}'") == "50000"
+    elif distro == "alpine":
+        assert scheduler.check_output(
+            "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
+            "grep '^run_as_user' | awk '{print $3}'") == "100"
+    elif distro == "rhel":
+        assert scheduler.check_output(
+            "cat /usr/local/lib/python3.6/site-packages/airflow/config_templates/default_airflow.cfg | "
+            "grep '^run_as_user' | awk '{print $3}'") == "100"
+    else:
+        assert scheduler.check_output(
+            "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
+            "grep '^run_as_user' | awk '{print $3}'").strip() == ""
+
+
 def test_labels_for_onbuild_image(docker_client):
     """ Ensure correct labels exists on onbuild image """
     labels = get_labels(docker_client, ImageType.ONBUILD.value)
