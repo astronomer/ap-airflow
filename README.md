@@ -24,7 +24,7 @@ For each of our `-onbuild` images we publish two flavors of tag:
 
 1. `astronomerinc/ap-airflow:1.10.10-buster-onbuild` which is our latest release of the `1.10.10` series,
 including latest security patches. This tag is "floating" or movable.
-1. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
+2. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
 
 ## Contents of this repo
 
