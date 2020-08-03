@@ -11,6 +11,21 @@ If you'd like to see the platform in action, [start a free trial on our SaaS ser
 Docker images for deploying and running Astronomer Certified are currently available on
 [DockerHub](https://hub.docker.com/u/astronomerinc/).
 
+We publish 2 variants for each AC Version (example: `1.10.10-3`) and distribution (`debian buster` and `alpine`):
+
+1. `astronomerinc/ap-airflow:1.10.10-3-buster`
+1. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild`
+
+The only difference between them is that the `-onbuild` images uses Docker `ONBUILD` commands to
+copy `packages.txt`, `requirements.txt` and the entire project directory (including `dags`,
+`plugins` folders etc) in the docker file.
+
+For each of our `-onbuild` images we publish two flavors of tag:
+
+1. `astronomerinc/ap-airflow:1.10.10-buster-onbuild` which is our latest release of the `1.10.10` series,
+including latest security patches. This tag is "floating" or movable.
+1. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
+
 ## Contents of this repo
 
 * The official Dockerfiles that build Astronomer Certified Images
@@ -28,6 +43,8 @@ All changes applied to available point releases will be documented in the `CHANG
 - [1.10.5 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.5/CHANGELOG.md)
 - [1.10.7 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.7/CHANGELOG.md)
 - [1.10.10 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.10/CHANGELOG.md)
+
+## Testing
 
 ### Local testing
 

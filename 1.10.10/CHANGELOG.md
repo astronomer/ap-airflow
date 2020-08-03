@@ -3,9 +3,15 @@
 Astronomer Certified 1.10.10-4.dev, 2020-06-29
 ----------------------------------------------
 
+- Fix broken `/landing_times` View ([commit](https://github.com/astronomer/airflow/commit/a55b8f6))
+- Run Kubernetes Worker Pods as astro user ([commit](https://github.com/astronomer/ap-airflow/commit/f6819a4))
+- **Dockerfile**: Exactly match `apache-airflow` in `requirements.txt` to restrict installation of 'apache-airflow' ([commit](https://github.com/astronomer/ap-airflow/commit/c2536db))
+- **Astro Version Check Plugin**: Only show warnings on old versions ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/24ad49e))
+- **Astro Version Check Plugin**: Make the plugin MySQL compatible ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/0210f60))
+
 ### Improvements
 
-- Enable Dag Serialization by default ([commit](https://github.com/astronomer/airflow/commit/d587b6f))
+- **Astro Version Check Plugin**: Add more data to UserAgent on Updater Service requests ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/ea7dc6a))
 
 
 Astronomer Certified 1.10.10-3, 2020-06-17
