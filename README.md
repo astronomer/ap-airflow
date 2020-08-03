@@ -14,7 +14,7 @@ Docker images for deploying and running Astronomer Certified are currently avail
 We publish 2 variants for each AC Version (example: `1.10.10-3`) and distribution (`debian buster` and `alpine`):
 
 1. `astronomerinc/ap-airflow:1.10.10-3-buster`
-1. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild`
+2. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild`
 
 The only difference between them is that the `-onbuild` images uses Docker `ONBUILD` commands to
 copy `packages.txt`, `requirements.txt` and the entire project directory (including `dags`,
