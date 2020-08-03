@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 1.10.7-14.dev, 2020-08-03
+-----------------------------------------------
+
+### Bug Fixes
+
+- Fix broken `/landing_times` View ([commit](https://github.com/astronomer/airflow/commit/5e27133))
+- Run Kubernetes Worker Pods as astro user ([commit](https://github.com/astronomer/ap-airflow/commit/f6819a4))
+- **Dockerfile**: Exactly match `apache-airflow` in `requirements.txt` to restrict installation of 'apache-airflow' ([commit](https://github.com/astronomer/ap-airflow/commit/c2536db))
+- **Astro Version Check Plugin**: Only show warnings on old versions ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/24ad49e))
+- **Astro Version Check Plugin**: Make the plugin MySQL compatible ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/0210f60f91bd54fced1a2d06c40d082be23c0d8a))
+
 Astronomer Certified 1.10.7-13, 2020-06-18
 --------------------------------------------
 
