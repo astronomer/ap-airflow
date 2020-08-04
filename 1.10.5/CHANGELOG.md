@@ -1,8 +1,9 @@
 # Changelog
 
-Astronomer Certified 1.10.5-10.dev, 2020-08-03
+Astronomer Certified 1.10.5-10, 2020-08-04
 ----------------------------------------------
 
+### Bug Fixes
 - Fix broken Configuration & Version navigation links ([commit](https://github.com/astronomer/airflow/commit/21de28e))
 - Fix broken `/landing_times` View ([commit](https://github.com/astronomer/airflow/commit/6567df3))
 - Add host name to task runner log ([commit](https://github.com/astronomer/airflow/commit/2696f87))
