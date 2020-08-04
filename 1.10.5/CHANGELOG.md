@@ -1,5 +1,14 @@
 # Changelog
 
+Astronomer Certified 1.10.5-10.dev, 2020-08-03
+----------------------------------------------
+
+- Fix broken Configuration & Version navigation links ([commit](https://github.com/astronomer/airflow/commit/21de28e))
+- Fix broken `/landing_times` View ([commit](https://github.com/astronomer/airflow/commit/6567df3))
+- Add host name to task runner log ([commit](https://github.com/astronomer/airflow/commit/2696f87))
+- Run Kubernetes Worker Pods as astro user ([commit](https://github.com/astronomer/ap-airflow/commit/f6819a4))
+- **Dockerfile**: Exactly match `apache-airflow` in `requirements.txt` to restrict installation of 'apache-airflow' ([commit](https://github.com/astronomer/ap-airflow/commit/c2536db))
+
 Astronomer Certified 1.10.5-9, 2020-06-18
 --------------------------------------------
 
