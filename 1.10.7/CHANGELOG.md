@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 1.10.7-14.dev, 2020-08-03
+Astronomer Certified 1.10.7-14, 2020-08-04
 -----------------------------------------------
 
 ### Bug Fixes
@@ -10,10 +10,6 @@ Astronomer Certified 1.10.7-14.dev, 2020-08-03
 - **Dockerfile**: Exactly match `apache-airflow` in `requirements.txt` to restrict installation of 'apache-airflow' ([commit](https://github.com/astronomer/ap-airflow/commit/c2536db))
 - **Astro Version Check Plugin**: Only show warnings on old versions ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/24ad49e))
 - **Astro Version Check Plugin**: Make the plugin MySQL compatible ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/0210f60))
-
-### Improvements
-
-- **Astro Version Check Plugin**: Add more data to UserAgent on Updater Service requests ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/ea7dc6a))
 
 Astronomer Certified 1.10.7-13, 2020-06-18
 --------------------------------------------

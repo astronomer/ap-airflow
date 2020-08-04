@@ -12,11 +12,6 @@ Astronomer Certified 1.10.10-4, 2020-08-04
 - **Astro Version Check Plugin**: Make the plugin MySQL compatible ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/0210f60))
 - Fix Broken PapermillOperator ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/811cc75))
 
-### Improvements
-
-- **Astro Version Check Plugin**: Add more data to UserAgent on Updater Service requests ([commit](https://github.com/astronomer/astronomer-airflow-version-check/commit/ea7dc6a))
-
-
 Astronomer Certified 1.10.10-3, 2020-06-17
 --------------------------------------------
 
