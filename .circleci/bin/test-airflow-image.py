@@ -216,12 +216,18 @@ def test_apache_airflow_in_requirements(tmp_path):
     test_project.mkdir()
     image_name = get_image_name(ImageType.ONBUILD.value)
 
+    restricted_value_patterns = [
+        "apache-airflow==1.10.10", "apache-airflow>=1.10.5", "apache-airflow~=1.10.7"
+    ]
+
     (test_project / "Dockerfile").write_text(f"FROM {image_name}")
-    (test_project / "requirements.txt").write_text("apache-airflow")
     (test_project / "packages.txt").touch()
-    output = subprocess.run(['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True)
-    assert output.returncode == 1
-    assert b"Do not upgrade by specifying 'apache-airflow' in your requirements.txt" in output.stderr
+    for restricted_value in restricted_value_patterns:
+        (test_project / "requirements.txt").write_text(restricted_value)
+        output = subprocess.run(
+            ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True)
+        assert output.returncode == 1
+        assert b"Do not upgrade by specifying 'apache-airflow' in your requirements.txt" in output.stderr
 
     # Test that you can still use backport-packages that start with "apache-airflow"
     (test_project / "requirements.txt").write_text("apache-airflow-backport-providers-amazon")
