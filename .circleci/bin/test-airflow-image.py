@@ -217,7 +217,8 @@ def test_apache_airflow_in_requirements(tmp_path):
     image_name = get_image_name(ImageType.ONBUILD.value)
 
     restricted_value_patterns = [
-        "apache-airflow==1.10.10", "apache-airflow>=1.10.5", "apache-airflow~=1.10.7"
+        "apache-airflow==1.10.10", "apache-airflow>=1.10.5", "apache-airflow~=1.10.7",
+        "apache-airflow == 1.10.10",
     ]
 
     (test_project / "Dockerfile").write_text(f"FROM {image_name}")
