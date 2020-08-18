@@ -1,0 +1,17 @@
+# Constraint the version pip will install, if it ever needs to install a module
+redis!=3.4.0
+
+# Doesn't work with musl
+JPype1<0.7.3
+
+# Make sure we don't get pyarrow installed, libarrow is difficult to get working in Alpine
+papermill<2.0
+nteract-scrapbook<0.4
+
+WTforms<2.3.0
+
+# Details: https://github.com/apache/airflow/issues/8599
+flask-appbuilder<2.3.3
+
+# Details: https://github.com/apache/airflow/pull/8833
+azure-storage<0.37.0
