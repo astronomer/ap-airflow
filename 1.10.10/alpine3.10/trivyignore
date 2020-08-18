@@ -1,4 +1,7 @@
 # Only used in the dev pipeline, not at runtime
+# lodash
+NSWG-ECO-516
+
 # lodash: Prototype pollution in utilities function fixed in >=4.17.11
 CVE-2019-10744
 CVE-2018-16487
