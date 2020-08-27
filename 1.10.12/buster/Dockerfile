@@ -139,7 +139,9 @@ COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Run pods spun up by Kubernetes Executor as astro user
-RUN sed -i -e 's/^run_as_user =.*/run_as_user = 50000/g' /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
+# And use role_based_auth as auth_backend
+RUN sed -i -e 's/^run_as_user =.*/run_as_user = 50000/g; s/^auth_backend =.*/auth_backend = airflow.api.auth.backend.role_based_auth/g' \
+    /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory, so we can own it when we mount volumes
 RUN install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}" \
