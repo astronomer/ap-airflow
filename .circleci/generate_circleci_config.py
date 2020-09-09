@@ -12,8 +12,8 @@ from jinja2 import Environment, FileSystemLoader
 
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.5-10", ["alpine3.10", "buster", "rhel7"]),
-    ("1.10.7-14", ["alpine3.10", "buster"]),
-    ("1.10.10-4", ["alpine3.10", "buster"]),
+    ("1.10.7-15.dev", ["alpine3.10", "buster"]),
+    ("1.10.10-5.dev", ["alpine3.10", "buster"]),
     ("1.10.12-1.dev", ["alpine3.10", "buster"]),
 ])
 
