@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 1.10.10-5, 2020-09-15
+--------------------------------------------
+
+### Bug Fixes
+
+- Use Serialized DAGs to sync permissions when DAG Serialization is enabled ([commit](https://github.com/astronomer/airflow/commit/4f546071712728da3db0afcd9fcdabd5851acfd3))
+- Webserver: Sanitize values passed to origin param ([commit](https://github.com/astronomer/airflow/commit/f89a3cfd7ef1d45a17b1354ba60711bc2539839d))
+- Update JS packages to latest versions ([commit](https://github.com/astronomer/airflow/commit/655c7707c228fbf7bb3d2e6bd00515c9acb301f8))
+- Avoid sharing session with RenderedTaskInstanceFields write and delete ([commit](https://github.com/astronomer/airflow/commit/46c6c43c7889b5df7d58ead33e5843b0ea98a9f6))
+- Fix the trigger_dag api in the case of nested subdags ([commit](https://github.com/astronomer/airflow/commit/8c4c4979ca39441e0ce057f02d01f8dfe1773693))
+
 Astronomer Certified 1.10.10-4, 2020-08-04
 --------------------------------------------
 
