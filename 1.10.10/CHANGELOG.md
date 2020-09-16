@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 1.10.10-5, 2020-09-15
+Astronomer Certified 1.10.10-5, 2020-09-16
 --------------------------------------------
 
 ### Bug Fixes
