@@ -1,5 +1,15 @@
 # Changelog
 
+Astronomer Certified 1.10.5-11.dev, 2020-09-17
+----------------------------------------------
+
+### Bug Fixes
+- Webserver: Sanitize values passed to origin param (apache#10334) ([commit](https://github.com/astronomer/airflow/commit/4eda6ba))
+- Dockerfile (buster): Add astro user to group 101 (#133)
+
+### Improvements
+- Upgrade npm to 6.14.8 ([commit](https://github.com/astronomer/airflow/commit/054e118))
+
 Astronomer Certified 1.10.5-10, 2020-08-04
 ----------------------------------------------
 
