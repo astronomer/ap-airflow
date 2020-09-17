@@ -81,7 +81,6 @@ RUN useradd --uid $ASTRONOMER_UID --create-home ${ASTRONOMER_USER} \
     && groupadd astrogroup --gid 101 \
     && usermod --append --groups astrogroup ${ASTRONOMER_USER}
 
-
 # From the airflow image on master
 
 #################################################################
