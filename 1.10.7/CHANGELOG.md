@@ -1,7 +1,16 @@
 # Changelog
 
+Astronomer Certified 1.10.7-15, 2020-09-22
+-------------------------------------------
+
+### Bug Fixes
+
+- Use Serialized DAGs to sync permissions when DAG Serialization is enabled ([commit](https://github.com/astronomer/airflow/commit/185c13d033a8fa95a8323fba36a52d2e23e34265))
+- Webserver: Sanitize values passed to origin param ([commit](https://github.com/astronomer/airflow/commit/b24f1f43b970210e86e261f2cb8c19f500840439))
+
+
 Astronomer Certified 1.10.7-14, 2020-08-04
------------------------------------------------
+--------------------------------------------
 
 ### Bug Fixes
 
