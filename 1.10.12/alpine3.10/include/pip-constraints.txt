@@ -15,3 +15,6 @@ flask-appbuilder<2.3.3
 
 # Details: https://github.com/apache/airflow/pull/8833
 azure-storage<0.37.0
+
+# 0.13.3 installs PyArrow which has issues with Alpine
+pandas-gbq<=0.13.2
