@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 1.10.5-11.dev, 2020-09-17
+Astronomer Certified 1.10.5-11, 2020-10-05
 ----------------------------------------------
 
 ### Bug Fixes
