@@ -106,7 +106,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ARG VERSION="2.0.0-1.*"
-ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
+ARG SUBMODULES="async,azure,aws,celery,elasticsearch,gcp,password,kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 
 # Make pip look at our pip repo too, and force it to install these specific
