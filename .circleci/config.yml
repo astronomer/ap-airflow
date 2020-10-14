@@ -1026,7 +1026,7 @@ jobs:
     description: "Run UI Regression Tests using Testim"
     environment:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-      docker:
+    docker:
       - image: testim/docker-cli
       #parameters:
       #  dockerfile:
