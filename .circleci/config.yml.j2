@@ -1,6 +1,11 @@
 version: 2.1
 workflows:
   version: 2.1
+  certified-regression:
+    when: << pipeline.parameters.run_integration_tests >>
+    jobs:
+      - regression-ui
+    
   certified-airflow:
     jobs:
       - static-checks
@@ -269,6 +274,7 @@ jobs:
           tag: "<< parameters.tag >>"
           prod_docker_repo: "<< parameters.docker_repo >>"
           dev_docker_repo: "<< parameters.dev_docker_repo >>"
+  
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
@@ -432,6 +438,36 @@ commands:
       - modified-orb:
           allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
+
+  regression-ui:
+    description: "Run UI Regression Tests using Testim"
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+     docker:
+    - image: testim/docker-cli
+    #parameters:
+    #  dockerfile:
+    #    type: string
+    #    default: Dockerfile
+    #  path:
+    #    type: string
+    #    default: "."
+    #  image_name:
+    #    type: string
+    #    default: $CIRCLE_PROJECT_REPONAME
+    #  extra_args:
+    #    type: string
+    #    default: ""
+    steps:
+      - run: mkdir qa-regression && cd qa-regression
+      - run: git clone https://github.com/astronomer/qa-regression.git
+      - run: chmod +x create_deployment.sh
+      - run: create_deployment.sh
+      - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
+      - store_artifacts:
+          path: /tmp/circleci-test-results
+      - store_test_results:
+          path: /tmp/circleci-test-results
   # TODO: move to an Astronomer orbs repo, publish orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
