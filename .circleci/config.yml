@@ -4,7 +4,7 @@ version: 2.1
 workflows:
   version: 2.1
   certified-regression:
-    when: << pipeline.parameters.run_integration_tests >>
+    #when: << pipeline.parameters.run_integration_tests >>
     jobs:
       - regression-ui
   certified-airflow:
