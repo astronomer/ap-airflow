@@ -1054,7 +1054,7 @@ jobs:
             cd qa-regression
             ls
             chmod 744 create_deployment.sh
-            sh create_deployment.sh
+            bash ./create_deployment.sh
             cd ..
       #- run: chmod +x create_deployment.sh
       #- run: create_deployment.sh
