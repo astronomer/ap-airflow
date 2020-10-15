@@ -1052,6 +1052,7 @@ jobs:
           name: Run Shell Script
           command:  |
             cd qa-regression
+            ls
             chmod +x create_deployment.sh
             create_deployment.sh
             cd ..
