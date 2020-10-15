@@ -1043,6 +1043,7 @@ jobs:
       #    default: ""
     steps:
       - run: mkdir qa-regression && cd qa-regression
+      - run: apt-get install git
       - run: git clone https://github.com/astronomer/qa-regression.git
       - run: chmod +x create_deployment.sh
       - run: create_deployment.sh
