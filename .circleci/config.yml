@@ -1044,7 +1044,7 @@ jobs:
     steps:
       - run: mkdir qa-regression && cd qa-regression
       - run: apt-get -y install git
-      - run: git clone https://github.com/astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-regression.git
       - run: chmod +x create_deployment.sh
       - run: create_deployment.sh
       - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
