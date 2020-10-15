@@ -1048,10 +1048,16 @@ jobs:
           name: Avoid hosts unknown for github
           command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
       - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: cd qa-regression && ls 
+      - run: 
+          name: Run Shell Script
+          command:  |
+            cd qa-regression
+            chmod +x create_deployment.sh
+            create_deployment.sh
+            cd ..
       #- run: chmod +x create_deployment.sh
-      - run: create_deployment.sh
-      - run: cd ..
+      #- run: create_deployment.sh
+      #- run: cd ..
       - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
       - store_artifacts:
           path: /tmp/circleci-test-results
