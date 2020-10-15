@@ -1053,8 +1053,7 @@ jobs:
           command:  |
             cd qa-regression
             ls
-            chmod
-            chmod 744 create_deployment.sh
+            sudo chmod 744 create_deployment.sh
             create_deployment.sh
             cd ..
       #- run: chmod +x create_deployment.sh
