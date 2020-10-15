@@ -1053,6 +1053,7 @@ jobs:
           command:  |
             cd qa-regression
             ls
+            chmod
             chmod 744 create_deployment.sh
             create_deployment.sh
             cd ..
