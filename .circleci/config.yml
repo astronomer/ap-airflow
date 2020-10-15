@@ -1045,6 +1045,7 @@ jobs:
       #- run: mkdir qa-regression && cd qa-regression
       - run: apt-get -y install git
       - run: apt-get -y install curl
+      - run: apt-get -y install sudo  
       - run:
           name: Avoid hosts unknown for github
           command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
