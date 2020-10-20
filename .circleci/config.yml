@@ -1,12 +1,24 @@
 # Warning: automatically generated file
 # Please edit config.yml.j2, and use the script generate_circleci_config.py
 version: 2.1
+
+parameters:
+  run_regression_tests:
+    type: boolean
+    default: false
+
 workflows:
   version: 2.1
   certified-regression:
-    #when: << pipeline.parameters.run_integration_tests >>
+    
     jobs:
       - regression-ui
+
+  certified-performance-benchmarks:
+    when: << pipeline.parameters.run_regression_tests >>
+    jobs:
+      - regression-performance-tests    
+  
   certified-airflow:
     jobs:
       - static-checks
@@ -1022,6 +1034,47 @@ jobs:
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
             pre-commit run --all-files
+  regression-performance-tests:
+    description: "Run Performance Tests using Testim"
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    docker:
+      - image: testim/docker-cli
+      #parameters:
+      #  dockerfile:
+      #    type: string
+      #    default: Dockerfile
+      #  path:
+      #    type: string
+      #    default: "."
+      #  image_name:
+      #    type: string
+      #    default: $CIRCLE_PROJECT_REPONAME
+      #  extra_args:
+      #    type: string
+      #    default: ""
+    steps:
+      - run: apt-get -y install git
+      - run: apt-get -y install curl
+      - run: apt-get -y install sudo  
+      - run:
+          name: Avoid hosts unknown for github
+          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: 
+          name: Run Shell Script
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 create_deployment.sh
+            bash ./create_deployment.sh
+            cd ..
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
+      - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
+      - store_artifacts:
+          path: /tmp/circleci-test-results
+      - store_test_results:
+          path: /tmp/circleci-test-results
   regression-ui:
     description: "Run UI Regression Tests using Testim"
     environment:
@@ -1042,7 +1095,6 @@ jobs:
       #    type: string
       #    default: ""
     steps:
-      #- run: mkdir qa-regression && cd qa-regression
       - run: apt-get -y install git
       - run: apt-get -y install curl
       - run: apt-get -y install sudo  
@@ -1058,10 +1110,9 @@ jobs:
             chmod 744 create_deployment.sh
             bash ./create_deployment.sh
             cd ..
-      #- run: chmod +x create_deployment.sh
-      #- run: create_deployment.sh
-      #- run: cd ..
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
       - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
+      - run: echo "true == << pipeline.parameters.run_regression_tests >>"
       - store_artifacts:
           path: /tmp/circleci-test-results
       - store_test_results:
