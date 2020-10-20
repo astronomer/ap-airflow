@@ -9,8 +9,7 @@ parameters:
 
 workflows:
   version: 2.1
-  certified-regression:
-    
+  certified-regression:    
     jobs:
       - regression-ui
 
@@ -1111,8 +1110,8 @@ jobs:
             bash ./create_deployment.sh
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
-      - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
       - run: echo "true == << pipeline.parameters.run_regression_tests >>"
+      - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
       - store_artifacts:
           path: /tmp/circleci-test-results
       - store_test_results:
