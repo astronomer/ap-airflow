@@ -50,6 +50,10 @@ export NAMESPACE=airflow-$RANDOM
 export RELEASE_NAME=$NAMESPACE
 echo "Installing Airflow into kind as $RELEASE_NAME"
 
+AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.airflow.version" }}' "$REPOSITORY:$TEST_TAG")
+export AIRFLOW_VERSION
+echo "Airflow Version: $AIRFLOW_VERSION"
+
 kubectl get pods -n $NAMESPACE -w &
 WATCH_PID=$!
 
@@ -62,6 +66,7 @@ helm install --namespace $NAMESPACE \
   --set images.airflow.pullPolicy=Never \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
+  --set airflowVersion=$AIRFLOW_VERSION \
   --wait \
   $RELEASE_NAME astronomer/airflow
 
