@@ -1,6 +1,7 @@
 # Only used in the dev pipeline, not at runtime
 # lodash
 NSWG-ECO-516
+CVE-2020-8203
 
 # nodejs-set-value
 CVE-2019-10747
