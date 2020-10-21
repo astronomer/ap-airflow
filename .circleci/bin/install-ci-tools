@@ -7,7 +7,7 @@ if [[ -z "${KIND_VERSION}" ]]; then
   KIND_VERSION="0.7.0"
 fi
 if [[ -z "${HELM_VERSION}" ]]; then
-  HELM_VERSION="3.0.3"
+  HELM_VERSION="3.3.4"
 fi
 
 OS=$(uname | tr '[:upper:]' '[:lower:]')
