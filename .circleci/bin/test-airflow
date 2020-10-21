@@ -24,7 +24,7 @@ source $DIR/install-ci-tools
 source $DIR/start-kind-cluster
 
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm repo add astronomer https://helm.astronomer.io
+helm repo add astronomer https://internal-helm.astronomer.io/
 helm repo update
 
 set +e
