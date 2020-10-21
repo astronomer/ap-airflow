@@ -67,7 +67,6 @@ helm install --namespace $NAMESPACE \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
   --set airflowVersion=$AIRFLOW_VERSION \
-  --wait \
   $RELEASE_NAME astronomer/airflow
 
 if [ ! $? -eq 0 ]; then
