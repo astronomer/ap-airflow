@@ -1114,9 +1114,10 @@ jobs:
           name: Set the variable to run the other pipelines
           #echo "true == << pipeline.parameters.run_regression_tests >>"
           command:  |
-            curl --user ${CIRCLE_API_USER_TOKEN}: \
+            curl --user ${CIRCLE_API_USER_TOKEN}: -X POST \
+            --header "Content-Type: application/json" \
             --data '{ "parameters": { "run_regression_tests": true } }' \
-            https://circleci.com/api/v2/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
+            https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
                 
       - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
       - store_artifacts:
