@@ -24,7 +24,7 @@ source $DIR/install-ci-tools
 source $DIR/start-kind-cluster
 
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm repo add astronomer https://helm.astronomer.io
+helm repo add astronomer https://internal-helm.astronomer.io/
 helm repo update
 
 set +e
@@ -50,6 +50,14 @@ export NAMESPACE=airflow-$RANDOM
 export RELEASE_NAME=$NAMESPACE
 echo "Installing Airflow into kind as $RELEASE_NAME"
 
+AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.airflow.version" }}' "$REPOSITORY:$TEST_TAG")
+export AIRFLOW_VERSION
+echo "Airflow Version: $AIRFLOW_VERSION"
+
+CHART_VERSION=$(helm show chart astronomer/airflow --devel)
+export CHART_VERSION
+echo "Chart Version: $CHART_VERSION"
+
 kubectl get pods -n $NAMESPACE -w &
 WATCH_PID=$!
 
@@ -62,7 +70,9 @@ helm install --namespace $NAMESPACE \
   --set images.airflow.pullPolicy=Never \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
-  --wait \
+  --set airflowVersion=$AIRFLOW_VERSION \
+  --devel \
+  --version 0.18.0-build3 \
   $RELEASE_NAME astronomer/airflow
 
 if [ ! $? -eq 0 ]; then

@@ -25,6 +25,10 @@ class ImageType(Enum):
     ONBUILD = "onbuild"
 
 
+airflow_version = os.environ.get("AIRFLOW_VERSION")
+airflow_2 = True if airflow_version.startswith("2") else False
+
+
 def test_airflow_in_path(webserver):
     """ Ensure Airflow is in PATH
     """
@@ -57,9 +61,11 @@ def test_maintainer(webserver, docker_client):
 def test_version(webserver, docker_client):
     """ Ensure the version of Airflow matches the Docker image label
     """
-    airflow_version = get_label(docker_client, 'io.astronomer.docker.airflow.version')
+    airflow_ver = get_label(docker_client, 'io.astronomer.docker.airflow.version')
+    assert airflow_ver == airflow_version
+
     version_output = webserver.check_output('airflow version')
-    assert airflow_version in version_output
+    assert airflow_ver in version_output
 
 
 def test_elasticsearch_version(webserver):
@@ -117,65 +123,106 @@ def test_airflow_connections(scheduler):
     test_conn_uri = "postgresql://postgres_user:postgres_test@1.1.1.1:5432"
     test_conn_id = "test"
 
-    # Assert Connection can be added
-    assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
-        'airflow connections -a --conn_uri %s --conn_id %s', test_conn_uri, test_conn_id)
+    if airflow_2:
+        # Assert Connection can be added
+        assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
+            'airflow connections add --conn-uri %s %s', test_conn_uri, test_conn_id)
 
-    # Assert Connection can be removed
-    assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
-        'airflow connections -d --conn_id %s', test_conn_id)
+        # Assert Connection can be removed
+        assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
+            'airflow connections delete %s', test_conn_id)
+    else:
+        # Assert Connection can be added
+        assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
+            'airflow connections -a --conn_uri %s --conn_id %s', test_conn_uri, test_conn_id)
+
+        # Assert Connection can be removed
+        assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
+            'airflow connections -d --conn_id %s', test_conn_id)
 
 
 def test_airflow_variables(scheduler):
     """Test Variables can be added, retrieved and deleted"""
-    # Assert Variables can be added
-    assert "" in scheduler.check_output("airflow variables --set test_key test_value")
+    if airflow_2:
+        # Assert Variables can be added
+        assert "" in scheduler.check_output("airflow variables set test_key test_value")
 
-    # Assert Variables can be retrieved
-    assert "test_value" in scheduler.check_output("airflow variables --get test_key")
+        # Assert Variables can be retrieved
+        assert "test_value" in scheduler.check_output("airflow variables get test_key")
 
-    # Assert Variables can be deleted
-    assert "" in scheduler.check_output("airflow variables --delete test_key")
+        # Assert Variables can be deleted
+        assert "" in scheduler.check_output("airflow variables delete test_key")
+    else:
+        # Assert Variables can be added
+        assert "" in scheduler.check_output("airflow variables --set test_key test_value")
+
+        # Assert Variables can be retrieved
+        assert "test_value" in scheduler.check_output("airflow variables --get test_key")
+
+        # Assert Variables can be deleted
+        assert "" in scheduler.check_output("airflow variables --delete test_key")
 
 
 def test_list_dags(scheduler):
     """
     Create Example DAG and add it to Scheduler POD
     """
-    airflow_list_dags_output = scheduler.check_output("airflow list_dags -r")
-    assert "Number of DAGs: 1" in airflow_list_dags_output
+    if airflow_2:
+        airflow_list_dags_output = scheduler.check_output("airflow dags list")
+    else:
+        airflow_list_dags_output = scheduler.check_output("airflow list_dags -r")
+        assert "Number of DAGs: 1" in airflow_list_dags_output
+
     assert "example_dag" in airflow_list_dags_output
 
 
 def test_airflow_trigger_dags(scheduler):
     """Test Triggering of DAGs & Pausing & Unpausing Dags"""
+    if airflow_2:
+        pause_dag_command = "airflow dags pause example_dag"
+        trigger_dag_command = "airflow dags trigger -r test_run -e 2020-05-01 example_dag"
+        unpause_dag_command = "airflow dags unpause example_dag"
+        dag_state_command = "airflow dags state example_dag 2020-05-01"
+    else:
+        pause_dag_command = "airflow pause example_dag"
+        trigger_dag_command = "airflow trigger_dag -r test_run -e 2020-05-01 example_dag"
+        unpause_dag_command = "airflow unpause example_dag"
+        dag_state_command = "airflow dag_state example_dag 2020-05-01"
 
-    assert "Dag: example_dag, paused: True" in scheduler.check_output("airflow pause example_dag")
+    assert "Dag: example_dag, paused: True" in scheduler.check_output(pause_dag_command)
     assert "Created <DagRun example_dag @ 2020-05-01T00:00:00+00:00: " \
            "test_run, externally triggered: True>" \
-           in scheduler.check_output("airflow trigger_dag -r test_run -e 2020-05-01 example_dag")
+           in scheduler.check_output(trigger_dag_command)
 
-    assert "Dag: example_dag, paused: False" in scheduler.check_output("airflow unpause example_dag")
+    assert "Dag: example_dag, paused: False" in scheduler.check_output(unpause_dag_command)
 
-    # Verify the DAG succeeds in 180 seconds
-    timeout = 180
+    # Verify the DAG succeeds in 100 seconds
+    timeout = 100
     sleep_count = 0
     sleep_time_between_polls = 5
     try_count = 0
-    while "success" not in scheduler.check_output("airflow dag_state example_dag 2020-05-01"):
+    while "success" not in scheduler.check_output(dag_state_command):
         sleep_count += sleep_time_between_polls
         sleep(sleep_time_between_polls)
         try_count += 1
         print("Try: ", try_count)
-        if "failed" in scheduler.check_output("airflow dag_state example_dag 2020-05-01"):
+        if "failed" in scheduler.run(dag_state_command).stdout.rstrip("\r\n"):
+            print("Timed out waiting for DAG to succeed")
+            print()
+            print("Logs: ")
+            subprocess.run(["kubectl", "logs", os.environ.get('SCHEDULER_POD'), os.environ.get('NAMESPACE')])
             raise Exception("DAGRun failed !")
         if sleep_count >= timeout:
             print("Timed out waiting for DAG to succeed")
+            print()
+            print("Logs: ")
+            subprocess.run(["kubectl", "logs", os.environ.get('SCHEDULER_POD'), os.environ.get('NAMESPACE')])
             break
 
-    assert "success" in scheduler.check_output("airflow dag_state example_dag 2020-05-01")
+    assert "success" in scheduler.check_output(dag_state_command)
 
 
+@pytest.mark.skipif(airflow_2, reason="Airflow>=2 does not have this config")
 def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
