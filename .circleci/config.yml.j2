@@ -151,7 +151,7 @@ jobs:
       - run:
           name: Load archived Docker image
           command: |
-            pyenv global 3.7.0
+            pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
             pre-commit run --all-files
   build:
@@ -277,7 +277,7 @@ executors:
       - image: circleci/python:3
   machine-executor:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202008-01
 commands:
 
   docker-build-base-and-onbuild:
@@ -357,7 +357,7 @@ commands:
           name: Test Airflow Docker images (Base + Onbuild)
           command: |
             set -e
-            pyenv global 3.7.0
+            pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
             .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
       - store_test_results:
