@@ -72,7 +72,7 @@ helm install --namespace $NAMESPACE \
   --set executor=KubernetesExecutor \
   --set airflowVersion=$AIRFLOW_VERSION \
   --devel \
-  --version 0.18.0-build3 \
+  --version 0.18.0-build4 \
   $RELEASE_NAME astronomer/airflow
 
 if [ ! $? -eq 0 ]; then
