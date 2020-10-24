@@ -6,8 +6,6 @@ workflows:
   certified-airflow:
     jobs:
       - static-checks
-
-
       - build:
           name: build-1.10.5-alpine3.10
           airflow_version: 1.10.5
@@ -15,8 +13,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.5-alpine3.10-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
           distribution_name: alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -42,7 +40,7 @@ workflows:
           tag: "1.10.5-alpine3.10"
           extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-11-alpine3.10"
           requires:
-            - scan-1.10.5-alpine3.10-onbuild
+            - scan-clair-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-images
           filters:
@@ -54,13 +52,12 @@ workflows:
           tag: "1.10.5-alpine3.10-onbuild"
           extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-alpine3.10-onbuild"
           requires:
-            - scan-1.10.5-alpine3.10-onbuild
+            - scan-clair-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-images
           filters:
             branches:
               only: master
-
       - build:
           name: build-1.10.5-buster
           airflow_version: 1.10.5
@@ -68,8 +65,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.5-buster-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.5-buster-onbuild
           airflow_version: 1.10.5
           distribution_name: buster-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -95,7 +92,7 @@ workflows:
           tag: "1.10.5-buster"
           extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-11-buster"
           requires:
-            - scan-1.10.5-buster-onbuild
+            - scan-clair-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
             - test-1.10.5-buster-images
           filters:
@@ -107,13 +104,12 @@ workflows:
           tag: "1.10.5-buster-onbuild"
           extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-buster-onbuild"
           requires:
-            - scan-1.10.5-buster-onbuild
+            - scan-clair-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
             - test-1.10.5-buster-images
           filters:
             branches:
               only: master
-
       - build:
           name: build-1.10.5-rhel7
           airflow_version: 1.10.5
@@ -121,8 +117,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.5-rhel7-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
           distribution_name: rhel7-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -148,7 +144,7 @@ workflows:
           tag: "1.10.5-rhel7"
           extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM},1.10.5-11-rhel7"
           requires:
-            - scan-1.10.5-rhel7-onbuild
+            - scan-clair-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
             - test-1.10.5-rhel7-images
           filters:
@@ -160,15 +156,12 @@ workflows:
           tag: "1.10.5-rhel7-onbuild"
           extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-rhel7-onbuild"
           requires:
-            - scan-1.10.5-rhel7-onbuild
+            - scan-clair-1.10.5-rhel7-onbuild
             - scan-trivy-1.10.5-rhel7-onbuild
             - test-1.10.5-rhel7-images
           filters:
             branches:
               only: master
-
-
-
       - build:
           name: build-1.10.7-alpine3.10
           airflow_version: 1.10.7
@@ -176,8 +169,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.7-alpine3.10-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
           distribution_name: alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -203,7 +196,7 @@ workflows:
           tag: "1.10.7-alpine3.10"
           extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM},1.10.7-15-alpine3.10"
           requires:
-            - scan-1.10.7-alpine3.10-onbuild
+            - scan-clair-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
           filters:
@@ -215,13 +208,12 @@ workflows:
           tag: "1.10.7-alpine3.10-onbuild"
           extra_tags: "1.10.7-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.7-15-alpine3.10-onbuild"
           requires:
-            - scan-1.10.7-alpine3.10-onbuild
+            - scan-clair-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
           filters:
             branches:
               only: master
-
       - build:
           name: build-1.10.7-buster
           airflow_version: 1.10.7
@@ -229,8 +221,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.7-buster-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.7-buster-onbuild
           airflow_version: 1.10.7
           distribution_name: buster-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -256,7 +248,7 @@ workflows:
           tag: "1.10.7-buster"
           extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM},1.10.7-15-buster"
           requires:
-            - scan-1.10.7-buster-onbuild
+            - scan-clair-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
           filters:
@@ -268,15 +260,12 @@ workflows:
           tag: "1.10.7-buster-onbuild"
           extra_tags: "1.10.7-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.7-15-buster-onbuild"
           requires:
-            - scan-1.10.7-buster-onbuild
+            - scan-clair-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
           filters:
             branches:
               only: master
-
-
-
       - build:
           name: build-1.10.10-alpine3.10
           airflow_version: 1.10.10
@@ -284,8 +273,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.10-alpine3.10-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
           distribution_name: alpine3.10-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -311,7 +300,7 @@ workflows:
           tag: "1.10.10-alpine3.10"
           extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-5-alpine3.10"
           requires:
-            - scan-1.10.10-alpine3.10-onbuild
+            - scan-clair-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
           filters:
@@ -323,13 +312,12 @@ workflows:
           tag: "1.10.10-alpine3.10-onbuild"
           extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-5-alpine3.10-onbuild"
           requires:
-            - scan-1.10.10-alpine3.10-onbuild
+            - scan-clair-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
           filters:
             branches:
               only: master
-
       - build:
           name: build-1.10.10-buster
           airflow_version: 1.10.10
@@ -337,8 +325,8 @@ workflows:
           docker_repo: astronomerinc/ap-airflow
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.10-buster-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.10-buster-onbuild
           airflow_version: 1.10.10
           distribution_name: buster-onbuild
           docker_repo: astronomerinc/ap-airflow
@@ -364,7 +352,7 @@ workflows:
           tag: "1.10.10-buster"
           extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-5-buster"
           requires:
-            - scan-1.10.10-buster-onbuild
+            - scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
           filters:
@@ -376,15 +364,12 @@ workflows:
           tag: "1.10.10-buster-onbuild"
           extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-5-buster-onbuild"
           requires:
-            - scan-1.10.10-buster-onbuild
+            - scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
           filters:
             branches:
               only: master
-
-
-
       - build:
           name: build-1.10.12-alpine3.10
           airflow_version: 1.10.12
@@ -393,8 +378,8 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.12-alpine3.10-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
           distribution_name: alpine3.10-onbuild
           docker_repo: astronomerio/ap-airflow
@@ -420,7 +405,7 @@ workflows:
           tag: "1.10.12-alpine3.10"
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10"
           requires:
-            - scan-1.10.12-alpine3.10-onbuild
+            - scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -432,13 +417,12 @@ workflows:
           tag: "1.10.12-alpine3.10-onbuild"
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
           requires:
-            - scan-1.10.12-alpine3.10-onbuild
+            - scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
             branches:
               only: master
-
       - build:
           name: build-1.10.12-buster
           airflow_version: 1.10.12
@@ -447,8 +431,8 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
           requires:
             - static-checks
-      - scan:
-          name: scan-1.10.12-buster-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
           distribution_name: buster-onbuild
           docker_repo: astronomerio/ap-airflow
@@ -474,7 +458,7 @@ workflows:
           tag: "1.10.12-buster"
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster"
           requires:
-            - scan-1.10.12-buster-onbuild
+            - scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
@@ -486,15 +470,12 @@ workflows:
           tag: "1.10.12-buster-onbuild"
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
           requires:
-            - scan-1.10.12-buster-onbuild
+            - scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
             branches:
               only: master
-
-
-
       - build:
           name: build-2.0.0-buster
           airflow_version: 2.0.0
@@ -503,8 +484,8 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
           requires:
             - static-checks
-      - scan:
-          name: scan-2.0.0-buster-onbuild
+      - scan-clair:
+          name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
           distribution_name: buster-onbuild
           docker_repo: astronomerio/ap-airflow
@@ -530,7 +511,7 @@ workflows:
           tag: "2.0.0-buster"
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster"
           requires:
-            - scan-2.0.0-buster-onbuild
+            - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -542,15 +523,12 @@ workflows:
           tag: "2.0.0-buster-onbuild"
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
           requires:
-            - scan-2.0.0-buster-onbuild
+            - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
             branches:
               only: master
-
-
-
   nightly:
     triggers:
       - schedule:
@@ -566,8 +544,8 @@ workflows:
           distribution_name: alpine3.10
           docker_repo: "astronomerio/ap-airflow"
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
-      - scan:
-          name: scan-1.10.12-alpine3.10-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
           distribution_name: alpine3.10-onbuild
           docker_repo: "astronomerio/ap-airflow"
@@ -593,7 +571,7 @@ workflows:
           tag: "1.10.12-alpine3.10"
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.12-alpine3.10-onbuild
+            - scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -605,7 +583,7 @@ workflows:
           tag: "1.10.12-alpine3.10-onbuild"
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
           requires:
-            - scan-1.10.12-alpine3.10-onbuild
+            - scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -617,8 +595,8 @@ workflows:
           distribution_name: buster
           docker_repo: "astronomerio/ap-airflow"
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
-      - scan:
-          name: scan-1.10.12-buster-onbuild
+      - scan-clair:
+          name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
           distribution_name: buster-onbuild
           docker_repo: "astronomerio/ap-airflow"
@@ -644,7 +622,7 @@ workflows:
           tag: "1.10.12-buster"
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-1.10.12-buster-onbuild
+            - scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
@@ -656,21 +634,20 @@ workflows:
           tag: "1.10.12-buster-onbuild"
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
           requires:
-            - scan-1.10.12-buster-onbuild
+            - scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
             branches:
               only: master
-
       - build:
           name: build-2.0.0-buster
           airflow_version: 2.0.0
           distribution_name: buster
           docker_repo: "astronomerio/ap-airflow"
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
-      - scan:
-          name: scan-2.0.0-buster-onbuild
+      - scan-clair:
+          name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
           distribution_name: buster-onbuild
           docker_repo: "astronomerio/ap-airflow"
@@ -696,7 +673,7 @@ workflows:
           tag: "2.0.0-buster"
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM}"
           requires:
-            - scan-2.0.0-buster-onbuild
+            - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -708,13 +685,12 @@ workflows:
           tag: "2.0.0-buster-onbuild"
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
           requires:
-            - scan-2.0.0-buster-onbuild
+            - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
             branches:
               only: master
-
 
 jobs:
   static-checks:
@@ -764,7 +740,7 @@ jobs:
       - airflow-image-test:
           repository: "<< parameters.docker_repo >>"
           tag: "<< parameters.tag >>"
-  scan:
+  scan-clair:
     executor: clair-scanner/default
     description: Test Airflow images
     parameters:
@@ -816,7 +792,12 @@ jobs:
       - run:
           name: Scan the local image with trivy
           command: |
-            trivy --ignorefile ./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore --cache-dir /tmp/workspace/trivy-cache --ignore-unfixed -s HIGH,CRITICAL --exit-code 1 --no-progress "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+            trivy \
+              --ignorefile "./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore" \
+              --cache-dir /tmp/workspace/trivy-cache \
+              --ignore-unfixed -s HIGH,CRITICAL \
+              --exit-code 1 \
+              --no-progress "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
           key: trivy-cache
           paths:
@@ -843,6 +824,7 @@ jobs:
           tag: "<< parameters.tag >>"
           prod_docker_repo: "<< parameters.docker_repo >>"
           dev_docker_repo: "<< parameters.dev_docker_repo >>"
+
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
@@ -852,8 +834,8 @@ executors:
   machine-executor:
     machine:
       image: ubuntu-2004:202008-01
-commands:
 
+commands:
   docker-build-base-and-onbuild:
     description: "Build Airflow images to use with the Astronomer platform"
     parameters:
@@ -908,9 +890,14 @@ commands:
           name: Build the Docker image
           command: |
             set -xe
-            mkdir -p saved-images/"$(dirname "<< parameters.image_name >>")"
-            docker build -t "<< parameters.image_name >>" --file << parameters.path>>/<< parameters.dockerfile >> --build-arg BUILD_NUMBER=${CIRCLE_BUILD_NUM} --build-arg REPO_BRANCH=${CIRCLE_BRANCH} << parameters.extra_args >> << parameters.path >>
-            docker save -o saved-images/<< parameters.image_name >>.tar << parameters.image_name >>
+            mkdir -p saved-images/"$(dirname '<< parameters.image_name >>')"
+            docker build \
+              --tag '<< parameters.image_name >>' \
+              --file '<< parameters.path>>/<< parameters.dockerfile >>' \
+              --build-arg "BUILD_NUMBER=${CIRCLE_BUILD_NUM}" \
+              --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
+              << parameters.extra_args >> '<< parameters.path >>'
+            docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
   airflow-image-test:
     description: Test an Airflow image
     parameters:
@@ -933,7 +920,7 @@ commands:
             set -e
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
-            .circleci/bin/test-airflow << parameters.repository >> << parameters.tag >>
+            .circleci/bin/test-airflow '<< parameters.repository >>' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
   push:
@@ -968,8 +955,8 @@ commands:
             export NEW_POINT_RELEASE=true
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
-              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect << parameters.prod_docker_repo >>:$tag >/dev/null 2>&1; then
-                echo "Image with Tag (<< parameters.prod_docker_repo >>:$tag) already exists"
+              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo >>:$tag" >/dev/null 2>&1; then
+                echo "Image with Tag ("<< parameters.prod_docker_repo >>:$tag") already exists"
                 export NEW_POINT_RELEASE=false
               elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]]; then
                 echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo >>"
@@ -1098,14 +1085,14 @@ commands:
                 else
                     "${docker_cmd[@]}" 2>&1 || ret=$?
                 fi
-                if [ $ret -eq 0 ]; then
+                if [ "$ret" -eq 0 ]; then
                     echo "No unapproved vulnerabilities"
-                elif [ $ret -eq 1 ]; then
+                elif [ "$ret" -eq 1 ]; then
                     echo "Unapproved vulnerabilities found"
                     if [ "<< parameters.fail_on_discovered_vulnerabilities >>" == "true" ];then
                         EXIT_STATUS=1
                     fi
-                elif [ $ret -eq 5 ]; then
+                elif [ "$ret" -eq 5 ]; then
                     echo "Image was not scanned, not supported."
                     if [ "<< parameters.fail_on_unsupported_images >>" == "true" ];then
                         EXIT_STATUS=1
