@@ -346,7 +346,7 @@ commands:
               --file '<< parameters.path>>/<< parameters.dockerfile >>' \
               --build-arg "BUILD_NUMBER=${CIRCLE_BUILD_NUM}" \
               --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
-              '<< parameters.extra_args >>' '<< parameters.path >>'
+              << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
   airflow-image-test:
     description: Test an Airflow image
