@@ -740,7 +740,7 @@ jobs:
       - airflow-image-test:
           repository: "<< parameters.docker_repo >>"
           tag: "<< parameters.tag >>"
-  scan:
+  scan-clair:
     executor: clair-scanner/default
     description: Test Airflow images
     parameters:
