@@ -81,6 +81,7 @@ def test_elasticsearch_version(webserver):
         "elasticsearch module must be version 5.5.3 or greater"
 
 
+@pytest.mark.skipif(airflow_2, reason="Not needed for Airflow>=2")
 def test_werkzeug_version(webserver):
     """ Werkzeug pip module version >= 1.0.0 has an issue
     """
