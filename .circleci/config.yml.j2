@@ -48,6 +48,8 @@ workflows:
           {%- else %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
           {%- endif %}
+          context:
+            - quay.io
           requires:
             - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -64,6 +66,8 @@ workflows:
           {%- else %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
           {%- endif %}
+          context:
+            - quay.io
           requires:
             - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -264,7 +268,7 @@ jobs:
       docker_repo:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         type: string
-      dev_docker_repo:
+      dev_docker_repo_docker_hub:
         description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
         default: "astronomerio/ap-airflow"
         type: string
@@ -272,8 +276,8 @@ jobs:
       - push:
           extra_tags: "<< parameters.extra_tags >>"
           tag: "<< parameters.tag >>"
-          prod_docker_repo: "<< parameters.docker_repo >>"
-          dev_docker_repo: "<< parameters.dev_docker_repo >>"
+          prod_docker_repo_docker_hub: "<< parameters.docker_repo >>"
+          dev_docker_repo_docker_hub: "<< parameters.dev_docker_repo_docker_hub >>"
 
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
@@ -381,10 +385,15 @@ commands:
         default: ""
       tag:
         type: string
-      prod_docker_repo:
+      prod_docker_repo_docker_hub:
         type: string
-      dev_docker_repo:
+      dev_docker_repo_docker_hub:
         default: "astronomerio/ap-airflow"
+        type: string
+      prod_docker_repo_quay_io:
+        type: string
+      dev_docker_repo_quay_io:
+        default: "astronomer/ap-airflow-dev"
         type: string
     steps:
       - attach_workspace:
@@ -392,29 +401,37 @@ commands:
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i '/tmp/workspace/saved-images/<< parameters.prod_docker_repo >>:<< parameters.tag >>.tar'
+          command: docker load -i '/tmp/workspace/saved-images/<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>.tar'
       - run:
           name: Login to DockerHub
-          command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin
+          command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin docker.io
+      - run:
+          name: Login to Quay.io
+          command: echo "$QUAY_PASSWORD" | docker login --username $QUAY_USERNAME --password-stdin quay.io
       - run:
           name: Push Docker image(s)
           command: |
             set -e
-            image="<< parameters.prod_docker_repo >>:<< parameters.tag >>"
+            image="<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
             set -x
             export NEW_POINT_RELEASE=true
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
             do
-              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo >>:$tag" >/dev/null 2>&1; then
-                echo "Image with Tag ("<< parameters.prod_docker_repo >>:$tag") already exists"
+              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
+                echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
                 export NEW_POINT_RELEASE=false
               elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]]; then
-                echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo >>"
-                docker tag "$image" "<< parameters.dev_docker_repo >>:${tag}"
-                docker push "<< parameters.dev_docker_repo >>:${tag}"
+                echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
               else
-                docker tag "$image" "<< parameters.prod_docker_repo >>:${tag}"
-                docker push "<< parameters.prod_docker_repo >>:${tag}"
+                docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
+                docker push "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
+                docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.prod_docker_repo_quay_io >>:${tag}"
               fi
             done
             if $NEW_POINT_RELEASE ; then
