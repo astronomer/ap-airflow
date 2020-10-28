@@ -752,7 +752,7 @@ jobs:
         type: string
     steps:
       - airflow-image-test:
-          repository: "<< parameters.image_name >>"
+          image_name: "<< parameters.image_name >>"
           tag: "<< parameters.tag >>"
   scan-clair:
     executor: clair-scanner/default
@@ -926,7 +926,7 @@ commands:
   airflow-image-test:
     description: Test an Airflow image
     parameters:
-      repository:
+      image_name:
         type: string
       tag:
         type: string
@@ -937,15 +937,15 @@ commands:
       - run:
           name: Load archived Airflow Docker image
           command: |
-            docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>.tar
-            docker load -i /tmp/workspace/saved-images/<< parameters.repository >>:<< parameters.tag >>-onbuild.tar
+            docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>.tar
+            docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>-onbuild.tar
       - run:
           name: Test Airflow Docker images (Base + Onbuild)
           command: |
             set -e
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
-            .circleci/bin/test-airflow '<< parameters.repository >>' '<< parameters.tag >>'
+            .circleci/bin/test-airflow '<< parameters.image_name >>' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
   push:
