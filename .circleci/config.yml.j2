@@ -6,7 +6,7 @@ workflows:
       - static-checks
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
-{%- set docker_repo = "astronomerio/ap-airflow" if "dev" in ac_version else "astronomerinc/ap-airflow" -%}
+{%- set docker_repo = "astronomerio/ap-airflow" if "dev" in ac_version else "astronomerio/ap-airflow" -%}
 
 {% for distribution in distributions %}
       - build:
@@ -42,7 +42,7 @@ workflows:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
           dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
           prod_docker_repo_quay_io: "astronomer/ap-airflow"
           dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
@@ -60,10 +60,12 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - 1355-push-to-quay
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
           dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
           prod_docker_repo_quay_io: "astronomer/ap-airflow"
           dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
@@ -81,7 +83,9 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - 1355-push-to-quay
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -127,7 +131,7 @@ workflows:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
           prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
@@ -137,10 +141,12 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - 1355-push-to-quay
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
           prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -150,7 +156,9 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - 1355-push-to-quay
 {%- endfor %}
 {%- endif %}
 {%- endfor %}
@@ -178,7 +186,7 @@ jobs:
         description: "The base distribution of the container"
         type: string
       docker_repo:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         type: string
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
@@ -195,7 +203,7 @@ jobs:
     description: Test Airflow images
     parameters:
       docker_repo:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         type: string
       tag:
         type: string
@@ -214,7 +222,7 @@ jobs:
         description: "The base distribution of the container"
         type: string
       docker_repo:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         type: string
     steps:
       - clair-scan:
@@ -228,7 +236,7 @@ jobs:
         description: "The Airflow version, for example '1.10.5'"
         type: string
       docker_repo:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         type: string
       distribution_name:
         description: "The base distribution of the container"
@@ -275,17 +283,17 @@ jobs:
         type: string
         default: ""
       prod_docker_repo_docker_hub:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         type: string
       dev_docker_repo_docker_hub:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         default: "astronomerio/ap-airflow"
         type: string
       prod_docker_repo_quay_io:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         type: string
       dev_docker_repo_quay_io:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerio/ap-airflow'"
         default: "astronomerio/ap-airflow"
         type: string
     steps:
@@ -318,8 +326,8 @@ commands:
         type: string
         default: alpine
       docker_repo:
-        default: "astronomerinc/ap-airflow"
-        description: "The image name to build, for example 'astronomerinc/ap-airflow'"
+        default: "astronomerio/ap-airflow"
+        description: "The image name to build, for example 'astronomerio/ap-airflow'"
         type: string
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
@@ -395,6 +403,7 @@ commands:
             .circleci/bin/test-airflow '<< parameters.repository >>' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
+
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
