@@ -6,14 +6,14 @@ workflows:
       - static-checks
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
-{%- set docker_repo = "astronomerio/ap-airflow" if "dev" in ac_version else "astronomerinc/ap-airflow" -%}
+{%- set image_name = "astronomerio/ap-airflow" if "dev" in ac_version else "astronomerinc/ap-airflow" -%}
 
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
-          docker_repo: {{ docker_repo }}
+          image_name: {{ image_name }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
@@ -23,29 +23,25 @@ workflows:
           name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}-onbuild
-          docker_repo: {{ docker_repo }}
+          image_name: {{ image_name }}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
-          docker_repo: {{ docker_repo }}
+          image_name: {{ image_name }}
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
-          docker_repo: {{ docker_repo }}
+          image_name: {{ image_name }}
           tag: "{{ airflow_version }}-{{ distribution }}"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
-          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
-          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
-          dev_docker_repo_quay_io: "quay.io/astronomer/ap-airflow-dev"
           tag: "{{ airflow_version }}-{{ distribution }}"
           {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
@@ -63,10 +59,6 @@ workflows:
               only: master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
-          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
-          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
-          dev_docker_repo_quay_io: "quay.io/astronomer/ap-airflow-dev"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
@@ -102,33 +94,31 @@ workflows:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
-          docker_repo: "astronomerio/ap-airflow"
+          image_name: "astronomerio/ap-airflow"
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
       - scan-clair:
           name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}-onbuild
-          docker_repo: "astronomerio/ap-airflow"
+          image_name: "astronomerio/ap-airflow"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
-          docker_repo: "astronomerio/ap-airflow"
+          image_name: "astronomerio/ap-airflow"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
-          docker_repo: "astronomerio/ap-airflow"
+          image_name: "astronomerio/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}"
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
-          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
@@ -140,8 +130,6 @@ workflows:
               only: master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
-          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
           requires:
@@ -177,7 +165,7 @@ jobs:
       distribution_name:
         description: "The base distribution of the container"
         type: string
-      docker_repo:
+      image_name:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       extra_args:
@@ -188,20 +176,20 @@ jobs:
       - docker-build-base-and-onbuild:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
-          docker_repo: "<< parameters.docker_repo >>"
+          image_name: "<< parameters.image_name >>"
           extra_args: "<< parameters.extra_args >>"
   test:
     executor: machine-executor
     description: Test Airflow images
     parameters:
-      docker_repo:
+      image_name:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       tag:
         type: string
     steps:
       - airflow-image-test:
-          repository: "<< parameters.docker_repo >>"
+          repository: "<< parameters.image_name >>"
           tag: "<< parameters.tag >>"
   scan-clair:
     executor: clair-scanner/default
@@ -213,12 +201,12 @@ jobs:
       distribution_name:
         description: "The base distribution of the container"
         type: string
-      docker_repo:
+      image_name:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
     steps:
       - clair-scan:
-          image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan-trivy:
     docker:
       - image: docker:18.09-git
@@ -227,7 +215,7 @@ jobs:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
         type: string
-      docker_repo:
+      image_name:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       distribution_name:
@@ -243,7 +231,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
       - run:
           name: Install trivy
           command: |
@@ -260,7 +248,7 @@ jobs:
               --cache-dir /tmp/workspace/trivy-cache \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
-              --no-progress "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+              --no-progress "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
           key: trivy-cache
           paths:
@@ -276,6 +264,7 @@ jobs:
         default: ""
       prod_docker_repo_docker_hub:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        default: "astronomerinc/ap-airflow"
         type: string
       dev_docker_repo_docker_hub:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
@@ -283,10 +272,11 @@ jobs:
         type: string
       prod_docker_repo_quay_io:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        default: "quay.io/astronomer/ap-airflow"
         type: string
       dev_docker_repo_quay_io:
         description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
-        default: "astronomerio/ap-airflow"
+        default: "quay.io/astronomer/ap-airflow-dev"
         type: string
     steps:
       - push:
@@ -317,7 +307,7 @@ commands:
       distribution_name:
         type: string
         default: alpine
-      docker_repo:
+      image_name:
         default: "astronomerinc/ap-airflow"
         description: "The image name to build, for example 'astronomerinc/ap-airflow'"
         type: string
@@ -330,14 +320,14 @@ commands:
       - setup_remote_docker:
           docker_layer_caching: true
       - docker-build:
-          image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
       - docker-build:
-          image_name: "<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          image_name: "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
           path: "common/"
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
-          extra_args: "--build-arg baseimage=<< parameters.docker_repo >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - persist_to_workspace:
           root: .
           paths:
