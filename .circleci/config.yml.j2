@@ -44,8 +44,8 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}
           prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
           dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
-          prod_docker_repo_quay_io: "astronomer/ap-airflow"
-          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
+          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "quay.io/astronomer/ap-airflow-dev"
           tag: "{{ airflow_version }}-{{ distribution }}"
           {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
@@ -67,8 +67,8 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
           dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
-          prod_docker_repo_quay_io: "astronomer/ap-airflow"
-          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
+          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "quay.io/astronomer/ap-airflow-dev"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           {%- if "dev" in airflow_version %}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
@@ -132,7 +132,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
-          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
           requires:
@@ -147,7 +147,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           prod_docker_repo_docker_hub: "astronomerio/ap-airflow"
-          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          prod_docker_repo_quay_io: "quay.io/astronomer/ap-airflow"
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
           requires:
@@ -422,7 +422,7 @@ commands:
         default: quay.io/astronomer/ap-airflow
         type: string
       dev_docker_repo_quay_io:
-        default: "astronomer/ap-airflow-dev"
+        default: "quay.io/astronomer/ap-airflow-dev"
         type: string
     steps:
       - attach_workspace:
