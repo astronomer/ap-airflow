@@ -34,9 +34,12 @@ workflows:
           tag: "1.10.5-alpine3.10"
           requires:
             - build-1.10.5-alpine3.10
-      - publish:
-          name: publish-1.10.5-alpine3.10
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.5-alpine3.10
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.5-alpine3.10"
           extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-11-alpine3.10"
           context:
@@ -48,9 +51,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.5-alpine3.10-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.5-alpine3.10-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.5-alpine3.10-onbuild"
           extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-alpine3.10-onbuild"
           context:
@@ -90,9 +96,12 @@ workflows:
           tag: "1.10.5-buster"
           requires:
             - build-1.10.5-buster
-      - publish:
-          name: publish-1.10.5-buster
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.5-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.5-buster"
           extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-11-buster"
           context:
@@ -104,9 +113,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.5-buster-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.5-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.5-buster-onbuild"
           extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-buster-onbuild"
           context:
@@ -146,9 +158,12 @@ workflows:
           tag: "1.10.5-rhel7"
           requires:
             - build-1.10.5-rhel7
-      - publish:
-          name: publish-1.10.5-rhel7
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.5-rhel7
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.5-rhel7"
           extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM},1.10.5-11-rhel7"
           context:
@@ -160,9 +175,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.5-rhel7-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.5-rhel7-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.5-rhel7-onbuild"
           extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-rhel7-onbuild"
           context:
@@ -202,9 +220,12 @@ workflows:
           tag: "1.10.7-alpine3.10"
           requires:
             - build-1.10.7-alpine3.10
-      - publish:
-          name: publish-1.10.7-alpine3.10
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.7-alpine3.10
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.7-alpine3.10"
           extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM},1.10.7-15-alpine3.10"
           context:
@@ -216,9 +237,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.7-alpine3.10-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.7-alpine3.10-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.7-alpine3.10-onbuild"
           extra_tags: "1.10.7-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.7-15-alpine3.10-onbuild"
           context:
@@ -258,9 +282,12 @@ workflows:
           tag: "1.10.7-buster"
           requires:
             - build-1.10.7-buster
-      - publish:
-          name: publish-1.10.7-buster
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.7-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.7-buster"
           extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM},1.10.7-15-buster"
           context:
@@ -272,9 +299,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.7-buster-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.7-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.7-buster-onbuild"
           extra_tags: "1.10.7-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.7-15-buster-onbuild"
           context:
@@ -314,9 +344,12 @@ workflows:
           tag: "1.10.10-alpine3.10"
           requires:
             - build-1.10.10-alpine3.10
-      - publish:
-          name: publish-1.10.10-alpine3.10
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.10-alpine3.10
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.10-alpine3.10"
           extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-5-alpine3.10"
           context:
@@ -328,9 +361,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.10-alpine3.10-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.10-alpine3.10-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.10-alpine3.10-onbuild"
           extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-5-alpine3.10-onbuild"
           context:
@@ -370,9 +406,12 @@ workflows:
           tag: "1.10.10-buster"
           requires:
             - build-1.10.10-buster
-      - publish:
-          name: publish-1.10.10-buster
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.10-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.10-buster"
           extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-5-buster"
           context:
@@ -384,9 +423,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.10-buster-onbuild
-          docker_repo: astronomerinc/ap-airflow
+      - push:
+          name: push-1.10.10-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.10-buster-onbuild"
           extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-5-buster-onbuild"
           context:
@@ -427,9 +469,12 @@ workflows:
           tag: "1.10.12-alpine3.10"
           requires:
             - build-1.10.12-alpine3.10
-      - publish:
-          name: publish-1.10.12-alpine3.10
-          docker_repo: astronomerio/ap-airflow
+      - push:
+          name: push-1.10.12-alpine3.10
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.12-alpine3.10"
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10"
           context:
@@ -441,9 +486,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.12-alpine3.10-onbuild
-          docker_repo: astronomerio/ap-airflow
+      - push:
+          name: push-1.10.12-alpine3.10-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.12-alpine3.10-onbuild"
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
           context:
@@ -484,9 +532,12 @@ workflows:
           tag: "1.10.12-buster"
           requires:
             - build-1.10.12-buster
-      - publish:
-          name: publish-1.10.12-buster
-          docker_repo: astronomerio/ap-airflow
+      - push:
+          name: push-1.10.12-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.12-buster"
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster"
           context:
@@ -498,9 +549,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.12-buster-onbuild
-          docker_repo: astronomerio/ap-airflow
+      - push:
+          name: push-1.10.12-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "1.10.12-buster-onbuild"
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
           context:
@@ -541,9 +595,12 @@ workflows:
           tag: "2.0.0-buster"
           requires:
             - build-2.0.0-buster
-      - publish:
-          name: publish-2.0.0-buster
-          docker_repo: astronomerio/ap-airflow
+      - push:
+          name: push-2.0.0-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "2.0.0-buster"
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster"
           context:
@@ -555,9 +612,12 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-2.0.0-buster-onbuild
-          docker_repo: astronomerio/ap-airflow
+      - push:
+          name: push-2.0.0-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          dev_docker_repo_docker_hub: "astronomerio/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
+          dev_docker_repo_quay_io: "astronomer/ap-airflow-dev"
           tag: "2.0.0-buster-onbuild"
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
           context:
@@ -605,9 +665,10 @@ workflows:
           tag: "1.10.12-alpine3.10"
           requires:
             - build-1.10.12-alpine3.10
-      - publish:
-          name: publish-1.10.12-alpine3.10
-          docker_repo: "astronomerio/ap-airflow"
+      - push:
+          name: push-1.10.12-alpine3.10
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "1.10.12-alpine3.10"
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
@@ -617,9 +678,10 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.12-alpine3.10-onbuild
-          docker_repo: "astronomerio/ap-airflow"
+      - push:
+          name: push-1.10.12-alpine3.10-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "1.10.12-alpine3.10-onbuild"
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
           requires:
@@ -656,9 +718,10 @@ workflows:
           tag: "1.10.12-buster"
           requires:
             - build-1.10.12-buster
-      - publish:
-          name: publish-1.10.12-buster
-          docker_repo: "astronomerio/ap-airflow"
+      - push:
+          name: push-1.10.12-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "1.10.12-buster"
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM}"
           requires:
@@ -668,9 +731,10 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-1.10.12-buster-onbuild
-          docker_repo: "astronomerio/ap-airflow"
+      - push:
+          name: push-1.10.12-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "1.10.12-buster-onbuild"
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
           requires:
@@ -707,9 +771,10 @@ workflows:
           tag: "2.0.0-buster"
           requires:
             - build-2.0.0-buster
-      - publish:
-          name: publish-2.0.0-buster
-          docker_repo: "astronomerio/ap-airflow"
+      - push:
+          name: push-2.0.0-buster
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "2.0.0-buster"
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM}"
           requires:
@@ -719,9 +784,10 @@ workflows:
           filters:
             branches:
               only: master
-      - publish:
-          name: publish-2.0.0-buster-onbuild
-          docker_repo: "astronomerio/ap-airflow"
+      - push:
+          name: push-2.0.0-buster-onbuild
+          prod_docker_repo_docker_hub: "astronomerinc/ap-airflow"
+          prod_docker_repo_quay_io: "astronomer/ap-airflow"
           tag: "2.0.0-buster-onbuild"
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
           requires:
@@ -755,7 +821,7 @@ jobs:
         description: "The base distribution of the container"
         type: string
       docker_repo:
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
@@ -772,7 +838,7 @@ jobs:
     description: Test Airflow images
     parameters:
       docker_repo:
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       tag:
         type: string
@@ -791,7 +857,7 @@ jobs:
         description: "The base distribution of the container"
         type: string
       docker_repo:
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
     steps:
       - clair-scan:
@@ -805,7 +871,7 @@ jobs:
         description: "The Airflow version, for example '1.10.5'"
         type: string
       docker_repo:
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       distribution_name:
         description: "The base distribution of the container"
@@ -842,28 +908,37 @@ jobs:
           key: trivy-cache
           paths:
             - /tmp/workspace/trivy-cache
-  publish:
+  push:
     executor: docker-executor
-    description: Publish Airflow images
+    description: Push Airflow images
     parameters:
       tag:
         type: string
       extra_tags:
         type: string
         default: ""
-      docker_repo:
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+      prod_docker_repo_docker_hub:
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       dev_docker_repo_docker_hub:
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        default: "astronomerio/ap-airflow"
+        type: string
+      prod_docker_repo_quay_io:
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        type: string
+      dev_docker_repo_quay_io:
+        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         default: "astronomerio/ap-airflow"
         type: string
     steps:
       - push:
           extra_tags: "<< parameters.extra_tags >>"
           tag: "<< parameters.tag >>"
-          prod_docker_repo_docker_hub: "<< parameters.docker_repo >>"
+          prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
           dev_docker_repo_docker_hub: "<< parameters.dev_docker_repo_docker_hub >>"
+          prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
+          dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
 
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
@@ -887,7 +962,7 @@ commands:
         default: alpine
       docker_repo:
         default: "astronomerinc/ap-airflow"
-        description: "The docker repo to publish the image, for example 'astronomerinc/ap-airflow'"
+        description: "The image name to build, for example 'astronomerinc/ap-airflow'"
         type: string
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
@@ -1046,7 +1121,7 @@ commands:
       - modified-orb:
           allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
-  # TODO: move to an Astronomer orbs repo, publish orb.
+  # TODO: move to an Astronomer orbs repo, push orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
     description: "Scan an image for vulnerabilities"
