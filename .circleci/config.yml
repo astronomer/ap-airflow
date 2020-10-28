@@ -10,33 +10,31 @@ workflows:
           name: build-1.10.5-alpine3.10
           airflow_version: 1.10.5
           distribution_name: alpine3.10
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
           distribution_name: alpine3.10-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.5-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
-          image_name: astronomerinc/ap-airflow
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.5-alpine3.10
       - test:
           name: test-1.10.5-alpine3.10-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.5-alpine3.10"
           requires:
             - build-1.10.5-alpine3.10
       - push:
           name: push-1.10.5-alpine3.10
           tag: "1.10.5-alpine3.10"
+          dev_build: false
           extra_tags: "1.10.5-alpine3.10-${CIRCLE_BUILD_NUM},1.10.5-11-alpine3.10"
           context:
             - quay.io
@@ -50,6 +48,7 @@ workflows:
       - push:
           name: push-1.10.5-alpine3.10-onbuild
           tag: "1.10.5-alpine3.10-onbuild"
+          dev_build: false
           extra_tags: "1.10.5-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-alpine3.10-onbuild"
           context:
             - quay.io
@@ -64,33 +63,31 @@ workflows:
           name: build-1.10.5-buster
           airflow_version: 1.10.5
           distribution_name: buster
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-buster-onbuild
           airflow_version: 1.10.5
           distribution_name: buster-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.5-buster
       - scan-trivy:
           name: scan-trivy-1.10.5-buster-onbuild
           airflow_version: 1.10.5
-          image_name: astronomerinc/ap-airflow
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.5-buster
       - test:
           name: test-1.10.5-buster-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.5-buster"
           requires:
             - build-1.10.5-buster
       - push:
           name: push-1.10.5-buster
           tag: "1.10.5-buster"
+          dev_build: false
           extra_tags: "1.10.5-buster-${CIRCLE_BUILD_NUM},1.10.5-11-buster"
           context:
             - quay.io
@@ -104,6 +101,7 @@ workflows:
       - push:
           name: push-1.10.5-buster-onbuild
           tag: "1.10.5-buster-onbuild"
+          dev_build: false
           extra_tags: "1.10.5-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-buster-onbuild"
           context:
             - quay.io
@@ -118,33 +116,31 @@ workflows:
           name: build-1.10.5-rhel7
           airflow_version: 1.10.5
           distribution_name: rhel7
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
           distribution_name: rhel7-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.5-rhel7
       - scan-trivy:
           name: scan-trivy-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
-          image_name: astronomerinc/ap-airflow
           distribution: rhel7
           distribution_name: rhel7-onbuild
           requires:
             - build-1.10.5-rhel7
       - test:
           name: test-1.10.5-rhel7-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.5-rhel7"
           requires:
             - build-1.10.5-rhel7
       - push:
           name: push-1.10.5-rhel7
           tag: "1.10.5-rhel7"
+          dev_build: false
           extra_tags: "1.10.5-rhel7-${CIRCLE_BUILD_NUM},1.10.5-11-rhel7"
           context:
             - quay.io
@@ -158,6 +154,7 @@ workflows:
       - push:
           name: push-1.10.5-rhel7-onbuild
           tag: "1.10.5-rhel7-onbuild"
+          dev_build: false
           extra_tags: "1.10.5-rhel7-onbuild-${CIRCLE_BUILD_NUM},1.10.5-11-rhel7-onbuild"
           context:
             - quay.io
@@ -172,33 +169,31 @@ workflows:
           name: build-1.10.7-alpine3.10
           airflow_version: 1.10.7
           distribution_name: alpine3.10
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
           distribution_name: alpine3.10-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.7-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
-          image_name: astronomerinc/ap-airflow
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.7-alpine3.10
       - test:
           name: test-1.10.7-alpine3.10-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.7-alpine3.10"
           requires:
             - build-1.10.7-alpine3.10
       - push:
           name: push-1.10.7-alpine3.10
           tag: "1.10.7-alpine3.10"
+          dev_build: false
           extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM},1.10.7-15-alpine3.10"
           context:
             - quay.io
@@ -212,6 +207,7 @@ workflows:
       - push:
           name: push-1.10.7-alpine3.10-onbuild
           tag: "1.10.7-alpine3.10-onbuild"
+          dev_build: false
           extra_tags: "1.10.7-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.7-15-alpine3.10-onbuild"
           context:
             - quay.io
@@ -226,33 +222,31 @@ workflows:
           name: build-1.10.7-buster
           airflow_version: 1.10.7
           distribution_name: buster
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.7-buster-onbuild
           airflow_version: 1.10.7
           distribution_name: buster-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.7-buster
       - scan-trivy:
           name: scan-trivy-1.10.7-buster-onbuild
           airflow_version: 1.10.7
-          image_name: astronomerinc/ap-airflow
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.7-buster
       - test:
           name: test-1.10.7-buster-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.7-buster"
           requires:
             - build-1.10.7-buster
       - push:
           name: push-1.10.7-buster
           tag: "1.10.7-buster"
+          dev_build: false
           extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM},1.10.7-15-buster"
           context:
             - quay.io
@@ -266,6 +260,7 @@ workflows:
       - push:
           name: push-1.10.7-buster-onbuild
           tag: "1.10.7-buster-onbuild"
+          dev_build: false
           extra_tags: "1.10.7-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.7-15-buster-onbuild"
           context:
             - quay.io
@@ -280,33 +275,31 @@ workflows:
           name: build-1.10.10-alpine3.10
           airflow_version: 1.10.10
           distribution_name: alpine3.10
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
           distribution_name: alpine3.10-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.10-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
-          image_name: astronomerinc/ap-airflow
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.10-alpine3.10
       - test:
           name: test-1.10.10-alpine3.10-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.10-alpine3.10"
           requires:
             - build-1.10.10-alpine3.10
       - push:
           name: push-1.10.10-alpine3.10
           tag: "1.10.10-alpine3.10"
+          dev_build: false
           extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-5-alpine3.10"
           context:
             - quay.io
@@ -320,6 +313,7 @@ workflows:
       - push:
           name: push-1.10.10-alpine3.10-onbuild
           tag: "1.10.10-alpine3.10-onbuild"
+          dev_build: false
           extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-5-alpine3.10-onbuild"
           context:
             - quay.io
@@ -334,33 +328,31 @@ workflows:
           name: build-1.10.10-buster
           airflow_version: 1.10.10
           distribution_name: buster
-          image_name: astronomerinc/ap-airflow
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
           name: scan-clair-1.10.10-buster-onbuild
           airflow_version: 1.10.10
           distribution_name: buster-onbuild
-          image_name: astronomerinc/ap-airflow
           requires:
             - build-1.10.10-buster
       - scan-trivy:
           name: scan-trivy-1.10.10-buster-onbuild
           airflow_version: 1.10.10
-          image_name: astronomerinc/ap-airflow
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.10-buster
       - test:
           name: test-1.10.10-buster-images
-          image_name: astronomerinc/ap-airflow
           tag: "1.10.10-buster"
           requires:
             - build-1.10.10-buster
       - push:
           name: push-1.10.10-buster
           tag: "1.10.10-buster"
+          dev_build: false
           extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-5-buster"
           context:
             - quay.io
@@ -374,6 +366,7 @@ workflows:
       - push:
           name: push-1.10.10-buster-onbuild
           tag: "1.10.10-buster-onbuild"
+          dev_build: false
           extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-5-buster-onbuild"
           context:
             - quay.io
@@ -388,7 +381,7 @@ workflows:
           name: build-1.10.12-alpine3.10
           airflow_version: 1.10.12
           distribution_name: alpine3.10
-          image_name: astronomerio/ap-airflow
+          dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
           requires:
             - static-checks
@@ -396,26 +389,24 @@ workflows:
           name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
           distribution_name: alpine3.10-onbuild
-          image_name: astronomerio/ap-airflow
           requires:
             - build-1.10.12-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
-          image_name: astronomerio/ap-airflow
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.12-alpine3.10
       - test:
           name: test-1.10.12-alpine3.10-images
-          image_name: astronomerio/ap-airflow
           tag: "1.10.12-alpine3.10"
           requires:
             - build-1.10.12-alpine3.10
       - push:
           name: push-1.10.12-alpine3.10
           tag: "1.10.12-alpine3.10"
+          dev_build: false
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10"
           context:
             - quay.io
@@ -429,6 +420,7 @@ workflows:
       - push:
           name: push-1.10.12-alpine3.10-onbuild
           tag: "1.10.12-alpine3.10-onbuild"
+          dev_build: false
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
           context:
             - quay.io
@@ -443,7 +435,7 @@ workflows:
           name: build-1.10.12-buster
           airflow_version: 1.10.12
           distribution_name: buster
-          image_name: astronomerio/ap-airflow
+          dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
           requires:
             - static-checks
@@ -451,26 +443,24 @@ workflows:
           name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
           distribution_name: buster-onbuild
-          image_name: astronomerio/ap-airflow
           requires:
             - build-1.10.12-buster
       - scan-trivy:
           name: scan-trivy-1.10.12-buster-onbuild
           airflow_version: 1.10.12
-          image_name: astronomerio/ap-airflow
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.12-buster
       - test:
           name: test-1.10.12-buster-images
-          image_name: astronomerio/ap-airflow
           tag: "1.10.12-buster"
           requires:
             - build-1.10.12-buster
       - push:
           name: push-1.10.12-buster
           tag: "1.10.12-buster"
+          dev_build: false
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster"
           context:
             - quay.io
@@ -484,6 +474,7 @@ workflows:
       - push:
           name: push-1.10.12-buster-onbuild
           tag: "1.10.12-buster-onbuild"
+          dev_build: false
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
           context:
             - quay.io
@@ -498,7 +489,7 @@ workflows:
           name: build-2.0.0-buster
           airflow_version: 2.0.0
           distribution_name: buster
-          image_name: astronomerio/ap-airflow
+          dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
           requires:
             - static-checks
@@ -506,26 +497,24 @@ workflows:
           name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
           distribution_name: buster-onbuild
-          image_name: astronomerio/ap-airflow
           requires:
             - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
-          image_name: astronomerio/ap-airflow
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-2.0.0-buster
       - test:
           name: test-2.0.0-buster-images
-          image_name: astronomerio/ap-airflow
           tag: "2.0.0-buster"
           requires:
             - build-2.0.0-buster
       - push:
           name: push-2.0.0-buster
           tag: "2.0.0-buster"
+          dev_build: false
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster"
           context:
             - quay.io
@@ -539,6 +528,7 @@ workflows:
       - push:
           name: push-2.0.0-buster-onbuild
           tag: "2.0.0-buster-onbuild"
+          dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
           context:
             - quay.io
@@ -562,32 +552,30 @@ workflows:
           name: build-1.10.12-alpine3.10
           airflow_version: 1.10.12
           distribution_name: alpine3.10
-          image_name: "astronomerio/ap-airflow"
+          dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
       - scan-clair:
           name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
           distribution_name: alpine3.10-onbuild
-          image_name: "astronomerio/ap-airflow"
           requires:
             - build-1.10.12-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
-          image_name: "astronomerio/ap-airflow"
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
           requires:
             - build-1.10.12-alpine3.10
       - test:
           name: test-1.10.12-alpine3.10-images
-          image_name: "astronomerio/ap-airflow"
           tag: "1.10.12-alpine3.10"
           requires:
             - build-1.10.12-alpine3.10
       - push:
           name: push-1.10.12-alpine3.10
           tag: "1.10.12-alpine3.10"
+          dev_build: true
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-clair-1.10.12-alpine3.10-onbuild
@@ -599,6 +587,7 @@ workflows:
       - push:
           name: push-1.10.12-alpine3.10-onbuild
           tag: "1.10.12-alpine3.10-onbuild"
+          dev_build: true
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
           requires:
             - scan-clair-1.10.12-alpine3.10-onbuild
@@ -611,32 +600,30 @@ workflows:
           name: build-1.10.12-buster
           airflow_version: 1.10.12
           distribution_name: buster
-          image_name: "astronomerio/ap-airflow"
+          dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
       - scan-clair:
           name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
           distribution_name: buster-onbuild
-          image_name: "astronomerio/ap-airflow"
           requires:
             - build-1.10.12-buster
       - scan-trivy:
           name: scan-trivy-1.10.12-buster-onbuild
           airflow_version: 1.10.12
-          image_name: "astronomerio/ap-airflow"
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-1.10.12-buster
       - test:
           name: test-1.10.12-buster-images
-          image_name: "astronomerio/ap-airflow"
           tag: "1.10.12-buster"
           requires:
             - build-1.10.12-buster
       - push:
           name: push-1.10.12-buster
           tag: "1.10.12-buster"
+          dev_build: true
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-clair-1.10.12-buster-onbuild
@@ -648,6 +635,7 @@ workflows:
       - push:
           name: push-1.10.12-buster-onbuild
           tag: "1.10.12-buster-onbuild"
+          dev_build: true
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
           requires:
             - scan-clair-1.10.12-buster-onbuild
@@ -660,32 +648,30 @@ workflows:
           name: build-2.0.0-buster
           airflow_version: 2.0.0
           distribution_name: buster
-          image_name: "astronomerio/ap-airflow"
+          dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
       - scan-clair:
           name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
           distribution_name: buster-onbuild
-          image_name: "astronomerio/ap-airflow"
           requires:
             - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
-          image_name: "astronomerio/ap-airflow"
           distribution: buster
           distribution_name: buster-onbuild
           requires:
             - build-2.0.0-buster
       - test:
           name: test-2.0.0-buster-images
-          image_name: "astronomerio/ap-airflow"
           tag: "2.0.0-buster"
           requires:
             - build-2.0.0-buster
       - push:
           name: push-2.0.0-buster
           tag: "2.0.0-buster"
+          dev_build: true
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM}"
           requires:
             - scan-clair-2.0.0-buster-onbuild
@@ -697,6 +683,7 @@ workflows:
       - push:
           name: push-2.0.0-buster-onbuild
           tag: "2.0.0-buster-onbuild"
+          dev_build: true
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
           requires:
             - scan-clair-2.0.0-buster-onbuild
@@ -728,9 +715,9 @@ jobs:
       distribution_name:
         description: "The base distribution of the container"
         type: string
-      image_name:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
-        type: string
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
@@ -739,20 +726,15 @@ jobs:
       - docker-build-base-and-onbuild:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
-          image_name: "<< parameters.image_name >>"
           extra_args: "<< parameters.extra_args >>"
   test:
     executor: machine-executor
     description: Test Airflow images
     parameters:
-      image_name:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
-        type: string
       tag:
         type: string
     steps:
       - airflow-image-test:
-          image_name: "<< parameters.image_name >>"
           tag: "<< parameters.tag >>"
   scan-clair:
     executor: clair-scanner/default
@@ -764,12 +746,9 @@ jobs:
       distribution_name:
         description: "The base distribution of the container"
         type: string
-      image_name:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
-        type: string
     steps:
       - clair-scan:
-          image_name: "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan-trivy:
     docker:
       - image: docker:18.09-git
@@ -777,9 +756,6 @@ jobs:
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
-        type: string
-      image_name:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
         type: string
       distribution_name:
         description: "The base distribution of the container"
@@ -794,7 +770,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
       - run:
           name: Install trivy
           command: |
@@ -811,7 +787,7 @@ jobs:
               --cache-dir /tmp/workspace/trivy-cache \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
-              --no-progress "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+              --no-progress "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
           key: trivy-cache
           paths:
@@ -820,25 +796,28 @@ jobs:
     executor: docker-executor
     description: Push Airflow images
     parameters:
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
       tag:
         type: string
       extra_tags:
         type: string
         default: ""
       prod_docker_repo_docker_hub:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "astronomerinc/ap-airflow"
         type: string
       dev_docker_repo_docker_hub:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "astronomerio/ap-airflow"
         type: string
       prod_docker_repo_quay_io:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "quay.io/astronomer/ap-airflow"
         type: string
       dev_docker_repo_quay_io:
-        description: "The docker repo to push the image, for example 'astronomerinc/ap-airflow'"
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "quay.io/astronomer/ap-airflow-dev"
         type: string
     steps:
@@ -870,10 +849,6 @@ commands:
       distribution_name:
         type: string
         default: alpine
-      image_name:
-        default: "astronomerinc/ap-airflow"
-        description: "The image name to build, for example 'astronomerinc/ap-airflow'"
-        type: string
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
@@ -883,14 +858,14 @@ commands:
       - setup_remote_docker:
           docker_layer_caching: true
       - docker-build:
-          image_name: "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
       - docker-build:
-          image_name: "<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
           path: "common/"
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
-          extra_args: "--build-arg baseimage=<< parameters.image_name >>:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - persist_to_workspace:
           root: .
           paths:
@@ -926,8 +901,6 @@ commands:
   airflow-image-test:
     description: Test an Airflow image
     parameters:
-      image_name:
-        type: string
       tag:
         type: string
     steps:
@@ -937,15 +910,15 @@ commands:
       - run:
           name: Load archived Airflow Docker image
           command: |
-            docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>.tar
-            docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>:<< parameters.tag >>-onbuild.tar
+            docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar
+            docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
       - run:
           name: Test Airflow Docker images (Base + Onbuild)
           command: |
             set -e
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
-            .circleci/bin/test-airflow '<< parameters.image_name >>' '<< parameters.tag >>'
+            .circleci/bin/test-airflow 'ap-airflow' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
   push:
@@ -955,6 +928,9 @@ commands:
         type: string
         default: ""
       tag:
+        type: string
+      image_name:
+        default: ap-airflow
         type: string
       prod_docker_repo_docker_hub:
         default: astronomerinc/ap-airflow
@@ -974,18 +950,18 @@ commands:
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i '/tmp/workspace/saved-images/<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>.tar'
+          command: docker load -i '/tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar'
       - run:
           name: Login to DockerHub
-          command: echo "$DOCKER_PASSWORD" | docker login --username $DOCKER_USERNAME --password-stdin docker.io
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin docker.io
       - run:
           name: Login to Quay.io
-          command: echo "$QUAY_PASSWORD" | docker login --username $QUAY_USERNAME --password-stdin quay.io
+          command: echo "$QUAY_PASSWORD" | docker login --username "$QUAY_USERNAME" --password-stdin quay.io
       - run:
           name: Push Docker image(s)
           command: |
             set -e
-            image="<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
+            image="ap-airflow:<< parameters.tag >>"
             set -x
             export NEW_POINT_RELEASE=true
             for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
@@ -994,16 +970,20 @@ commands:
                 echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
                 export NEW_POINT_RELEASE=false
               elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]]; then
-                echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo_docker_hub >>"
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
-                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.dev_docker_repo_docker_hub >>"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
-                echo "Pushing Image with << parameters.tag >>-$CIRCLE_BUILD_NUM tag to << parameters.dev_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               else
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
-                docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
                 docker push "<< parameters.prod_docker_repo_quay_io >>:${tag}"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.prod_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
                 docker push "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
               fi
             done
