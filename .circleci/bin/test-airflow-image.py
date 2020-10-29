@@ -251,7 +251,7 @@ def test_airflow_configs(scheduler, docker_client):
                 "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
                 "grep '^run_as_user' | awk '{print $3}'").strip() == ""
 
-    if semantic_version(airflow_version) >= semantic_version('1.10.10'):
+    if semantic_version(airflow_version) >= semantic_version('1.10.7'):
         assert scheduler.check_output(
             "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
             "grep '^update_fab_perms' | awk '{print $3}'"
