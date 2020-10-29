@@ -103,7 +103,7 @@ RUN sed -i \
     -e 's/^run_as_user =.*/run_as_user = 100/g' \
     # We sync permissions in the entrypoint so do not need to run in the Webserver again
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
-    /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
+    /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs
