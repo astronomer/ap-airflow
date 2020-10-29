@@ -55,7 +55,8 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
@@ -74,7 +75,8 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -126,7 +128,8 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
@@ -138,7 +141,8 @@ workflows:
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
-              only: master
+              only:
+                - master
 {%- endfor %}
 {%- endif %}
 {%- endfor %}
@@ -429,8 +433,8 @@ commands:
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
                 echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.dev_docker_repo_docker_hub >>"
-                docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
                 docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
