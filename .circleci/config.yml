@@ -1098,12 +1098,12 @@ jobs:
       - run: apt-get -y install curl
       - run: apt-get -y install sudo
       - run: apt-get -y update
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run:
           name: Avoid hosts unknown for github
           command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
       - run: git clone git@github.com:astronomer/qa-regression.git
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: 
           name: Run Shell Script
           command:  |
