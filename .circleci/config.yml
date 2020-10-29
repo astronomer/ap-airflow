@@ -1100,6 +1100,7 @@ jobs:
       - run: apt-get -y update
       - run: apt-get install -y apt-utils
       - run: curl -sSL https://get.docker.com/ | sh
+      - run: service docker start
       - run: docker version
       # - run: apt-get -y install \
       #        apt-transport-https \
