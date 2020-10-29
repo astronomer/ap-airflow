@@ -1097,14 +1097,19 @@ jobs:
       - run: apt-get -y install git
       - run: apt-get -y install curl
       - run: apt-get -y install sudo
-      - run: 
-          name: Set the variable to run the other pipelines
-          command:  |
-            curl --user ${CIRCLE_API_USER_TOKEN}: -X POST \
-            --header "Content-Type: application/json" \
-            --data '{ "parameters": { "run_regression_tests": true } }' \
-            https://circleci.com/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH
-  
+      - run: apt-get -y update
+      - run: apt-get -y install \
+             apt-transport-https \
+             ca-certificates \        
+             gnupg-agent \
+             software-properties-common
+      - run: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+      - run: apt-key fingerprint 0EBFCD88
+      - run: add-apt-repository \
+             "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+             $(lsb_release -cs) \
+             stable"
+      - run: apt-get -y install docker-ce docker-ce-cli containerd.io
       - run:
           name: Avoid hosts unknown for github
           command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
