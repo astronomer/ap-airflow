@@ -1078,8 +1078,9 @@ jobs:
     description: "Run UI Regression Tests using Testim"
     environment:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-    docker:
-      - image: testim/docker-cli
+    executor: machine-executor
+    # docker:
+    #   - image: testim/docker-cli
       #parameters:
       #  dockerfile:
       #    type: string
@@ -1102,8 +1103,6 @@ jobs:
           name: Avoid hosts unknown for github
           command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
       - run: git clone git@github.com:astronomer/qa-regression.git
-      - setup_remote_docker:
-          docker_layer_caching: true
       - run: 
           name: Run Shell Script
           command:  |
