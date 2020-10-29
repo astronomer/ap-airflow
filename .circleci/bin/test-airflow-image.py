@@ -227,33 +227,33 @@ def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
 
+    if distro == "debian":
+        config_file_path = "/usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
+        expected_run_as_user = "50000"
+    elif distro == "alpine":
+        config_file_path = "/usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
+        expected_run_as_user = "100"
+    elif distro == "rhel":
+        config_file_path = "/usr/local/lib/python3.6/site-packages/airflow/config_templates/default_airflow.cfg"
+        expected_run_as_user = "100"
+    else:
+        config_file_path = "/usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
+        expected_run_as_user = ""
+
     if airflow_2:
         assert scheduler.check_output(
-            "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
+            f"cat {config_file_path} | "
             "grep '^lazy_load_plugins' | awk '{print $3}'"
         ) == "False", "[core] lazy_load_plugins needs to be False for astronomer-version-check plugin to work"
     else:
         # Confirm that run_as_user is the UID for astro user (and not root) for AC images
-        if distro == "debian":
-            assert scheduler.check_output(
-                "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-                "grep '^run_as_user' | awk '{print $3}'") == "50000"
-        elif distro == "alpine":
-            assert scheduler.check_output(
-                "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-                "grep '^run_as_user' | awk '{print $3}'") == "100"
-        elif distro == "rhel":
-            assert scheduler.check_output(
-                "cat /usr/local/lib/python3.6/site-packages/airflow/config_templates/default_airflow.cfg | "
-                "grep '^run_as_user' | awk '{print $3}'") == "100"
-        else:
-            assert scheduler.check_output(
-                "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
-                "grep '^run_as_user' | awk '{print $3}'").strip() == ""
+        assert scheduler.check_output(
+            f"cat {config_file_path} | "
+            "grep '^run_as_user' | awk '{print $3}'").strip() == expected_run_as_user
 
     if semantic_version(airflow_version) >= semantic_version('1.10.7'):
         assert scheduler.check_output(
-            "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
+            f"cat {config_file_path} | "
             "grep '^update_fab_perms' | awk '{print $3}'"
         ) == "False", "[webserver] update_fab_perms needs to be False for AC >= 1.10.10"
 
