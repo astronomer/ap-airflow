@@ -251,6 +251,12 @@ def test_airflow_configs(scheduler, docker_client):
                 "cat /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
                 "grep '^run_as_user' | awk '{print $3}'").strip() == ""
 
+    if semantic_version(airflow_version) >= semantic_version('1.10.10'):
+        assert scheduler.check_output(
+            "cat /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg | "
+            "grep '^update_fab_perms' | awk '{print $3}'"
+        ) == "False", "[webserver] update_fab_perms needs to be False for AC >= 1.10.10"
+
 
 def test_labels_for_onbuild_image(docker_client):
     """ Ensure correct labels exists on onbuild image """
