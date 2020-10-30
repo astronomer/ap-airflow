@@ -36,6 +36,12 @@ def test_airflow_in_path(webserver):
         "Expected 'airflow' to be in PATH"
 
 
+def test_gunicorn_workers_start(webserver):
+    """ Ensure all gunicorn workers start
+    """
+    assert webserver.check_output("ps | grep unicorn | grep worker | wc | awk '{ print $1 }'") == "4"
+
+
 def test_tini_in_path(webserver):
     """ Ensure 'tini' is in PATH
     """
