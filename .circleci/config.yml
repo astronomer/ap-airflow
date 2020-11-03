@@ -1100,6 +1100,7 @@ jobs:
       - run: sudo apt-get -y install curl
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
       - run: sudo apt-get install nodejs
+      - run: nvm list
       - run: nvm use v10.8.0 
       - run: 
           name: Avoid hosts unknown for github
