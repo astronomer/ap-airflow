@@ -1120,6 +1120,7 @@ jobs:
       - run: 
           name: Run the Testim Tests 
           command:   |
+            npm i -g @testim/testim-cli
             cd qa-regression
             testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
       - store_artifacts:
