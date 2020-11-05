@@ -122,6 +122,8 @@ workflows:
           tag: "{{ airflow_version }}-{{ distribution }}"
           dev_build: true
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
           requires:
             - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -135,6 +137,8 @@ workflows:
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           dev_build: true
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          context:
+            - quay.io
           requires:
             - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild

@@ -597,6 +597,8 @@ workflows:
           tag: "1.10.12-alpine3.10"
           dev_build: true
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
           requires:
             - scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
@@ -610,6 +612,8 @@ workflows:
           tag: "1.10.12-alpine3.10-onbuild"
           dev_build: true
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
+          context:
+            - quay.io
           requires:
             - scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
@@ -647,6 +651,8 @@ workflows:
           tag: "1.10.12-buster"
           dev_build: true
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
           requires:
             - scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
@@ -660,6 +666,8 @@ workflows:
           tag: "1.10.12-buster-onbuild"
           dev_build: true
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
+          context:
+            - quay.io
           requires:
             - scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
@@ -697,6 +705,8 @@ workflows:
           tag: "2.0.0-buster"
           dev_build: true
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
           requires:
             - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
@@ -710,6 +720,8 @@ workflows:
           tag: "2.0.0-buster-onbuild"
           dev_build: true
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-1.dev-buster-onbuild"
+          context:
+            - quay.io
           requires:
             - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
