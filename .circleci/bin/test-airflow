@@ -23,7 +23,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source $DIR/install-ci-tools
 source $DIR/start-kind-cluster
 
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo add stable https://charts.helm.sh/stable/
 helm repo add astronomer https://internal-helm.astronomer.io/
 helm repo update
 
