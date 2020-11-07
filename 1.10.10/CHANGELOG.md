@@ -1,5 +1,13 @@
 # Changelog
 
+Astronomer Certified 1.10.10-6.dev, TBD
+--------------------------------------------
+
+### Bug Fixes
+
+- Sync FAB Permissions for all base views ([commit](https://github.com/astronomer/airflow/commit/1096bd10329bb77837bacf5b1c364f936057f7a4))
+- Stopping running `sync_perm` multiple times for Airflow >= 1.10.7 ([commit](https://github.com/astronomer/ap-airflow/commit/9c10dcfcda53dbbb88a0a41f6ae917c4edbd8694))
+
 Astronomer Certified 1.10.10-5, 2020-09-16
 --------------------------------------------
 
