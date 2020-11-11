@@ -1232,21 +1232,29 @@ commands:
                 echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
                 export NEW_POINT_RELEASE=false
               elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || <<parameters.dev_release >> ; then
-                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.dev_docker_repo_quay_io >>"
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
-                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.dev_docker_repo_docker_hub >>"
-                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                echo "Tagging and pushing image <<parameters.image_name>>:${tag} to << parameters.dev_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               else
-                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.prod_docker_repo_quay_io >>"
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.prod_docker_repo_quay_io >>:${tag}"
 
-                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >>-$CIRCLE_BUILD_NUM to << parameters.prod_docker_repo_docker_hub >>"
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_docker_hub >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
                 docker push "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               fi
             done
             set +x
