@@ -118,7 +118,7 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 RUN pip install "${AIRFLOW_MODULE}" \
   && pip install "apache-airflow-providers-elasticsearch" \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
-	&& pip install "astronomer-fab-security-manager~=1.2, >=1.2.2"
+	&& pip install "astronomer-fab-security-manager~=1.5, >=1.5.0"
 
 
 ## move this to same layer as airflow because its from tag.
@@ -148,6 +148,8 @@ RUN sed -i \
     -e 's/^lazy_load_plugins =.*/lazy_load_plugins = False/g' \
     # We sync permissions in the entrypoint so do not need to run in the Webserver again
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
+    # Use Auth Backend defined in Astronomer FAB Security Manager
+    -e 's/^auth_backend =.*/auth_backend = astronomer.flask_appbuilder.current_user_backend/g' \
     /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory, so we can own it when we mount volumes
