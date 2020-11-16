@@ -1,10 +1,19 @@
 exclude: '^alpine-packages/.*$'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v3.3.0
     hooks:
+      - id: check-case-conflict
+      - id: check-merge-conflict
       - id: check-yaml
       - id: end-of-file-fixer
+      - id: file-contents-sorter
+        args: ["--ignore-case"]
+        files: '^.gitignore$'
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: no-commit-to-branch
+        args: ["--branch", "master", '--branch', 'main']
       - id: trailing-whitespace
   - repo: local
     hooks:
