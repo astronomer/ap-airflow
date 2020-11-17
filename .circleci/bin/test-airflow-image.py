@@ -67,6 +67,10 @@ def test_version(webserver, docker_client):
     version_output = webserver.check_output('airflow version')
     assert airflow_ver in version_output
 
+    # AC Version should not be empty and should contain Airflow Version in it
+    ac_version = get_label(docker_client, 'io.astronomer.docker.ac.version')
+    assert airflow_ver in ac_version
+
 
 def test_elasticsearch_version(webserver):
     """ Astronomer runs a version of ElasticSearch that requires

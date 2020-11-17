@@ -109,6 +109,9 @@ ARG VERSION="2.0.0-1.*"
 ARG SUBMODULES="async,azure,aws,celery,elasticsearch,gcp,password,kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 
+LABEL io.astronomer.docker.airflow.version="2.0.0"
+LABEL io.astronomer.docker.ac.version="${VERSION}"
+
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
 COPY include/pip.conf /etc/pip.conf
@@ -124,9 +127,6 @@ RUN pip install "${AIRFLOW_MODULE}" \
 ## move this to same layer as airflow because its from tag.
 
 FROM ${APT_DEPS_IMAGE} as main
-
-LABEL io.astronomer.docker.airflow.version="2.0.0"
-LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
