@@ -8,6 +8,7 @@ JPype1<0.7.3
 # Make sure we don't get pyarrow installed, libarrow is difficult to get working in Alpine
 papermill<2.0
 nteract-scrapbook<0.4
+pyzmq<20.0
 
 WTforms<2.3.0
 
