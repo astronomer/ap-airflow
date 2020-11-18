@@ -16,16 +16,17 @@
 FROM alpine:3.10
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
+ARG ORG="astronomer"
+ARG VERSION="1.10.5-11"
+ARG SUBMODULES="all, statsd, elasticsearch"
+ARG REPO_BRANCH=master
+
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
 LABEL io.astronomer.docker.airflow.version="1.10.5"
-
-ARG ORG="astronomer"
-ARG VERSION="1.10.5-11"
-ARG SUBMODULES="all, statsd, elasticsearch"
-ARG REPO_BRANCH=master
+LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 ENV AIRFLOW_REPOSITORY="https://github.com/${ORG}/airflow"
 ENV AIRFLOW_MODULE="git+${AIRFLOW_REPOSITORY}@${VERSION}#egg=apache-airflow[${SUBMODULES}]"
