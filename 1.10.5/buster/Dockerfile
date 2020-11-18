@@ -112,6 +112,9 @@ ARG VERSION="1.10.5-11"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
 ENV AIRFLOW_MODULE="git+${AIRFLOW_REPOSITORY}@${VERSION}#egg=apache-airflow[${SUBMODULES}]"
 
+LABEL io.astronomer.docker.airflow.version="1.10.5"
+LABEL io.astronomer.docker.ac.version="${VERSION}"
+
 # Force pip to install these specific versions when ever it installs a module
 ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
@@ -135,7 +138,6 @@ RUN cd usr/local/lib/python3.7/site-packages/airflow/www_rbac \
 
 FROM ${APT_DEPS_IMAGE} as main
 
-LABEL io.astronomer.docker.airflow.version="1.10.5"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \

@@ -3,16 +3,17 @@ MAINTAINER Astronomer <humans@astronomer.io>
 
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
+ARG ORG="astronomer"
+ARG VERSION="1.10.5-11"
+ARG SUBMODULES="all, statsd, elasticsearch"
+ARG REPO_BRANCH=master
+
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="rhel"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
 LABEL io.astronomer.docker.airflow.version="1.10.5"
-
-ARG ORG="astronomer"
-ARG VERSION="1.10.5-11"
-ARG SUBMODULES="all, statsd, elasticsearch"
-ARG REPO_BRANCH=master
+LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 
 ENV AIRFLOW_REPOSITORY="https://github.com/${ORG}/airflow"
