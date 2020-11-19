@@ -351,6 +351,10 @@ commands:
             mkdir -p saved-images/"$(dirname '<< parameters.image_name >>')"
             docker build \
               --tag '<< parameters.image_name >>' \
+              --label io.astronomer.docker.build_time="$(date +%s)" \
+              --label io.astronomer.repo.commit_sha="${CIRCLE_SHA1}" \
+              --label io.astronomer.repo.url="${CIRCLE_REPOSITORY_URL}" \
+              --label io.astronomer.ci.build_url="${CIRCLE_BUILD_URL}" \
               --file '<< parameters.path>>/<< parameters.dockerfile >>' \
               --build-arg "BUILD_NUMBER=${CIRCLE_BUILD_NUM}" \
               --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
