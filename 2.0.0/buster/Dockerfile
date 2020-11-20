@@ -120,7 +120,7 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 # Pip install airflow and astro security manager
 RUN pip install "${AIRFLOW_MODULE}" \
   && pip install "apache-airflow-providers-elasticsearch" \
-  && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.4/astronomer_airflow_scripts-0.0.4-py3-none-any.whl" \
+  && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip install "astronomer-fab-security-manager~=1.5"
 
 
