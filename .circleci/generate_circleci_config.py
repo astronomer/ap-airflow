@@ -90,8 +90,8 @@ def replace_version_info():
 
                 # Replace Airflow Version
                 new_text = re.sub(
-                    r'ENV AIRFLOW_VERSION=(.*)',
-                    f'ENV AIRFLOW_VERSION="{airflow_version}"',
+                    r'ARG AIRFLOW_VERSION=(.*)',
+                    f'ARG AIRFLOW_VERSION="{airflow_version}"',
                     new_text,
                     flags=re.MULTILINE
                 )

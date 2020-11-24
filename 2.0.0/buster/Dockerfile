@@ -108,7 +108,7 @@ RUN apt-get update \
 ARG VERSION="2.0.0-1.*"
 ARG SUBMODULES="async,azure,aws,celery,elasticsearch,gcp,password,kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
-ENV AIRFLOW_VERSION="2.0.0"
+ARG AIRFLOW_VERSION="2.0.0"
 
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"

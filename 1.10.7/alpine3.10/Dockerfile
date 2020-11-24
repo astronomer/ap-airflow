@@ -21,7 +21,7 @@ ARG VERSION="1.10.7-16.*"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG REPO_BRANCH=master
-ENV AIRFLOW_VERSION="1.10.7"
+ARG AIRFLOW_VERSION="1.10.7"
 
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"

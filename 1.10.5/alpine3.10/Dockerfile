@@ -20,7 +20,7 @@ ARG ORG="astronomer"
 ARG VERSION="1.10.5-11"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG REPO_BRANCH=master
-ENV AIRFLOW_VERSION="1.10.5"
+ARG AIRFLOW_VERSION="1.10.5"
 
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
