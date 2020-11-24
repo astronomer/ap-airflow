@@ -90,8 +90,8 @@ def replace_version_info():
 
                 # Replace Airflow Version
                 new_text = re.sub(
-                    r'LABEL io.astronomer.docker.airflow.version=(.*)',
-                    f'LABEL io.astronomer.docker.airflow.version="{airflow_version}"',
+                    r'ENV AIRFLOW_VERSION=(.*)',
+                    f'ENV AIRFLOW_VERSION="{airflow_version}"',
                     new_text,
                     flags=re.MULTILINE
                 )
