@@ -1317,6 +1317,15 @@ commands:
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               fi
             done
+
+            # The following code block publishes Moving Master builds (e.g. 1.10.13-buster-onbuild)
+            # as compared to above code-blocks that publish images with build-number & immutable tag
+            # e.g (e.g. 1.10.13-1-buster-onbuild and 1.10.13-buster-onbuild-24119)
+            if $NEW_POINT_RELEASE ; then
+              docker push "$image"
+            else
+              echo "Image with Tag ($image) not pushed as it is not a new point release"
+            fi
             set +x
   clair-scan:
     description: "Vulnerability scan a Docker image"
