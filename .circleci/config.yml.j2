@@ -280,6 +280,7 @@ jobs:
         type: string
     steps:
       - push:
+          dev_release: "<< parameters.dev_build >>"
           extra_tags: "<< parameters.extra_tags >>"
           tag: "<< parameters.tag >>"
           prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
