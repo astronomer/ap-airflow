@@ -20,12 +20,13 @@ ARG ORG="astronomer"
 ARG VERSION="1.10.5-11"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG REPO_BRANCH=master
+ARG AIRFLOW_VERSION="1.10.5"
 
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
-LABEL io.astronomer.docker.airflow.version="1.10.5"
+LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 ENV AIRFLOW_REPOSITORY="https://github.com/${ORG}/airflow"

@@ -21,12 +21,13 @@ ARG VERSION="1.10.12-2.*"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG REPO_BRANCH=master
+ARG AIRFLOW_VERSION="1.10.12"
 
 LABEL io.astronomer.docker=true
 LABEL io.astronomer.docker.distro="alpine"
 LABEL io.astronomer.docker.module="airflow"
 LABEL io.astronomer.docker.component="airflow"
-LABEL io.astronomer.docker.airflow.version="1.10.12"
+LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 ENV AIRFLOW_HOME="/usr/local/airflow"
@@ -92,7 +93,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& update-ca-certificates \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
 	&& pip3 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
-	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" \
+	&& pip3 install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.7.txt" \
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip3 install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2" \
 	&& apk del .build-deps py3-numpy-dev \

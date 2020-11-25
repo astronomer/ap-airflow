@@ -111,8 +111,9 @@ RUN apt-get update \
 ARG VERSION="1.10.5-11"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
 ENV AIRFLOW_MODULE="git+${AIRFLOW_REPOSITORY}@${VERSION}#egg=apache-airflow[${SUBMODULES}]"
+ARG AIRFLOW_VERSION="1.10.5"
 
-LABEL io.astronomer.docker.airflow.version="1.10.5"
+LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 # Force pip to install these specific versions when ever it installs a module
