@@ -15,23 +15,22 @@ from tempfile import TemporaryDirectory
 from email.message import Message
 from email.parser import Parser
 from urllib.parse import urljoin
-from wheel.wheelfile import WheelFile, WHEEL_INFO_RE
+from wheel.wheelfile import WHEEL_INFO_RE
 from wheel.cli.pack import pack as pack_wheel
-from wheel.cli.unpack import unpack as unpack_wheel
-from zipfile import ZIP_DEFLATED, ZipInfo, ZipFile
+from zipfile import ZipFile
 
 import requests
 from bs4 import BeautifulSoup
 
 
-def wheel_urls_from_listing(url):
+def wheel_urls_from_listing(url, version):
     listing = requests.get(url)
     listing.raise_for_status()
 
     soup = BeautifulSoup(listing.text, 'html.parser')
 
     relative_wheels = [
-        a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl')
+        a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl') and version in a['href']
     ]
 
     for rel in relative_wheels:
@@ -48,6 +47,7 @@ def download_wheel(url, destdir):
         with open(path, 'wb') as f:
             shutil.copyfileobj(r.raw, f)
     return path
+
 
 def repack_wheel(output: str, url: str):
     with TemporaryDirectory() as tmp:
@@ -76,7 +76,7 @@ def update_metadata(unpacked_folder, ver: str):
     Update the METADATA in the unpacked wheel folder, replacing requirements on
     ``apache-airflow`` with ``astronomer-certified``.
 
-    If we are repackging the Apache Airflow RCs from dist.apache.org, the
+    If we are repackaging the Apache Airflow RCs from dist.apache.org, the
     filename will contain rc1, but the version in the wheel will not match.
     This will update the version contained in the wheel to include the matching
     release candidate/pre-release version suffix
@@ -131,7 +131,8 @@ def main():
 
     parser.add_argument(
         "--output",
-        help="Folder underwhich to create output folders, suitable for uploading to a PEP-503 compatible repository",
+        help="Folder under which to create output folders, suitable for "
+             "uploading to a PEP-503 compatible repository",
         default="tmp-packages",
     )
 
@@ -144,9 +145,10 @@ def main():
 
     os.mkdir(args.output)
 
-    wheels = wheel_urls_from_listing(os.path.join(args.http_root, args.version))
+    wheels = wheel_urls_from_listing(args.http_root, args.version)
     for wheel in wheels:
         repack_wheel(args.output, wheel)
+
 
 if __name__ == "__main__":
     main()
