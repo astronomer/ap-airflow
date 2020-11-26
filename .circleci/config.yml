@@ -423,7 +423,7 @@ workflows:
       - push:
           name: push-1.10.12-alpine3.10
           tag: "1.10.12-alpine3.10"
-          dev_build: true
+          dev_build: false
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-2-alpine3.10"
           context:
             - quay.io
@@ -438,7 +438,7 @@ workflows:
       - push:
           name: push-1.10.12-alpine3.10-onbuild
           tag: "1.10.12-alpine3.10-onbuild"
-          dev_build: true
+          dev_build: false
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2-alpine3.10-onbuild"
           context:
             - quay.io
@@ -478,7 +478,7 @@ workflows:
       - push:
           name: push-1.10.12-buster
           tag: "1.10.12-buster"
-          dev_build: true
+          dev_build: false
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-2-buster"
           context:
             - quay.io
@@ -493,7 +493,7 @@ workflows:
       - push:
           name: push-1.10.12-buster-onbuild
           tag: "1.10.12-buster-onbuild"
-          dev_build: true
+          dev_build: false
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2-buster-onbuild"
           context:
             - quay.io
