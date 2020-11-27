@@ -1322,7 +1322,24 @@ commands:
             # as compared to above code-blocks that publish images with build-number & immutable tag
             # e.g (e.g. 1.10.13-1-buster-onbuild and 1.10.13-buster-onbuild-24119)
             if $NEW_POINT_RELEASE ; then
-              docker push "$image"
+              if ! <<parameters.dev_release >> ; then
+                # If it is not a Dev Release publish the image to Prod Repos
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:<< parameters.tag >>"
+                docker push "<< parameters.prod_docker_repo_quay_io >>:<< parameters.tag >>"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
+                docker push "<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
+              fi
+
+              echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.dev_docker_repo_docker_hub >>"
+              docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:<< parameters.tag >>"
+              docker push "<< parameters.dev_docker_repo_docker_hub >>:<< parameters.tag >>"
+
+              echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.dev_docker_repo_quay_io >>"
+              docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:<< parameters.tag >>"
+              docker push "<< parameters.dev_docker_repo_quay_io >>:<< parameters.tag >>"
             else
               echo "Image with Tag ($image) not pushed as it is not a new point release"
             fi
