@@ -19,3 +19,6 @@ azure-storage<0.37.0
 
 # 0.13.3 installs PyArrow which has issues with Alpine
 pandas-gbq<=0.13.2
+
+# 20.0 breaks with snowflake-connector-python installed in Alpine images
+pyOpenSSL<20.0
