@@ -128,6 +128,9 @@ RUN pip install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.
 
 FROM ${APT_DEPS_IMAGE} as main
 
+# By increasing this number we force CI to upgrade all system packages
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="1"
+
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get clean \
