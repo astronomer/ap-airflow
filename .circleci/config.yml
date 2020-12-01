@@ -508,57 +508,57 @@ workflows:
               only:
                 - master
       - build:
-          name: build-1.10.13-buster
-          airflow_version: 1.10.13
+          name: build-1.10.14-buster
+          airflow_version: 1.10.14
           distribution_name: buster
           dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.13.build)"
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.14.build)"
           requires:
             - static-checks
       - scan-clair:
-          name: scan-clair-1.10.13-buster-onbuild
-          airflow_version: 1.10.13
+          name: scan-clair-1.10.14-buster-onbuild
+          airflow_version: 1.10.14
           distribution_name: buster-onbuild
           requires:
-            - build-1.10.13-buster
+            - build-1.10.14-buster
       - scan-trivy:
-          name: scan-trivy-1.10.13-buster-onbuild
-          airflow_version: 1.10.13
+          name: scan-trivy-1.10.14-buster-onbuild
+          airflow_version: 1.10.14
           distribution: buster
           distribution_name: buster-onbuild
           requires:
-            - build-1.10.13-buster
+            - build-1.10.14-buster
       - test:
-          name: test-1.10.13-buster-images
-          tag: "1.10.13-buster"
+          name: test-1.10.14-buster-images
+          tag: "1.10.14-buster"
           requires:
-            - build-1.10.13-buster
+            - build-1.10.14-buster
       - push:
-          name: push-1.10.13-buster
-          tag: "1.10.13-buster"
+          name: push-1.10.14-buster
+          tag: "1.10.14-buster"
           dev_build: false
-          extra_tags: "1.10.13-buster-${CIRCLE_BUILD_NUM},1.10.13-2.dev-buster"
+          extra_tags: "1.10.14-buster-${CIRCLE_BUILD_NUM},1.10.14-1.dev-buster"
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.13-buster-onbuild
-            - scan-trivy-1.10.13-buster-onbuild
-            - test-1.10.13-buster-images
+            - scan-clair-1.10.14-buster-onbuild
+            - scan-trivy-1.10.14-buster-onbuild
+            - test-1.10.14-buster-images
           filters:
             branches:
               only:
                 - master
       - push:
-          name: push-1.10.13-buster-onbuild
-          tag: "1.10.13-buster-onbuild"
+          name: push-1.10.14-buster-onbuild
+          tag: "1.10.14-buster-onbuild"
           dev_build: false
-          extra_tags: "1.10.13-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.13-2.dev-buster-onbuild"
+          extra_tags: "1.10.14-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.14-1.dev-buster-onbuild"
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.13-buster-onbuild
-            - scan-trivy-1.10.13-buster-onbuild
-            - test-1.10.13-buster-images
+            - scan-clair-1.10.14-buster-onbuild
+            - scan-trivy-1.10.14-buster-onbuild
+            - test-1.10.14-buster-images
           filters:
             branches:
               only:
@@ -953,55 +953,55 @@ workflows:
               only:
                 - master
       - build:
-          name: build-1.10.13-buster
-          airflow_version: 1.10.13
+          name: build-1.10.14-buster
+          airflow_version: 1.10.14
           distribution_name: buster
           dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.13.build)"
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.14.build)"
       - scan-clair:
-          name: scan-clair-1.10.13-buster-onbuild
-          airflow_version: 1.10.13
+          name: scan-clair-1.10.14-buster-onbuild
+          airflow_version: 1.10.14
           distribution_name: buster-onbuild
           requires:
-            - build-1.10.13-buster
+            - build-1.10.14-buster
       - scan-trivy:
-          name: scan-trivy-1.10.13-buster-onbuild
-          airflow_version: 1.10.13
+          name: scan-trivy-1.10.14-buster-onbuild
+          airflow_version: 1.10.14
           distribution: buster
           distribution_name: buster-onbuild
           requires:
-            - build-1.10.13-buster
+            - build-1.10.14-buster
       - test:
-          name: test-1.10.13-buster-images
-          tag: "1.10.13-buster"
+          name: test-1.10.14-buster-images
+          tag: "1.10.14-buster"
           requires:
-            - build-1.10.13-buster
+            - build-1.10.14-buster
       - push:
-          name: push-1.10.13-buster
-          tag: "1.10.13-buster"
+          name: push-1.10.14-buster
+          tag: "1.10.14-buster"
           dev_build: true
-          extra_tags: "1.10.13-buster-${CIRCLE_BUILD_NUM}"
+          extra_tags: "1.10.14-buster-${CIRCLE_BUILD_NUM}"
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.13-buster-onbuild
-            - scan-trivy-1.10.13-buster-onbuild
-            - test-1.10.13-buster-images
+            - scan-clair-1.10.14-buster-onbuild
+            - scan-trivy-1.10.14-buster-onbuild
+            - test-1.10.14-buster-images
           filters:
             branches:
               only:
                 - master
       - push:
-          name: push-1.10.13-buster-onbuild
-          tag: "1.10.13-buster-onbuild"
+          name: push-1.10.14-buster-onbuild
+          tag: "1.10.14-buster-onbuild"
           dev_build: true
-          extra_tags: "1.10.13-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.13-2.dev-buster-onbuild"
+          extra_tags: "1.10.14-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.14-1.dev-buster-onbuild"
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.13-buster-onbuild
-            - scan-trivy-1.10.13-buster-onbuild
-            - test-1.10.13-buster-images
+            - scan-clair-1.10.14-buster-onbuild
+            - scan-trivy-1.10.14-buster-onbuild
+            - test-1.10.14-buster-images
           filters:
             branches:
               only:
