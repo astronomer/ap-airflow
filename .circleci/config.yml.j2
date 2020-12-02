@@ -40,13 +40,8 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- if "dev" in airflow_version %}
-          dev_build: true
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
-          {%- else %}
-          dev_build: false
+          dev_build: {{ dev_build }}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
-          {%- endif %}
           context:
             - quay.io
           requires:
@@ -60,13 +55,8 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          {%- if "dev" in airflow_version %}
-          dev_build: true
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          {%- else %}
-          dev_build: false
+          dev_build: {{ dev_build }}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
-          {%- endif %}
           context:
             - quay.io
           requires:
