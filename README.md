@@ -1,4 +1,4 @@
-# Astronomer Certified Docker Images
+# Astronomer Core Docker Images
 
 [![docker-pulls](https://img.shields.io/docker/pulls/astronomerinc/ap-airflow.svg)](https://hub.docker.com/r/astronomerinc/ap-airflow)
 
@@ -8,7 +8,7 @@ If you'd like to see the platform in action, [start a free trial on our SaaS ser
 
 ## Docker images
 
-Docker images for deploying and running Astronomer Certified are currently available on
+Docker images for deploying and running Astronomer Core are currently available on
 [DockerHub](https://hub.docker.com/u/astronomerinc/).
 
 We publish 2 variants for each AC Version (example: `1.10.10-3`) and distribution (`debian buster` and `alpine`):
@@ -28,7 +28,7 @@ including latest security patches. This tag is "floating" or movable.
 
 ## Contents of this repo
 
-* The official Dockerfiles that build Astronomer Certified Images
+* The official Dockerfiles that build Astronomer Core Images
 * Example docker-compose files for running various pieces and configurations of
   the platform.
 
