@@ -399,8 +399,7 @@ workflows:
           name: build-1.10.12-alpine3.10
           airflow_version: 1.10.12
           distribution_name: alpine3.10
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
@@ -424,8 +423,8 @@ workflows:
       - push:
           name: push-1.10.12-alpine3.10
           tag: "1.10.12-alpine3.10"
-          dev_build: true
-          extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10"
+          dev_build: false
+          extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-2-alpine3.10"
           context:
             - quay.io
           requires:
@@ -439,8 +438,8 @@ workflows:
       - push:
           name: push-1.10.12-alpine3.10-onbuild
           tag: "1.10.12-alpine3.10-onbuild"
-          dev_build: true
-          extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
+          dev_build: false
+          extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2-alpine3.10-onbuild"
           context:
             - quay.io
           requires:
@@ -455,8 +454,7 @@ workflows:
           name: build-1.10.12-buster
           airflow_version: 1.10.12
           distribution_name: buster
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
+          dev_build: false
           requires:
             - static-checks
       - scan-clair:
@@ -480,8 +478,8 @@ workflows:
       - push:
           name: push-1.10.12-buster
           tag: "1.10.12-buster"
-          dev_build: true
-          extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster"
+          dev_build: false
+          extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-2-buster"
           context:
             - quay.io
           requires:
@@ -495,8 +493,8 @@ workflows:
       - push:
           name: push-1.10.12-buster-onbuild
           tag: "1.10.12-buster-onbuild"
-          dev_build: true
-          extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
+          dev_build: false
+          extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2-buster-onbuild"
           context:
             - quay.io
           requires:
@@ -840,114 +838,6 @@ workflows:
             - scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
-          filters:
-            branches:
-              only:
-                - master
-      - build:
-          name: build-1.10.12-alpine3.10
-          airflow_version: 1.10.12
-          distribution_name: alpine3.10
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
-      - scan-clair:
-          name: scan-clair-1.10.12-alpine3.10-onbuild
-          airflow_version: 1.10.12
-          distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.12-alpine3.10
-      - scan-trivy:
-          name: scan-trivy-1.10.12-alpine3.10-onbuild
-          airflow_version: 1.10.12
-          distribution: alpine3.10
-          distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.12-alpine3.10
-      - test:
-          name: test-1.10.12-alpine3.10-images
-          tag: "1.10.12-alpine3.10"
-          requires:
-            - build-1.10.12-alpine3.10
-      - push:
-          name: push-1.10.12-alpine3.10
-          tag: "1.10.12-alpine3.10"
-          dev_build: true
-          extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM}"
-          context:
-            - quay.io
-          requires:
-            - scan-clair-1.10.12-alpine3.10-onbuild
-            - scan-trivy-1.10.12-alpine3.10-onbuild
-            - test-1.10.12-alpine3.10-images
-          filters:
-            branches:
-              only:
-                - master
-      - push:
-          name: push-1.10.12-alpine3.10-onbuild
-          tag: "1.10.12-alpine3.10-onbuild"
-          dev_build: true
-          extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-alpine3.10-onbuild"
-          context:
-            - quay.io
-          requires:
-            - scan-clair-1.10.12-alpine3.10-onbuild
-            - scan-trivy-1.10.12-alpine3.10-onbuild
-            - test-1.10.12-alpine3.10-images
-          filters:
-            branches:
-              only:
-                - master
-      - build:
-          name: build-1.10.12-buster
-          airflow_version: 1.10.12
-          distribution_name: buster
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.12.build)"
-      - scan-clair:
-          name: scan-clair-1.10.12-buster-onbuild
-          airflow_version: 1.10.12
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.12-buster
-      - scan-trivy:
-          name: scan-trivy-1.10.12-buster-onbuild
-          airflow_version: 1.10.12
-          distribution: buster
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.12-buster
-      - test:
-          name: test-1.10.12-buster-images
-          tag: "1.10.12-buster"
-          requires:
-            - build-1.10.12-buster
-      - push:
-          name: push-1.10.12-buster
-          tag: "1.10.12-buster"
-          dev_build: true
-          extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM}"
-          context:
-            - quay.io
-          requires:
-            - scan-clair-1.10.12-buster-onbuild
-            - scan-trivy-1.10.12-buster-onbuild
-            - test-1.10.12-buster-images
-          filters:
-            branches:
-              only:
-                - master
-      - push:
-          name: push-1.10.12-buster-onbuild
-          tag: "1.10.12-buster-onbuild"
-          dev_build: true
-          extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-2.dev-buster-onbuild"
-          context:
-            - quay.io
-          requires:
-            - scan-clair-1.10.12-buster-onbuild
-            - scan-trivy-1.10.12-buster-onbuild
-            - test-1.10.12-buster-images
           filters:
             branches:
               only:
