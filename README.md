@@ -114,3 +114,7 @@ Clean up
 ```
 kind delete cluster --name test-cluster
 ```
+
+## License
+
+Apache 2.0 with Commons Clause
