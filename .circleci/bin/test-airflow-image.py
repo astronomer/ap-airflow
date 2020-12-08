@@ -134,7 +134,7 @@ def test_airflow_connections(scheduler):
             'airflow connections add --conn-uri %s %s', test_conn_uri, test_conn_id)
 
         # Assert Connection can be removed
-        assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
+        assert f"Successfully deleted connection with `conn_id`={test_conn_id}" in scheduler.check_output(
             'airflow connections delete %s', test_conn_id)
     else:
         # Assert Connection can be added
