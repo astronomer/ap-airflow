@@ -215,13 +215,23 @@ def test_airflow_trigger_dags(scheduler):
             print("Timed out waiting for DAG to succeed")
             print()
             print("Logs: ")
-            subprocess.run(["kubectl", "logs", os.environ.get('SCHEDULER_POD'), os.environ.get('NAMESPACE')])
+            subprocess.run(
+                [
+                    "kubectl", "logs", os.environ.get('SCHEDULER_POD'), "-n", os.environ.get('NAMESPACE'),
+                    "-c", "scheduler", "--tail", "100"
+                ]
+            )
             raise Exception("DAGRun failed !")
         if sleep_count >= timeout:
             print("Timed out waiting for DAG to succeed")
             print()
             print("Logs: ")
-            subprocess.run(["kubectl", "logs", os.environ.get('SCHEDULER_POD'), os.environ.get('NAMESPACE')])
+            subprocess.run(
+                [
+                    "kubectl", "logs", os.environ.get('SCHEDULER_POD'), "-n", os.environ.get('NAMESPACE'),
+                    "-c", "scheduler", "--tail", "100"
+                ]
+            )
             break
 
     assert "success" in scheduler.check_output(dag_state_command)
