@@ -130,7 +130,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
 FROM ${APT_DEPS_IMAGE} as main
 
 # By increasing this number we force CI to upgrade all system packages
-ARG PACKAGE_UPGRADE_EPOCH_NUMBER="1"
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="2"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
