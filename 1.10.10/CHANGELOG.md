@@ -1,12 +1,26 @@
 # Changelog
 
-Astronomer Certified 1.10.10-6.dev, TBD
+Astronomer Certified 1.10.10-6, 2020-12-10
 --------------------------------------------
 
 ### Bug Fixes
 
-- Sync FAB Permissions for all base views ([commit](https://github.com/astronomer/airflow/commit/1096bd10329bb77837bacf5b1c364f936057f7a4))
-- Stopping running `sync_perm` multiple times for Airflow >= 1.10.7 ([commit](https://github.com/astronomer/ap-airflow/commit/9c10dcfcda53dbbb88a0a41f6ae917c4edbd8694))
+- Sync FAB Permissions for all base views ([commit](https://github.com/astronomer/airflow/commit/a9636ef08a91a51b7a53885ec14b74e56b95309c))
+- Show Generic Error for Charts & Query View in old UI ([commit](https://github.com/astronomer/airflow/commit/e6112803e6297a4e92eccc61d16b323f80ebd620))
+- Webserver: Further Sanitize values passed to origin param ([commit](https://github.com/astronomer/airflow/commit/0f722476bcc4d3b06ee068b87430d3d544c15e56))
+- Mask Password in Log table when using the CLI ([commit](https://github.com/astronomer/airflow/commit/a3d676099f022113fd92e0fd877d3805c5db38f7))
+- [AIRFLOW-2809] Fix security issue regarding Flask SECRET_KEY ([commit](https://github.com/astronomer/airflow/commit/67de55ef854ede069b71244fa5602dbff7bb95db))
+- [AIRFLOW-2884] Fix Flask SECRET_KEY security issue in www_rbac ([commit](https://github.com/astronomer/airflow/commit/b3711ff24059f79c1f89d5b5b3af675b54e18485))
+- [AIRFLOW-2886] Generate random Flask SECRET_KEY in default config ([commit](https://github.com/astronomer/airflow/commit/cc91e3acc8a04882e66de21b251c04baff1190b7))
+- Don't let webserver run with dangerous config ([commit](https://github.com/astronomer/airflow/commit/b1e2be786bdd74be369bfb3bb19c7cb1c1a067e1))
+- Pin marshmallow-sqlalchemy for >= 3.6 ([commit](https://github.com/astronomer/airflow/commit/62572a44ca9495cb4c29c76ffdd0b3cb83dd4bc4))
+- Pin marshmallow <= 2.21 ([commit](https://github.com/astronomer/airflow/commit/efa7193f2c5b30e8441e02dd48e0921ddd247cc0))
+- Fix empty asctime field in JSON formatted logs ([commit](https://github.com/astronomer/airflow/commit/3d4386c68eacfac53607bac4ebbe5b19db1ced16))
+
+### Improvements
+
+- Dockerfile: Stop running `sync_perm` multiple times for Airflow >= 1.10.7 ([commit](https://github.com/astronomer/ap-airflow/commit/9c10dcf))
+- Dockerfile: Bump astronomer_airflow_scripts to 0.0.5 ([commit](https://github.com/astronomer/ap-airflow/commit/42b4169))
 
 Astronomer Certified 1.10.10-5, 2020-09-16
 --------------------------------------------
