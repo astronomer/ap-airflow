@@ -5,3 +5,6 @@ CVE-2020-8203
 
 # nodejs-set-value
 CVE-2019-10747
+
+# only applies to running psql interactively -- low risk for us
+CVE-2020-25696
