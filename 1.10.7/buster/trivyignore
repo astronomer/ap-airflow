@@ -30,3 +30,6 @@ CVE-2020-7660
 
 # tar
 CVE-2018-20834
+
+# only applies to running psql interactively -- low risk for us
+CVE-2020-25696
