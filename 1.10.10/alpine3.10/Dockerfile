@@ -17,7 +17,7 @@ FROM alpine:3.10
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 ARG ORG="astronomer"
-ARG VERSION="1.10.10-6"
+ARG VERSION="1.10.10-7.*"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG REPO_BRANCH=master
