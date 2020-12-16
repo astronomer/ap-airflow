@@ -268,6 +268,10 @@ jobs:
         description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "quay.io/astronomer/ap-airflow-dev"
         type: string
+      prod_core_docker_repo_quay_io:
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
+        default: quay.io/astronomer/core
+        type: string
     steps:
       - push:
           dev_release: "<< parameters.dev_build >>"
@@ -277,6 +281,7 @@ jobs:
           dev_docker_repo_docker_hub: "<< parameters.dev_docker_repo_docker_hub >>"
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
+          prod_core_docker_repo_quay_io: "<< parameters.prod_core_docker_repo_quay_io >>"
 
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
@@ -401,6 +406,9 @@ commands:
       dev_docker_repo_quay_io:
         default: "quay.io/astronomer/ap-airflow-dev"
         type: string
+      prod_core_docker_repo_quay_io:
+        default: quay.io/astronomer/core
+        type: string
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -443,6 +451,10 @@ commands:
                 docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
                 docker push "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
 
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_core_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.prod_core_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.prod_core_docker_repo_quay_io >>:${tag}"
+
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
@@ -466,6 +478,10 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_docker_repo_docker_hub >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
                 docker push "<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_core_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.prod_core_docker_repo_quay_io >>:<< parameters.tag >>"
+                docker push "<< parameters.prod_core_docker_repo_quay_io >>:<< parameters.tag >>"
               fi
 
               echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.dev_docker_repo_docker_hub >>"
