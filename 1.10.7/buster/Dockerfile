@@ -112,9 +112,6 @@ ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="1.10.7"
 
-LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
-LABEL io.astronomer.docker.ac.version="${VERSION}"
-
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
 COPY include/pip.conf /etc/pip.conf
@@ -137,6 +134,11 @@ RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+ARG VERSION="1.10.7-17.*"
+ARG AIRFLOW_VERSION="1.10.7"
+LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
+LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 # Copy all installed python modules. This gets us the compiled without needing dev installed
 COPY --from=devel /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
