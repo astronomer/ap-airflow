@@ -1091,20 +1091,20 @@ jobs:
             curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
       - restore_cache:
           keys:
-            - trivy-cache
+            - trivy-cache1
       - run:
           name: Scan the local image with trivy
           command: |
             trivy \
               --ignorefile "./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore" \
-              --cache-dir /tmp/workspace/trivy-cache \
+              --cache-dir /tmp/workspace/trivy-cache1 \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
               --no-progress "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
       - save_cache:
-          key: trivy-cache
+          key: trivy-cache1
           paths:
-            - /tmp/workspace/trivy-cache
+            - /tmp/workspace/trivy-cache1
   push:
     executor: docker-executor
     description: Push Airflow images
