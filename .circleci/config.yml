@@ -13,7 +13,7 @@ workflows:
           distribution_name: buster 
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
-          executor: "celery"
+          executor_type: "celery"
           test_type: "testim"
           requires: 
             - waiter
@@ -23,7 +23,7 @@ workflows:
           distribution_name: buster 
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
-          executor: "kubernetes"
+          executor_type: "kubernetes"
           test_type: "testim"
           requires: 
             - waiter
@@ -1076,7 +1076,7 @@ jobs:
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
         type: string
-      executor:
+      executor_type:
         description: "The type of executor to run on"
         default: "celery"
         type: string
@@ -1105,7 +1105,7 @@ jobs:
             cd qa-regression
             ls
             chmod 744 *.sh
-            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_args >> << parameters.executor >>  << parameters.test_type >>
+            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_args >> << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
       - run: 
@@ -1494,98 +1494,8 @@ commands:
       - modified-orb:
           allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
-  certified-ui-regression:
-    description: "Run UI Regression Tests using Testim"
-    parameters:
-      airflow_version:
-        description: "The Airflow version, for example '1.10.5'"
-        type: string
-      dev_release:
-        description: "Indicate if this is a dev release"
-        default: true
-        type: boolean
-      extra_tags:
-        type: string
-        default: ""
-      tag:
-        type: string
-    environment:
-      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-    executor: machine-executor
-    steps:
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install git
-      - run: sudo apt-get -y install curl
-      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      - run: sudo apt-get install nodejs
-      - run: npm -v
-      - run: nodejs -v
-      - run: 
-          name: Avoid hosts unknown for github
-          command:   | 
-            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: 
-          name: Run Shell Script for creating deployment
-          command:  |
-            cd qa-regression
-            ls
-            chmod 744 create_deployment.sh
-            bash ./create_deployment.sh
-            cd ..
-      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
-      - run: 
-          name: Run the Testim Tests 
-          command:   |
-            nvm list
-            npm i -g @testim/testim-cli
-            cd /home/circleci/project/qa-regression
-            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
-      - store_artifacts:
-          path: /tmp/circleci-test-results
-      - store_test_results:
-          path: /tmp/circleci-test-results
-  certified-core-dags:
-    description: "Run Core DAGS"
-    environment:
-      CORE_TEST_REPORTS: /tmp/core-test-results
-    executor: machine-executor
-    steps:
-      - run: sudo apt-get -y update
-      - run: sudo apt-get -y install git
-      - run: sudo apt-get -y install curl
-      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      - run: sudo apt-get install nodejs
-      - run: npm -v
-      - run: nodejs -v
-      - run: 
-          name: Avoid hosts unknown for github
-          command:   | 
-            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: 
-          name: Run Shell Script for creating deployment
-          command:  |
-            cd qa-regression
-            ls
-            chmod 744 create_deployment.sh
-            bash ./create_deployment.sh
-            cd ..
-      - run: 
-          name: Run the Python Script to run DAGS 
-          command:   |
-            nvm list
-            npm i -g @testim/testim-cli
-            cd /home/circleci/project/qa-regression
-            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
-      - store_artifacts:
-          path: /tmp/core-test-results
-      - store_test_results:
-          path: /tmp/core-test-results
 
+  
 
   wait_workflow_orb:
     description: |
