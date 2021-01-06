@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 1.10.10-7, 2021-01-05
+--------------------------------------------
+
+### Bug Fixes
+
+- Continually check if we should shut down istio contaner when running K8sPodOperator ([commit](https://github.com/astronomer/airflow/commit/ac71daea657589a45f30912ee3cc13521c077b6e))
+- Pin `kubernetes` to a max version of 11.0.0 ([commit](https://github.com/astronomer/airflow/commit/d441d0e79f2f626c95e770499385a67bdfdc06b7))
+- Bump ini from 1.3.5 to 1.3.8 in /airflow/www_rbac ([commit](https://github.com/astronomer/airflow/commit/a894d7104ad4d2c2d381ca91ead40e69abb6c344))
+- Bump datatables.net from 1.10.21 to 1.10.22 in /airflow/www_rbac ([commit](https://github.com/astronomer/airflow/commit/6f91e2cf12077acda3a72e418fff4f04fab5f236))
+- Respect LogFormat when using ES logging with Json Format ([commit](https://github.com/astronomer/airflow/commit/18644b500dce7178c74febda423847d2a666444a))
+
 Astronomer Certified 1.10.10-6, 2020-12-10
 --------------------------------------------
 
