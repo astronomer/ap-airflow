@@ -1073,7 +1073,7 @@ jobs:
       dev_build:
         description: "Indicate if this is a dev build"
         type: boolean
-      extra_args:
+      extra_tags:
         description: "Extra args to pass to pass to Docker build command"
         type: string
       executor_type:
