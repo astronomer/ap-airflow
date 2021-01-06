@@ -1,18 +1,50 @@
 # Warning: automatically generated file
 # Please edit config.yml.j2, and use the script generate_circleci_config.py
 version: 2.1
-
-parameters:
-  run_regression_tests:
-    type: boolean
-    default: false
-
 workflows:
   version: 2.1
-  certified-regression:
-    when: << pipeline.parameters.run_integration_tests >>
+  
+  regression:
     jobs:
-      - regression-ui
+      - waiter
+      - qa-ui:
+          name: qa-ui-regression-celery-2.0.0-buster-${CIRCLE_BUILD_NUM}
+          airflow_version: 2.0.0
+          distribution_name: buster 
+          dev_build: false
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor: "celery"
+          test_type: "testim"
+          requires: 
+            - waiter
+      - qa-ui:
+          name: qa-ui-regression-k8s-2.0.0-buster-${CIRCLE_BUILD_NUM}
+          airflow_version: 2.0.0
+          distribution_name: buster 
+          dev_build: false
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor: "kubernetes"
+          test_type: "testim"
+          requires: 
+            - waiter
+                
+      - qa-rest-api:
+          name: qa-rest-api-celery-2.0.0-buster-${CIRCLE_BUILD_NUM}
+          airflow_version: 2.0.0
+          distribution_name: buster
+          dev_build: false
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          requires: 
+            - waiter
+      - qa-core-dags:
+          name: qa-core-dags-2.0.0-buster-${CIRCLE_BUILD_NUM}
+          airflow_version: 2.0.0
+          distribution_name: buster
+          dev_build: false
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          requires: 
+            - waiter
+
   certified-airflow:
     jobs:
       - static-checks
@@ -1017,6 +1049,78 @@ workflows:
                 - master
 
 jobs:
+
+  waiter:
+    executor: python/default
+    resource_class: small
+    steps:
+      #- run: sleep 120
+      - wait_workflow_orb:
+          workflow-name: certified-airflow
+          max-wait-time: '100000'
+          sleep-time-between-checks: '60'
+          branch-to-consider: master
+
+  qa-ui:
+    description: "Run UI Regression Tests using Testim"
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    executor: machine-executor
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      extra_args:
+        description: "Extra args to pass to pass to Docker build command"
+        type: string
+      executor:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git
+      - run: sudo apt-get -y install curl
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: sudo apt-get install nodejs
+      - run: npm -v
+      - run: nodejs -v
+      - run: 
+          name: Avoid hosts unknown for github
+          command:   | 
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run: 
+          name: Run Shell Script for creating deployment
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_args >> << parameters.executor >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
+      - run: 
+          name: Run the Testim Tests 
+          command:   |
+            nvm list
+            npm i -g @testim/testim-cli
+            cd /home/circleci/project/qa-regression
+            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 20 --retries 3 --result-label << parameters.extra_args >> --test-config "1280x1024_SXGA_chrome" --test-config "1366x768_WXGA_firefox" --mode selenium
+      - store_artifacts:
+          path: /tmp/circleci-test-results
+      - store_test_results:
+          path: /tmp/circleci-test-results
+
+
   static-checks:
     executor: machine-executor
     description: Static Checks
@@ -1028,35 +1132,6 @@ jobs:
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
             pre-commit run --all-files
-  regression-ui:
-    description: "Run UI Regression Tests using Testim"
-    environment:
-      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-      docker:
-      - image: testim/docker-cli
-      #parameters:
-      #  dockerfile:
-      #    type: string
-      #    default: Dockerfile
-      #  path:
-      #    type: string
-      #    default: "."
-      #  image_name:
-      #    type: string
-      #    default: $CIRCLE_PROJECT_REPONAME
-      #  extra_args:
-      #    type: string
-      #    default: ""
-    steps:
-      - run: mkdir qa-regression && cd qa-regression
-      - run: git clone https://github.com/astronomer/qa-regression.git
-      - run: chmod +x create_deployment.sh
-      - run: create_deployment.sh
-      - run: testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
-      - store_artifacts:
-          path: /tmp/circleci-test-results
-      - store_test_results:
-          path: /tmp/circleci-test-results
   build:
     executor: docker-executor
     description: Build Airflow images
@@ -1419,7 +1494,202 @@ commands:
       - modified-orb:
           allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
+  certified-core-dags:
+    description: "Run Core DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/core-test-results
+    executor: machine-executor
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git
+      - run: sudo apt-get -y install curl
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: sudo apt-get install nodejs
+      - run: npm -v
+      - run: nodejs -v
+      - run: 
+          name: Avoid hosts unknown for github
+          command:   | 
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: 
+          name: Run Shell Script for creating deployment
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 create_deployment.sh
+            bash ./create_deployment.sh
+            cd ..
+      - run: 
+          name: Run the Python Script to run DAGS 
+          command:   |
+            nvm list
+            npm i -g @testim/testim-cli
+            cd /home/circleci/project/qa-regression
+            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
+      - store_artifacts:
+          path: /tmp/core-test-results
+      - store_test_results:
+          path: /tmp/core-test-results
 
+
+  wait_workflow_orb:
+    description: |
+        This command waits for running workflows of a kind on a given branch to complete. Adding This
+        as the first step in a job will make the job wait till it is the only running workflow.
+        This requires a Circle CI token be set as $CIRCLE_TOKEN
+    parameters:
+        branch-to-consider:
+            default: master
+            description: The branch on which we will wait for workflows. If set to "all" this will wait across all branches
+            type: string
+        kill-gracefully:
+            default: "true"
+            description: If true and time exceeds max wait time, dies without failing the job
+            type: string
+        max-wait-time:
+            default: "600"
+            description: |
+                The max wait time in seconds a job should wait for before killing itself.
+            type: string
+        run-on-branch:
+            default: '*'
+            description: |
+                The branches to actually wait on. By default this waits on all branches. If set to anything but
+                '*' the wait will run only on the specified branch
+            type: string
+        sleep-time-between-checks:
+            default: "30"
+            description: How long to sleep between checks.
+            type: string
+        vcs-type:
+            default: github
+            description: What is the VCS for this project
+            type: string
+        workflow-name:
+            default: '*'
+            description: The type of workflows to wait for. This can be a regex
+            type: string
+    steps:
+        - run:
+            command: |
+                if [ -z "$BASH" ]; then
+                  echo Bash not installed.
+                  exit 1
+                fi
+                hash jq 2>/dev/null || { echo >&2 "jq is not installed.  Aborting."; exit 1; }
+                if [[ "$CIRCLE_TOKEN" == "" ]]; then
+                  echo "CIRCLE_TOKEN not set. Set a token to access the circle API in the env var CIRCLE_TOKEN";
+                  exit 1;
+                fi
+
+                if [[ "<< parameters.run-on-branch >>" != "*" && "<< parameters.run-on-branch >>" != "$CIRCLE_BRANCH" ]]; then
+                  echo "Chosen to run only on << parameters.run-on-branch >> and currently we are on $CIRCLE_BRANCH, exiting";
+                  exit 0;
+                fi
+
+                slug="<< parameters.vcs-type >>/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+                branch_to_consider="<< parameters.branch-to-consider >>"
+
+                # Assume there is one workflow running.
+                total_workflows_running="1"
+                can_i_run="true"
+
+                mkdir -p /tmp/swissknife
+
+                # This is a global variable used to get return value for get_workflow_start_time
+                workflow_start_time=""
+
+                get_workflow_start_time() {
+                  wf_url="https://circleci.com/api/v2/workflow/%7B$1%7D?circle-token=${CIRCLE_TOKEN}"
+                  echo $wf_url
+                  curl -f -s $wf_url > /tmp/swissknife/wf_$1.json
+                  workflow_start_time=$(jq '.created_at' /tmp/swissknife/wf_$1.json)
+                  echo "Reached"
+                }
+
+                echo "Er:"$workflow_start_time
+
+                get_num_running_workflows() {
+                  running_job_prefix="https://circleci.com/api/v1.1/project/$slug";
+                  running_jobs_suffix="?circle-token=${CIRCLE_TOKEN}&filter=running&limit=100";
+                  running_jobs_branch="";
+                  if [[ "$branch_to_consider" != "all" ]]; then
+                    running_jobs_branch="/tree/$branch_to_consider";
+                  fi
+                  running_jobs_url="${running_job_prefix}${running_jobs_branch}${running_jobs_suffix}"
+                  echo "ER:"$running_jobs_url
+                  curl -f -s $running_jobs_url > /tmp/swissknife/running_jobs.json
+                  total_workflows_running=$(jq --arg curworkflow "$CIRCLE_WORKFLOW_ID" '[unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("<< parameters.workflow-name >>")) | select(.workflows.workflow_id|test($curworkflow)|not) ] | length' /tmp/swissknife/running_jobs.json)
+                  # If no other workflows are running, we're good. just return
+                  if [ "$total_workflows_running" == "0" ]; then
+                    return 0
+                  fi
+                  echo "ER:Completed -JQ1"
+                  # Finding all running workflows
+                  jq -r --arg curworkflow "$CIRCLE_WORKFLOW_ID" 'unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("<< parameters.workflow-name >>")) | select(.workflows.workflow_id|test($curworkflow)|not) | .workflows.workflow_id' /tmp/swissknife/running_jobs.json > /tmp/swissknife/running_workflows.txt
+                  cat /tmp/swissknife/running_workflows.txt
+                  echo "ER:Completed -JQ2"
+                  # get_workflow_start_time $CIRCLE_WORKFLOW_ID
+                  # current_workflow_start_time=$workflow_start_time
+                  echo "ER:Completed -JQ3"
+                  can_i_run="false"
+                  # while IFS= read -r line
+                  # do
+                  #   echo "Checking info for workflow:$line"
+                  #   get_workflow_start_time $line
+                  #   running_wf_start_time=$workflow_start_time
+                  #   if [[ $running_wf_start_time < $current_workflow_start_time ]] ; then
+                  #     can_i_run="false"
+                  #     break
+                  #   fi
+                  # done < /tmp/swissknife/running_workflows.txt
+
+                  echo "ER:Completed"
+                }
+
+                kill_workflow(){
+                  echo "Cancelleing workflow by cancelling build ${CIRCLE_BUILD_NUM}"
+                  cancel_workflow_url="https://circleci.com/api/v1.1/project/$slug/${CIRCLE_BUILD_NUM}/cancel?circle-token=${CIRCLE_TOKEN}"
+                  curl -s -X POST $cancel_workflow_url > /dev/null
+                  # Give Circle CI enough time to kill this workflow
+                  sleep 30
+                  # If the job wasnt canceled in 30 seconds fail.
+                  exit 1;
+                }
+
+                current_wait_time=0
+
+                while true; do
+                  get_num_running_workflows
+                  echo "Enter Loop"
+                  if [[ "$total_workflows_running" == "0" || "$can_i_run" == "true" ]]; then
+                    echo "$total_workflows_running"
+                    echo "$can_i_run"
+                    echo "Its finally my turn. exiting"
+                    exit 0
+                  else
+                    echo "Looks like $total_workflows_running are still running. and can_i_run:$can_i_run"
+                    echo "Going to sleep for << parameters.sleep-time-between-checks >>"
+                    sleep << parameters.sleep-time-between-checks >>
+                    current_wait_time=$(( current_wait_time + << parameters.sleep-time-between-checks >> ))
+                  fi
+
+                  if (( $current_wait_time > << parameters.max-wait-time >> )); then
+                    if [[ "<< parameters.kill-gracefully >>" == "true" ]]; then
+                      echo "Killing workflow by cancelling";
+                      kill_workflow
+                    else
+                      echo "Killing workflow by exiting forcefully";
+                      exit 1;
+                    fi
+                  fi
+                done
+            name: Swissknife - Wait for workflows - ER
+
+  
   # TODO: move to an Astronomer orbs repo, publish orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
