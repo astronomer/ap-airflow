@@ -1494,6 +1494,58 @@ commands:
       - modified-orb:
           allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
+  certified-ui-regression:
+    description: "Run UI Regression Tests using Testim"
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      dev_release:
+        description: "Indicate if this is a dev release"
+        default: true
+        type: boolean
+      extra_tags:
+        type: string
+        default: ""
+      tag:
+        type: string
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    executor: machine-executor
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git
+      - run: sudo apt-get -y install curl
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: sudo apt-get install nodejs
+      - run: npm -v
+      - run: nodejs -v
+      - run: 
+          name: Avoid hosts unknown for github
+          command:   | 
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: 
+          name: Run Shell Script for creating deployment
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 create_deployment.sh
+            bash ./create_deployment.sh
+            cd ..
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
+      - run: 
+          name: Run the Testim Tests 
+          command:   |
+            nvm list
+            npm i -g @testim/testim-cli
+            cd /home/circleci/project/qa-regression
+            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js
+      - store_artifacts:
+          path: /tmp/circleci-test-results
+      - store_test_results:
+          path: /tmp/circleci-test-results
   certified-core-dags:
     description: "Run Core DAGS"
     environment:
