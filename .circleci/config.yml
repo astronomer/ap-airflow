@@ -1105,7 +1105,7 @@ jobs:
             cd qa-regression
             ls
             chmod 744 *.sh
-            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_args >> << parameters.executor_type >>  << parameters.test_type >>
+            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_tags >> << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
       - run: 
@@ -1114,7 +1114,7 @@ jobs:
             nvm list
             npm i -g @testim/testim-cli
             cd /home/circleci/project/qa-regression
-            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 20 --retries 3 --result-label << parameters.extra_args >> --test-config "1280x1024_SXGA_chrome" --test-config "1366x768_WXGA_firefox" --mode selenium
+            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 20 --retries 3 --result-label << parameters.extra_tags >> --test-config "1280x1024_SXGA_chrome" --test-config "1366x768_WXGA_firefox" --mode selenium
       - store_artifacts:
           path: /tmp/circleci-test-results
       - store_test_results:
