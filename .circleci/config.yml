@@ -10,7 +10,6 @@ workflows:
       - qa-ui:
           name: qa-ui-regression1-celery-2.0.0-buster-${CIRCLE_BUILD_NUM}
           airflow_version: 2.0.0
-          distribution_name: buster 
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "celery"
@@ -20,28 +19,10 @@ workflows:
       - qa-ui:
           name: qa-ui-regression-k8s-2.0.0-buster-${CIRCLE_BUILD_NUM}
           airflow_version: 2.0.0
-          distribution_name: buster 
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "kubernetes"
           test_type: "testim"
-          requires: 
-            - waiter
-                
-      - qa-rest-api:
-          name: qa-rest-api-celery-2.0.0-buster-${CIRCLE_BUILD_NUM}
-          airflow_version: 2.0.0
-          distribution_name: buster
-          dev_build: false
-          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
-          requires: 
-            - waiter
-      - qa-core-dags:
-          name: qa-core-dags-2.0.0-buster-${CIRCLE_BUILD_NUM}
-          airflow_version: 2.0.0
-          distribution_name: buster
-          dev_build: false
-          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           requires: 
             - waiter
 
