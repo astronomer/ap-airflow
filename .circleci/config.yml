@@ -8,7 +8,7 @@ workflows:
     jobs:
       - waiter
       - qa-ui:
-          name: qa-ui-regression2-celery-2.0.0-buster-${CIRCLE_BUILD_NUM}
+          name: qa-ui-regression-celery-2.0.0-buster
           airflow_version: 2.0.0
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
@@ -17,7 +17,7 @@ workflows:
           requires: 
             - waiter
       - qa-ui:
-          name: qa-ui-regression-k8s-2.0.0-buster-${CIRCLE_BUILD_NUM}
+          name: qa-ui-regression-k8s-2.0.0-buster
           airflow_version: 2.0.0
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
@@ -25,7 +25,6 @@ workflows:
           test_type: "testim"
           requires: 
             - waiter
-
   certified-airflow:
     jobs:
       - static-checks
@@ -1030,7 +1029,6 @@ workflows:
                 - master
 
 jobs:
-
   waiter:
     executor: docker-executor
     resource_class: small
@@ -1040,8 +1038,7 @@ jobs:
           workflow-name: certified-airflow
           max-wait-time: '100000'
           sleep-time-between-checks: '60'
-          branch-to-consider: master
-
+          branch-to-consider: ${CIRCLE_BRANCH}
   qa-ui:
     description: "Run UI Regression Tests using Testim"
     environment:
@@ -1100,8 +1097,6 @@ jobs:
           path: /tmp/circleci-test-results
       - store_test_results:
           path: /tmp/circleci-test-results
-
-
   static-checks:
     executor: machine-executor
     description: Static Checks
@@ -1242,7 +1237,6 @@ jobs:
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
           prod_core_docker_repo_quay_io: "<< parameters.prod_core_docker_repo_quay_io >>"
-
 orbs:
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
@@ -1475,9 +1469,6 @@ commands:
       - modified-orb:
           allowlist: "<< parameters.allowlist >>"
           image: "<< parameters.image_name >>"
-
-  
-
   wait_workflow_orb:
     description: |
         This command waits for running workflows of a kind on a given branch to complete. Adding This
@@ -1631,8 +1622,6 @@ commands:
                   fi
                 done
             name: Swissknife - Wait for workflows - ER
-
-  
   # TODO: move to an Astronomer orbs repo, publish orb.
   # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
   modified-orb:
