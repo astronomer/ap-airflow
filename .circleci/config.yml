@@ -1482,7 +1482,7 @@ commands:
     description: |
         This command waits for running workflows of a kind on a given branch to complete. Adding This
         as the first step in a job will make the job wait till it is the only running workflow.
-        This requires a Circle CI token be set as $CIRCLE_TOKEN
+        This requires a Circle CI token be set as $CIRCLE_API_USER_TOKEN
     parameters:
         branch-to-consider:
             default: master
@@ -1523,8 +1523,8 @@ commands:
                   exit 1
                 fi
                 hash jq 2>/dev/null || { echo >&2 "jq is not installed.  Aborting."; exit 1; }
-                if [[ "$CIRCLE_TOKEN" == "" ]]; then
-                  echo "CIRCLE_TOKEN not set. Set a token to access the circle API in the env var CIRCLE_TOKEN";
+                if [[ "$CIRCLE_API_USER_TOKEN" == "" ]]; then
+                  echo "CIRCLE_API_USER_TOKEN not set. Set a token to access the circle API in the env var CIRCLE_API_USER_TOKEN";
                   exit 1;
                 fi
 
@@ -1546,7 +1546,7 @@ commands:
                 workflow_start_time=""
 
                 get_workflow_start_time() {
-                  wf_url="https://circleci.com/api/v2/workflow/%7B$1%7D?circle-token=${CIRCLE_TOKEN}"
+                  wf_url="https://circleci.com/api/v2/workflow/%7B$1%7D?circle-token=${CIRCLE_API_USER_TOKEN}"
                   echo $wf_url
                   curl -f -s $wf_url > /tmp/swissknife/wf_$1.json
                   workflow_start_time=$(jq '.created_at' /tmp/swissknife/wf_$1.json)
@@ -1557,7 +1557,7 @@ commands:
 
                 get_num_running_workflows() {
                   running_job_prefix="https://circleci.com/api/v1.1/project/$slug";
-                  running_jobs_suffix="?circle-token=${CIRCLE_TOKEN}&filter=running&limit=100";
+                  running_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=running&limit=100";
                   running_jobs_branch="";
                   if [[ "$branch_to_consider" != "all" ]]; then
                     running_jobs_branch="/tree/$branch_to_consider";
@@ -1595,7 +1595,7 @@ commands:
 
                 kill_workflow(){
                   echo "Cancelleing workflow by cancelling build ${CIRCLE_BUILD_NUM}"
-                  cancel_workflow_url="https://circleci.com/api/v1.1/project/$slug/${CIRCLE_BUILD_NUM}/cancel?circle-token=${CIRCLE_TOKEN}"
+                  cancel_workflow_url="https://circleci.com/api/v1.1/project/$slug/${CIRCLE_BUILD_NUM}/cancel?circle-token=${CIRCLE_API_USER_TOKEN}"
                   curl -s -X POST $cancel_workflow_url > /dev/null
                   # Give Circle CI enough time to kill this workflow
                   sleep 30
