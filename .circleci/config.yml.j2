@@ -692,6 +692,7 @@ commands:
                 get_num_running_workflows() {
                   running_job_prefix="https://circleci.com/api/v1.1/project/$slug";
                   running_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=running&limit=100";
+                  failed_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=failed&limit=100";
                   running_jobs_branch="";
                   if [[ "$branch_to_consider" != "all" ]]; then
                     running_jobs_branch="/tree/$branch_to_consider";
@@ -702,7 +703,15 @@ commands:
                   total_workflows_running=$(jq --arg curworkflow "$CIRCLE_WORKFLOW_ID" '[unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("<< parameters.workflow-name >>")) | select(.workflows.workflow_id|test($curworkflow)|not) ] | length' /tmp/swissknife/running_jobs.json)
                   # If no other workflows are running, we're good. just return
                   if [ "$total_workflows_running" == "0" ]; then
-                    return 0
+                    #Validate if the workflow failed
+                    failed_jobs_url="${running_job_prefix}${running_jobs_branch}${failed_jobs_suffix}"
+                    curl -f -s $failed_jobs_url > /tmp/swissknife/failed_jobs.json
+                    total_workflows_failed=$(jq --arg curworkflow "$CIRCLE_WORKFLOW_ID" '[unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("<< parameters.workflow-name >>")) | select(.workflows.workflow_id|test($curworkflow)|not) ] | length' /tmp/swissknife/failed_jobs.json)
+                    if [ "$total_workflows_failed" == "0" ]; then
+                      return 0
+                    else
+                      kill_workflow
+                    fi
                   fi
                   echo "ER:Completed -JQ1"
                   # Finding all running workflows
