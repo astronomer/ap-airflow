@@ -10,12 +10,16 @@ import re
 
 from jinja2 import Environment, FileSystemLoader
 
+# IMAGE_MAP = collections.OrderedDict([
+#     ("1.10.5-11", ["alpine3.10", "buster", "rhel7"]),
+#     ("1.10.7-17.dev", ["alpine3.10", "buster"]),
+#     ("1.10.10-7.dev", ["alpine3.10", "buster"]),
+#     ("1.10.12-3.dev", ["alpine3.10", "buster"]),
+#     ("1.10.14-2.dev", ["buster"]),
+#     ("2.0.0-2", ["buster"]),
+# ])
+
 IMAGE_MAP = collections.OrderedDict([
-    ("1.10.5-11", ["alpine3.10", "buster", "rhel7"]),
-    ("1.10.7-17.dev", ["alpine3.10", "buster"]),
-    ("1.10.10-7.dev", ["alpine3.10", "buster"]),
-    ("1.10.12-3.dev", ["alpine3.10", "buster"]),
-    ("1.10.14-2.dev", ["buster"]),
     ("2.0.0-2", ["buster"]),
 ])
 
