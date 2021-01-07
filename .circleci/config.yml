@@ -3,18 +3,18 @@
 version: 2.1
 workflows:
   version: 2.1
-  
+
   regression:
     jobs:
       - waiter
       - qa-ui:
-          name: qa-ui-regression-celery-2.0.0-buster
+          name: qa-ui-regression2-celery-2.0.0-buster
           airflow_version: 2.0.0
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "celery"
           test_type: "testim"
-          requires: 
+          requires:
             - waiter
       - qa-ui:
           name: qa-ui-regression-k8s-2.0.0-buster
@@ -23,7 +23,7 @@ workflows:
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "kubernetes"
           test_type: "testim"
-          requires: 
+          requires:
             - waiter
   certified-airflow:
     jobs:
@@ -1070,14 +1070,14 @@ jobs:
       - run: sudo apt-get install nodejs
       - run: npm -v
       - run: nodejs -v
-      - run: 
+      - run:
           name: Avoid hosts unknown for github
-          command:   | 
+          command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run: git clone git@github.com:astronomer/qa-regression.git
       - run: git clone git@github.com:astronomer/qa-scenario-dags.git
-      - run: 
+      - run:
           name: Run Shell Script for creating deployment
           command:  |
             cd qa-regression
@@ -1086,8 +1086,8 @@ jobs:
             bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_tags >> << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
-      - run: 
-          name: Run the Testim Tests 
+      - run:
+          name: Run the Testim Tests
           command:   |
             nvm list
             npm i -g @testim/testim-cli

@@ -1,7 +1,7 @@
 version: 2.1
 workflows:
   version: 2.1
-  
+
   regression:
     jobs:
       - waiter
@@ -11,13 +11,13 @@ workflows:
 {%- for distribution in distributions %}
     {%- if airflow_version|checkair2 == true %}
       - qa-ui:
-          name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
+          name: qa-ui-regression2-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           dev_build: {{ dev_build }}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "celery"
           test_type: "testim"
-          requires: 
+          requires:
             - waiter
       - qa-ui:
           name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
@@ -26,8 +26,8 @@ workflows:
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "kubernetes"
           test_type: "testim"
-          requires: 
-            - waiter     
+          requires:
+            - waiter
     {%- endif %}
 {%- endfor %}
 {%- endfor %}
@@ -213,14 +213,14 @@ jobs:
       - run: sudo apt-get install nodejs
       - run: npm -v
       - run: nodejs -v
-      - run: 
+      - run:
           name: Avoid hosts unknown for github
-          command:   | 
+          command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config  
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run: git clone git@github.com:astronomer/qa-regression.git
       - run: git clone git@github.com:astronomer/qa-scenario-dags.git
-      - run: 
+      - run:
           name: Run Shell Script for creating deployment
           command:  |
             cd qa-regression
@@ -229,8 +229,8 @@ jobs:
             bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_tags >> << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
-      - run: 
-          name: Run the Testim Tests 
+      - run:
+          name: Run the Testim Tests
           command:   |
             nvm list
             npm i -g @testim/testim-cli

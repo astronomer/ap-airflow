@@ -72,8 +72,6 @@ def checkair2(airflow_version):
         return False
     else:
         return True
-    
-
 
 def replace_version_info():
     """
