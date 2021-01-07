@@ -8,7 +8,7 @@ workflows:
     jobs:
       - waiter
       - qa-ui:
-          name: qa-ui-regression2-celery-2.0.0-buster
+          name: qa-ui-regression-celery-2.0.0-buster
           airflow_version: 2.0.0
           dev_build: false
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
