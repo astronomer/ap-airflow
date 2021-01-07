@@ -11,7 +11,7 @@ workflows:
 {%- for distribution in distributions %}
     {%- if airflow_version|checkair2 == true %}
       - qa-ui:
-          name: qa-ui-regression1-celery-{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}
+          name: qa-ui-regression2-celery-{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}
           airflow_version: {{ airflow_version }}
           dev_build: {{ dev_build }}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
