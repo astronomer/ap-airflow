@@ -98,7 +98,9 @@ jobs:
     description: "Run UI Regression Tests using Testim"
     environment:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
-    executor: machine-executor
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    resource_class: small
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
@@ -124,7 +126,7 @@ jobs:
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
       - run: sudo apt-get install nodejs
       - run: npm -v
-      - run: nodejs -v
+      - run: node -v
       - run:
           name: Avoid hosts unknown for github
           command:   |
