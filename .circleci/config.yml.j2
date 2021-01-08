@@ -97,6 +97,7 @@ workflows:
             branches:
               only:
                 - master
+                - testim_workflows
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -167,6 +168,7 @@ workflows:
             branches:
               only:
                 - master
+                - testim_workflows
 {%- endfor %}
 {%- endif %}
 {%- endfor %}
@@ -188,7 +190,6 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     machine: # executor type
       image: ubuntu-2004:202010-01
-    resource_class: small
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
@@ -208,6 +209,14 @@ jobs:
         default: ""
         type: string
     steps:
+      - restore_cache:
+          keys:
+            - build-no
+      - run:
+          name: Get the Build No
+          command:   |
+            echo "BuildNo"
+            cat /tmp/build-details/current_tag
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git
       - run: sudo apt-get -y install curl
@@ -228,7 +237,10 @@ jobs:
             cd qa-regression
             ls
             chmod 744 *.sh
-            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_tags >> << parameters.executor_type >>  << parameters.test_type >>
+            echo "BuildNo"
+            cat /tmp/build-details/current_tag
+            CURRENT_TAG=$(cat /tmp/build-details/current_tag)
+            bash ./create_deployment.sh << parameters.airflow_version >> $CURRENT_TAG << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
       - run:
@@ -512,6 +524,9 @@ commands:
       - attach_workspace:
           at: /tmp/workspace
       - setup_remote_docker
+      - restore_cache:
+          keys:
+            - build-no
       - run:
           name: Load archived Docker image
           command: docker load -i '/tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar'
@@ -541,6 +556,10 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:${tag} to << parameters.dev_docker_repo_docker_hub >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+
+                echo "Creating a Build File for use in QA"
+                mkdir /tmp/build-details
+                echo ${tag} > /tmp/build-details/current_tag
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
@@ -594,6 +613,10 @@ commands:
               echo "Image with Tag ($image) not pushed as it is not a new point release"
             fi
             set +x
+      - save_cache:
+          key: build-no
+          paths:
+            - /tmp/build-details
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:
