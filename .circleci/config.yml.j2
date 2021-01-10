@@ -167,6 +167,7 @@ workflows:
             branches:
               only:
                 - master
+                - testim_workflows
 {%- endfor %}
 {%- endif %}
 {%- endfor %}
@@ -211,6 +212,7 @@ jobs:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git
       - run: sudo apt-get -y install curl
+      - run: sudo apt-get -y install wget
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
       - run: sudo apt-get install nodejs
       - run: npm -v
@@ -541,6 +543,9 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:${tag} to << parameters.dev_docker_repo_docker_hub >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                echo "Build TAG"
+                mkdir /tmp/build
+                echo ${tag} > /tmp/build/current_tag
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
@@ -594,6 +599,8 @@ commands:
               echo "Image with Tag ($image) not pushed as it is not a new point release"
             fi
             set +x
+      - store_artifacts:
+          path: /tmp/build/current_tag
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:

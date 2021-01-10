@@ -10,7 +10,7 @@ workflows:
       - qa-ui:
           name: qa-ui-regression-celery-2.0.0-buster
           airflow_version: 2.0.0
-          dev_build: false
+          dev_build: true
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "celery"
           test_type: "testim"
@@ -19,7 +19,7 @@ workflows:
       - qa-ui:
           name: qa-ui-regression-k8s-2.0.0-buster
           airflow_version: 2.0.0
-          dev_build: false
+          dev_build: true
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
           executor_type: "kubernetes"
           test_type: "testim"
@@ -32,7 +32,8 @@ workflows:
           name: build-2.0.0-buster
           airflow_version: 2.0.0
           distribution_name: buster
-          dev_build: false
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
           requires:
             - static-checks
       - scan-clair:
@@ -56,8 +57,8 @@ workflows:
       - push:
           name: push-2.0.0-buster
           tag: "2.0.0-buster"
-          dev_build: false
-          extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-2-buster"
+          dev_build: true
+          extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-2.dev-buster"
           context:
             - quay.io
           requires:
@@ -71,8 +72,8 @@ workflows:
       - push:
           name: push-2.0.0-buster-onbuild
           tag: "2.0.0-buster-onbuild"
-          dev_build: false
-          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-2-buster-onbuild"
+          dev_build: true
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-2.dev-buster-onbuild"
           context:
             - quay.io
           requires:
@@ -83,6 +84,71 @@ workflows:
             branches:
               only:
                 - master
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          name: build-2.0.0-buster
+          airflow_version: 2.0.0
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
+      - scan-clair:
+          name: scan-clair-2.0.0-buster-onbuild
+          airflow_version: 2.0.0
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.0-buster
+      - scan-trivy:
+          name: scan-trivy-2.0.0-buster-onbuild
+          airflow_version: 2.0.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.0-buster
+      - test:
+          name: test-2.0.0-buster-images
+          tag: "2.0.0-buster"
+          requires:
+            - build-2.0.0-buster
+      - push:
+          name: push-2.0.0-buster
+          tag: "2.0.0-buster"
+          dev_build: true
+          extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+          requires:
+            - scan-clair-2.0.0-buster-onbuild
+            - scan-trivy-2.0.0-buster-onbuild
+            - test-2.0.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.0.0-buster-onbuild
+          tag: "2.0.0-buster-onbuild"
+          dev_build: true
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-2.dev-buster-onbuild"
+          context:
+            - quay.io
+          requires:
+            - scan-clair-2.0.0-buster-onbuild
+            - scan-trivy-2.0.0-buster-onbuild
+            - test-2.0.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+
 jobs:
   waiter:
     executor: docker-executor
@@ -123,6 +189,7 @@ jobs:
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git
       - run: sudo apt-get -y install curl
+      - run: sudo apt-get -y install wget
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
       - run: sudo apt-get install nodejs
       - run: npm -v
@@ -453,6 +520,9 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:${tag} to << parameters.dev_docker_repo_docker_hub >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
+                echo "Build TAG"
+                mkdir /tmp/build
+                echo ${tag} > /tmp/build/current_tag
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
@@ -506,6 +576,8 @@ commands:
               echo "Image with Tag ($image) not pushed as it is not a new point release"
             fi
             set +x
+      - store_artifacts:
+          path: /tmp/build/current_tag
   clair-scan:
     description: "Vulnerability scan a Docker image"
     parameters:

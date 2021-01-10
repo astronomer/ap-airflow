@@ -20,7 +20,7 @@ from jinja2 import Environment, FileSystemLoader
 # ])
 
 IMAGE_MAP = collections.OrderedDict([
-    ("2.0.0-2", ["buster"]),
+    ("2.0.0-2.dev", ["buster"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
