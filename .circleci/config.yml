@@ -84,6 +84,7 @@ workflows:
             branches:
               only:
                 - master
+                - testim
   nightly:
     triggers:
       - schedule:
