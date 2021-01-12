@@ -231,7 +231,7 @@ jobs:
             cd qa-regression
             ls
             chmod 744 *.sh
-            bash ./create_deployment.sh << parameters.airflow_version >> << parameters.extra_tags >> << parameters.executor_type >>  << parameters.test_type >>
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
       - run:
@@ -544,9 +544,14 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:${tag} to << parameters.dev_docker_repo_docker_hub >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
-                echo "Build TAG"
-                [ ! -d /tmp/build ] && mkdir /tmp/build
-                echo ${tag} > /tmp/build/current_tag
+  
+                echo "Build TAG artifact"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  [ ! -d /tmp/build ] && mkdir /tmp/build
+                  echo ${tag} > /tmp/build/current_tag
+                fi
+  
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
