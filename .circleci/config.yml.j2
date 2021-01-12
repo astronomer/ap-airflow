@@ -231,6 +231,7 @@ jobs:
             cd qa-regression
             ls
             chmod 744 *.sh
+            echo "Run Deployment Script"
             bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
