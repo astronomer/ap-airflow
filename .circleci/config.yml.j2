@@ -545,7 +545,7 @@ commands:
                 docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
                 docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
                 echo "Build TAG"
-                [! -d /tmp/build] && mkdir /tmp/build
+                [ ! -d /tmp/build ] && mkdir /tmp/build
                 echo ${tag} > /tmp/build/current_tag
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
