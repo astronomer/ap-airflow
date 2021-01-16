@@ -5,7 +5,9 @@ version: 2.1
 workflows:
   certified-airflow:
     jobs:
-      - static-checks- slack/on-hold:
+      - static-checks
+      - slack/on-hold:
+          name: SlackHold-1.10.5
           context: slack_ap-airflow
           custom: |
             {
@@ -25,13 +27,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-1.10.5
           requires:
-            - slack/on-hold
+            - SlackHold-1.10.5
           type: approval
 
       - build:
@@ -201,7 +203,9 @@ workflows:
             branches:
               only:
                 - master
-                - slack-build-approvals- slack/on-hold:
+                - slack-build-approvals
+      - slack/on-hold:
+          name: SlackHold-1.10.7
           context: slack_ap-airflow
           custom: |
             {
@@ -221,13 +225,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-1.10.7
           requires:
-            - slack/on-hold
+            - SlackHold-1.10.7
           type: approval
 
       - build:
@@ -341,7 +345,9 @@ workflows:
             branches:
               only:
                 - master
-                - slack-build-approvals- slack/on-hold:
+                - slack-build-approvals
+      - slack/on-hold:
+          name: SlackHold-1.10.10
           context: slack_ap-airflow
           custom: |
             {
@@ -361,13 +367,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-1.10.10
           requires:
-            - slack/on-hold
+            - SlackHold-1.10.10
           type: approval
 
       - build:
@@ -481,7 +487,9 @@ workflows:
             branches:
               only:
                 - master
-                - slack-build-approvals- slack/on-hold:
+                - slack-build-approvals
+      - slack/on-hold:
+          name: SlackHold-1.10.12
           context: slack_ap-airflow
           custom: |
             {
@@ -501,13 +509,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-1.10.12
           requires:
-            - slack/on-hold
+            - SlackHold-1.10.12
           type: approval
 
       - build:
@@ -621,7 +629,9 @@ workflows:
             branches:
               only:
                 - master
-                - slack-build-approvals- slack/on-hold:
+                - slack-build-approvals
+      - slack/on-hold:
+          name: SlackHold-1.10.14
           context: slack_ap-airflow
           custom: |
             {
@@ -641,13 +651,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-1.10.14
           requires:
-            - slack/on-hold
+            - SlackHold-1.10.14
           type: approval
 
       - build:
@@ -705,7 +715,9 @@ workflows:
             branches:
               only:
                 - master
-                - slack-build-approvals- slack/on-hold:
+                - slack-build-approvals
+      - slack/on-hold:
+          name: SlackHold-2.0.0
           context: slack_ap-airflow
           custom: |
             {
@@ -725,13 +737,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-2.0.0
           requires:
-            - slack/on-hold
+            - SlackHold-2.0.0
           type: approval
 
       - build:

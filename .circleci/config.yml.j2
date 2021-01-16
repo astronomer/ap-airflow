@@ -6,8 +6,9 @@ workflows:
       - static-checks
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
-{%- set dev_build = "true" if "dev" in ac_version else "false" -%}
+{%- set dev_build = "true" if "dev" in ac_version else "false" %}
       - slack/on-hold:
+          name: SlackHold-{{ airflow_version }}
           context: slack_ap-airflow
           custom: |
             {
@@ -27,13 +28,13 @@ workflows:
                   }
                 }
               ]
-              }
+            }
           requires:
             - static-checks
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
-            - slack/on-hold
+            - SlackHold-{{ airflow_version }}
           type: approval
 {% for distribution in distributions %}
       - build:
