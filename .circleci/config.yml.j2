@@ -10,25 +10,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-{{ airflow_version }}
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "{{ airflow_version }} Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "{{ airflow_version }} Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:

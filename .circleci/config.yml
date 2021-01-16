@@ -9,25 +9,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.5
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "1.10.5 Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "1.10.5 Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:
@@ -207,25 +207,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.7
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "1.10.7 Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "1.10.7 Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:
@@ -349,25 +349,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.10
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "1.10.10 Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "1.10.10 Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:
@@ -491,25 +491,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.12
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "1.10.12 Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "1.10.12 Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:
@@ -633,25 +633,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.14
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "1.10.14 Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "1.10.14 Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:
@@ -719,25 +719,25 @@ workflows:
       - slack/on-hold:
           name: SlackHold-2.0.0
           context: slack_ap-airflow
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "Current Job: $CIRCLE_JOB"
-                  }
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "2.0.0 Version - Needs approval"
-                  }
-                }
-              ]
-            }
+          # custom: |
+          #   {
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "Current Job: $CIRCLE_JOB"
+          #         }
+          #       },
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "2.0.0 Version - Needs approval"
+          #         }
+          #       }
+          #     ]
+          #   }
           requires:
             - static-checks
       - pause_workflow:
