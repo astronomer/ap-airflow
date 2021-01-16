@@ -7,8 +7,9 @@ workflows:
     jobs:
       - static-checks
       - slack/on-hold:
-          name: SlackHold-1.10.5
+          name: Slack_Notification-1.10.5
           context: slack_ap-airflow
+          mentions: "<@UHRPL613K>"
           custom: |
             {
                 "blocks": [
@@ -25,15 +26,15 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                        "text": "*Branch*:$CIRCLE_BRANCH"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                        "text": "*Author*:$CIRCLE_USERNAME"
                       }
                     ]
                   },
@@ -42,7 +43,7 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                        "text": "*Mentions*:"
                       }
                     ]
                   },
@@ -238,8 +239,9 @@ workflows:
                 - master
                 - slack-build-approvals
       - slack/on-hold:
-          name: SlackHold-1.10.7
+          name: Slack_Notification-1.10.7
           context: slack_ap-airflow
+          mentions: "<@UHRPL613K>"
           custom: |
             {
                 "blocks": [
@@ -256,15 +258,15 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                        "text": "*Branch*:$CIRCLE_BRANCH"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                        "text": "*Author*:$CIRCLE_USERNAME"
                       }
                     ]
                   },
@@ -273,7 +275,7 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                        "text": "*Mentions*:"
                       }
                     ]
                   },
@@ -413,8 +415,9 @@ workflows:
                 - master
                 - slack-build-approvals
       - slack/on-hold:
-          name: SlackHold-1.10.10
+          name: Slack_Notification-1.10.10
           context: slack_ap-airflow
+          mentions: "<@UHRPL613K>"
           custom: |
             {
                 "blocks": [
@@ -431,15 +434,15 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                        "text": "*Branch*:$CIRCLE_BRANCH"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                        "text": "*Author*:$CIRCLE_USERNAME"
                       }
                     ]
                   },
@@ -448,7 +451,7 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                        "text": "*Mentions*:"
                       }
                     ]
                   },
@@ -588,8 +591,9 @@ workflows:
                 - master
                 - slack-build-approvals
       - slack/on-hold:
-          name: SlackHold-1.10.12
+          name: Slack_Notification-1.10.12
           context: slack_ap-airflow
+          mentions: "<@UHRPL613K>"
           custom: |
             {
                 "blocks": [
@@ -606,15 +610,15 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                        "text": "*Branch*:$CIRCLE_BRANCH"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                        "text": "*Author*:$CIRCLE_USERNAME"
                       }
                     ]
                   },
@@ -623,7 +627,7 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                        "text": "*Mentions*:"
                       }
                     ]
                   },
@@ -763,8 +767,9 @@ workflows:
                 - master
                 - slack-build-approvals
       - slack/on-hold:
-          name: SlackHold-1.10.14
+          name: Slack_Notification-1.10.14
           context: slack_ap-airflow
+          mentions: "<@UHRPL613K>"
           custom: |
             {
                 "blocks": [
@@ -781,15 +786,15 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                        "text": "*Branch*:$CIRCLE_BRANCH"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                        "text": "*Author*:$CIRCLE_USERNAME"
                       }
                     ]
                   },
@@ -798,7 +803,7 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                        "text": "*Mentions*:"
                       }
                     ]
                   },
@@ -882,8 +887,9 @@ workflows:
                 - master
                 - slack-build-approvals
       - slack/on-hold:
-          name: SlackHold-2.0.0
+          name: Slack_Notification-2.0.0
           context: slack_ap-airflow
+          mentions: "<@UHRPL613K>"
           custom: |
             {
                 "blocks": [
@@ -900,15 +906,15 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                        "text": "*Branch*:$CIRCLE_BRANCH"
                       },
                       {
                         "type": "mrkdwn",
-                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                        "text": "*Author*:$CIRCLE_USERNAME"
                       }
                     ]
                   },
@@ -917,7 +923,7 @@ workflows:
                     "fields": [
                       {
                         "type": "mrkdwn",
-                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                        "text": "*Mentions*:"
                       }
                     ]
                   },
