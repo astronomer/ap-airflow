@@ -9,25 +9,58 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.5
           context: slack_ap-airflow
-          # custom: |
-          #   {
-          #     "blocks": [
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "Current Job: $CIRCLE_JOB"
-          #         }
-          #       },
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "1.10.5 Version - Needs approval"
-          #         }
-          #       }
-          #     ]
-          #   }
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
           requires:
             - static-checks
       - pause_workflow:
@@ -207,25 +240,58 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.7
           context: slack_ap-airflow
-          # custom: |
-          #   {
-          #     "blocks": [
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "Current Job: $CIRCLE_JOB"
-          #         }
-          #       },
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "1.10.7 Version - Needs approval"
-          #         }
-          #       }
-          #     ]
-          #   }
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
           requires:
             - static-checks
       - pause_workflow:
@@ -349,25 +415,58 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.10
           context: slack_ap-airflow
-          # custom: |
-          #   {
-          #     "blocks": [
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "Current Job: $CIRCLE_JOB"
-          #         }
-          #       },
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "1.10.10 Version - Needs approval"
-          #         }
-          #       }
-          #     ]
-          #   }
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
           requires:
             - static-checks
       - pause_workflow:
@@ -491,25 +590,58 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.12
           context: slack_ap-airflow
-          # custom: |
-          #   {
-          #     "blocks": [
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "Current Job: $CIRCLE_JOB"
-          #         }
-          #       },
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "1.10.12 Version - Needs approval"
-          #         }
-          #       }
-          #     ]
-          #   }
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
           requires:
             - static-checks
       - pause_workflow:
@@ -633,25 +765,58 @@ workflows:
       - slack/on-hold:
           name: SlackHold-1.10.14
           context: slack_ap-airflow
-          # custom: |
-          #   {
-          #     "blocks": [
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "Current Job: $CIRCLE_JOB"
-          #         }
-          #       },
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "1.10.14 Version - Needs approval"
-          #         }
-          #       }
-          #     ]
-          #   }
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
           requires:
             - static-checks
       - pause_workflow:
@@ -719,25 +884,58 @@ workflows:
       - slack/on-hold:
           name: SlackHold-2.0.0
           context: slack_ap-airflow
-          # custom: |
-          #   {
-          #     "blocks": [
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "Current Job: $CIRCLE_JOB"
-          #         }
-          #       },
-          #       {
-          #         "type": "section",
-          #         "text": {
-          #           "type": "mrkdwn",
-          #           "text": "2.0.0 Version - Needs approval"
-          #         }
-          #       }
-          #     ]
-          #   }
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:\\n$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:\\n$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:\\n$CIRCLE_USERNAME"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:\\n$SLACK_PARAM_MENTIONS"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
           requires:
             - static-checks
       - pause_workflow:
