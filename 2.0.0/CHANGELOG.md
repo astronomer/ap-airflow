@@ -1,5 +1,15 @@
 # Changelog
 
+Astronomer Certified 2.0.0-3.dev
+-----------------------------------------
+
+## Bugfixes
+
+- Bugfix: Return XCom Value in the XCom Endpoint API ([commit](https://github.com/astronomer/airflow/commit/c2c9c06b3))
+- BugFix: Dag-level Callback Requests were not run ([commit](https://github.com/astronomer/airflow/commit/4412aba55))
+- Increase the default ``min_file_process_interval`` to decrease CPU Usage ([commit](https://github.com/astronomer/airflow/commit/6de02157f))
+- Stop creating duplicate Dag File Processors ([commit](https://github.com/astronomer/airflow/commit/4ced807ab))
+
 Astronomer Certified 2.0.0-2, 2020-12-23
 -----------------------------------------
 
