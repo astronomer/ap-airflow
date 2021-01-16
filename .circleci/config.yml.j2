@@ -1,10 +1,6 @@
 version: 2.1
 
-orbs:
-    slack: circleci/slack@4.2.0 
-    
 workflows:
-  version: 2.1
   certified-airflow:
     jobs:
       - static-checks
@@ -316,6 +312,7 @@ jobs:
           prod_core_docker_repo_quay_io: "<< parameters.prod_core_docker_repo_quay_io >>"
 
 orbs:
+  slack: circleci/slack@4.2.0
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
   docker-executor:
