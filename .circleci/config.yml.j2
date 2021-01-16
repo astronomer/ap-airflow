@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+    slack: circleci/slack@4.2.0  
 workflows:
   version: 2.1
   certified-airflow:
@@ -7,7 +9,34 @@ workflows:
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
 {%- set dev_build = "true" if "dev" in ac_version else "false" -%}
-
+      - slack/on-hold:
+          context: slack_ap-airflow
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Current Job: $CIRCLE_JOB"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "{{ airflow_version }} Version - Needs approval"
+                  }
+                }
+              ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-{{ airflow_version }}
+          requires:
+            - slack/on-hold
+          type: approval
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
@@ -18,7 +47,7 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
           requires:
-            - static-checks
+            - Need-Approval-{{ airflow_version }}
       - scan-clair:
           name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -67,6 +96,7 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
