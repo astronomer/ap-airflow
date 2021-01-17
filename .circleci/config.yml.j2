@@ -68,7 +68,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
-            - SlackHold-{{ airflow_version }}
+            - Slack_Notification-{{ airflow_version }}
           type: approval
 {% for distribution in distributions %}
       - build:

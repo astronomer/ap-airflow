@@ -67,7 +67,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-1.10.5
           requires:
-            - SlackHold-1.10.5
+            - Slack_Notification-1.10.5
           type: approval
 
       - build:
@@ -299,7 +299,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-1.10.7
           requires:
-            - SlackHold-1.10.7
+            - Slack_Notification-1.10.7
           type: approval
 
       - build:
@@ -475,7 +475,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-1.10.10
           requires:
-            - SlackHold-1.10.10
+            - Slack_Notification-1.10.10
           type: approval
 
       - build:
@@ -651,7 +651,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-1.10.12
           requires:
-            - SlackHold-1.10.12
+            - Slack_Notification-1.10.12
           type: approval
 
       - build:
@@ -827,7 +827,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-1.10.14
           requires:
-            - SlackHold-1.10.14
+            - Slack_Notification-1.10.14
           type: approval
 
       - build:
@@ -947,7 +947,7 @@ workflows:
       - pause_workflow:
           name: Need-Approval-2.0.0
           requires:
-            - SlackHold-2.0.0
+            - Slack_Notification-2.0.0
           type: approval
 
       - build:
