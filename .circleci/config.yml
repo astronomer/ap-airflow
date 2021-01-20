@@ -215,7 +215,6 @@ jobs:
       - run:
           name: Run the Testim Tests
           command:   |
-            nvm list
             npm i -g @testim/testim-cli
             cd /home/circleci/project/qa-regression
             testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 20 --retries 3 --result-label << parameters.extra_tags >> --test-config "1280x1024_SXGA_chrome" --test-config "1366x768_WXGA_firefox" --mode selenium
