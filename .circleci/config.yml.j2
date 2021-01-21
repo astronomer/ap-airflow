@@ -10,24 +10,24 @@ workflows:
 {%- set dev_build = "true" if "dev" in ac_version else "false" -%}
 {%- for distribution in distributions %}
     {%- if airflow_version|checkair2 == true %}
-      - qa-ui:
-          name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          dev_build: {{ dev_build }}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          executor_type: "celery"
-          test_type: "testim"
-          requires:
-            - waiter
-      - qa-ui:
-          name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          dev_build: {{ dev_build }}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          executor_type: "kubernetes"
-          test_type: "testim"
-          requires:
-            - waiter
+      # - qa-ui:
+      #     name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
+      #     airflow_version: {{ airflow_version }}
+      #     dev_build: {{ dev_build }}
+      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "celery"
+      #     test_type: "testim"
+      #     requires:
+      #       - waiter
+      # - qa-ui:
+      #     name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
+      #     airflow_version: {{ airflow_version }}
+      #     dev_build: {{ dev_build }}
+      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "kubernetes"
+      #     test_type: "testim"
+      #     requires:
+      #       - waiter
       - qa-ui:
           name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -46,24 +46,24 @@ workflows:
           test_type: "core"
           requires:
             - waiter
-      - qa-core:
-          name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          dev_build: {{ dev_build }}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          executor_type: "kubernetes"
-          test_type: "core"
-          requires:
-            - waiter
-      - qa-core:
-          name: qa-core-local-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          dev_build: {{ dev_build }}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          executor_type: "local"
-          test_type: "core"
-          requires:
-            - waiter
+      # - qa-core:
+      #     name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
+      #     airflow_version: {{ airflow_version }}
+      #     dev_build: {{ dev_build }}
+      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "kubernetes"
+      #     test_type: "core"
+      #     requires:
+      #       - waiter
+      # - qa-core:
+      #     name: qa-core-local-{{ airflow_version }}-{{ distribution }}
+      #     airflow_version: {{ airflow_version }}
+      #     dev_build: {{ dev_build }}
+      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "local"
+      #     test_type: "core"
+      #     requires:
+      #       - waiter
     {%- endif %}
 {%- endfor %}
 {%- endfor %}
@@ -280,7 +280,7 @@ jobs:
           path: /tmp/circleci-test-results
       - store_test_results:
           path: /tmp/circleci-test-results
-  qa-core-dags:
+  qa-core:
     description: "Run the Core DAGS"
     environment:
       CORE_TEST_REPORTS: /tmp/core-test-results
@@ -341,7 +341,7 @@ jobs:
             export DAGSTEST_DB_NAME=yourdatabasename
             export DAGSTEST_DB_USER=yourdbusername
             export DAGSTEST_DB_PASSWORD=yourdbpassword
-            dags trigger --header "Authorization":"Bearer token"
+            dags trigger --header "Authorization":"$QA_CLUSTER_SERVICEACCOUNT"
             dags trigger -e 2020-10-30T16:20Z -t core
       - store_artifacts:
           path: /tmp/circleci-test-results
