@@ -28,6 +28,42 @@ workflows:
           test_type: "testim"
           requires:
             - waiter
+      - qa-ui:
+          name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - waiter
+      - qa-core:
+          name: qa-core-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "celery"
+          test_type: "core"
+          requires:
+            - waiter
+      - qa-core:
+          name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "core"
+          requires:
+            - waiter
+      - qa-core:
+          name: qa-core-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "local"
+          test_type: "core"
+          requires:
+            - waiter
     {%- endif %}
 {%- endfor %}
 {%- endfor %}
@@ -190,7 +226,6 @@ jobs:
       CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
     machine: # executor type
       image: ubuntu-2004:202010-01
-    resource_class: small
     parameters:
       airflow_version:
         description: "The Airflow version, for example '1.10.5'"
@@ -241,6 +276,73 @@ jobs:
             npm i -g @testim/testim-cli
             cd /home/circleci/project/qa-regression
             testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 20 --retries 3 --result-label << parameters.extra_tags >> --test-config "1280x1024_SXGA_chrome" --test-config "1366x768_WXGA_firefox" --mode selenium
+      - store_artifacts:
+          path: /tmp/circleci-test-results
+      - store_test_results:
+          path: /tmp/circleci-test-results
+  qa-core-dags:
+    description: "Run the Core DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/core-test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      extra_tags:
+        description: "Extra args to pass to pass to Docker build command"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git
+      - run: sudo apt-get -y install curl
+      - run: sudo apt-get -y install wget
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: sudo apt-get install nodejs
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script1"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/core/
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd project/qa-scenario-dags/scripts/dagstest
+            pip install -e .
+            export AIRFLOW_API_URL=https://yourairflowdeployment/api/v1
+            export DAGSTEST_DB_HOST=yourdbhostname
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=yourdatabasename
+            export DAGSTEST_DB_USER=yourdbusername
+            export DAGSTEST_DB_PASSWORD=yourdbpassword
+            dags trigger --header "Authorization":"Bearer token"
+            dags trigger -e 2020-10-30T16:20Z -t core
       - store_artifacts:
           path: /tmp/circleci-test-results
       - store_test_results:
