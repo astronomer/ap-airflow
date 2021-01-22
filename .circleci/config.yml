@@ -687,7 +687,7 @@ jobs:
           command: |
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
-            pre-commit run --all-files || git --no-pager diff
+            pre-commit run --all-files || { git --no-pager diff && false ; }
   build:
     executor: docker-executor
     description: Build Airflow images
