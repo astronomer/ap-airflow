@@ -306,11 +306,8 @@ jobs:
         type: string
     steps:
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install git
-      - run: sudo apt-get -y install curl
-      - run: sudo apt-get -y install wget
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      - run: sudo apt-get install nodejs
       - run: npm -v
       - run: node -v
       - run:
@@ -333,7 +330,8 @@ jobs:
       - run:
           name: Run the DAGS
           command:   |
-            cd project/qa-scenario-dags/scripts/dagstest
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            
             pip install -e .
             export AIRFLOW_API_URL=https://yourairflowdeployment/api/v1
             export DAGSTEST_DB_HOST=yourdbhostname
