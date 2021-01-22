@@ -108,7 +108,7 @@ RUN apt-get update \
 ARG VERSION="2.0.1-1.*"
 ARG SUBMODULES="async,azure,amazon,celery,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
-ARG AIRFLOW_VERSION="2.0.1"
+ARG AIRFLOW_VERSION="2.0.0"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
