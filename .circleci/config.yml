@@ -69,7 +69,7 @@ workflows:
           executor_type: "celery"
           test_type: "core"
           requires:
-            - qa-core
+            - qa-core-celery-2.0.0-buster
       
       # - qa-core:
       #     name: qa-core-k8s-2.0.0-buster

@@ -72,7 +72,7 @@ workflows:
           executor_type: "celery"
           test_type: "core"
           requires:
-            - qa-core
+            - qa-core-celery-{{ airflow_version }}-{{ distribution }}
       
       # - qa-core:
       #     name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
