@@ -113,12 +113,12 @@ workflows:
           {%- endif %}
           requires:
             - static-checks
-      - scan-clair:
-          name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
-          distribution_name: {{ distribution }}-onbuild
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+      # - scan-clair:
+      #     name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+      #     airflow_version: {{ airflow_version }}
+      #     distribution_name: {{ distribution }}-onbuild
+      #     requires:
+      #       - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}

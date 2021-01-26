@@ -100,12 +100,12 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
           requires:
             - static-checks
-      - scan-clair:
-          name: scan-clair-2.0.0-buster-onbuild
-          airflow_version: 2.0.0
-          distribution_name: buster-onbuild
-          requires:
-            - build-2.0.0-buster
+      # - scan-clair:
+      #     name: scan-clair-2.0.0-buster-onbuild
+      #     airflow_version: 2.0.0
+      #     distribution_name: buster-onbuild
+      #     requires:
+      #       - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
