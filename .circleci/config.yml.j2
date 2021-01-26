@@ -28,15 +28,15 @@ workflows:
       #     test_type: "testim"
       #     requires:
       #       - waiter
-      - qa-ui:
-          name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          dev_build: {{ dev_build }}
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-          executor_type: "kubernetes"
-          test_type: "testim"
-          requires:
-            - waiter
+      # - qa-ui:
+      #     name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
+      #     airflow_version: {{ airflow_version }}
+      #     dev_build: {{ dev_build }}
+      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "kubernetes"
+      #     test_type: "testim"
+      #     requires:
+      #       - waiter
       - qa-core:
           name: qa-core-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -73,7 +73,7 @@ workflows:
           test_type: "core"
           requires:
             - qa-core-celery-{{ airflow_version }}-{{ distribution }}
-      
+
       # - qa-core:
       #     name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
       #     airflow_version: {{ airflow_version }}
@@ -363,7 +363,7 @@ jobs:
             python3 -m venv env
             . env/bin/activate
             fileurl="/home/circle/project/env_current_api_url"
-            export AIRFLOW_API_URL=$(cat "$fileurl") 
+            export AIRFLOW_API_URL=$(cat "$fileurl")
             export DAGSTEST_DB_HOST=yourdbhostname
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=yourdatabasename
@@ -437,7 +437,7 @@ jobs:
             python3 -m venv env
             . env/bin/activate
             fileurl="/home/circle/project/env_current_api_url"
-            export AIRFLOW_API_URL=$(cat "$fileurl") 
+            export AIRFLOW_API_URL=$(cat "$fileurl")
             export DAGSTEST_DB_HOST=yourdbhostname
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=yourdatabasename

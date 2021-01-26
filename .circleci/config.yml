@@ -25,15 +25,15 @@ workflows:
       #     test_type: "testim"
       #     requires:
       #       - waiter
-      - qa-ui:
-          name: qa-ui-regression-k8s-2.0.0-buster
-          airflow_version: 2.0.0
-          dev_build: true
-          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
-          executor_type: "kubernetes"
-          test_type: "testim"
-          requires:
-            - waiter
+      # - qa-ui:
+      #     name: qa-ui-regression-k8s-2.0.0-buster
+      #     airflow_version: 2.0.0
+      #     dev_build: true
+      #     extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "kubernetes"
+      #     test_type: "testim"
+      #     requires:
+      #       - waiter
       - qa-core:
           name: qa-core-celery-2.0.0-buster
           airflow_version: 2.0.0
@@ -70,7 +70,7 @@ workflows:
           test_type: "core"
           requires:
             - qa-core-celery-2.0.0-buster
-      
+
       # - qa-core:
       #     name: qa-core-k8s-2.0.0-buster
       #     airflow_version: 2.0.0
@@ -340,7 +340,7 @@ jobs:
             python3 -m venv env
             . env/bin/activate
             fileurl="/home/circle/project/env_current_api_url"
-            export AIRFLOW_API_URL=$(cat "$fileurl") 
+            export AIRFLOW_API_URL=$(cat "$fileurl")
             export DAGSTEST_DB_HOST=yourdbhostname
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=yourdatabasename
@@ -414,7 +414,7 @@ jobs:
             python3 -m venv env
             . env/bin/activate
             fileurl="/home/circle/project/env_current_api_url"
-            export AIRFLOW_API_URL=$(cat "$fileurl") 
+            export AIRFLOW_API_URL=$(cat "$fileurl")
             export DAGSTEST_DB_HOST=yourdbhostname
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=yourdatabasename
