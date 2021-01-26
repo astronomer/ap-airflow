@@ -43,6 +43,34 @@ workflows:
           test_type: "core"
           requires:
             - waiter
+      # - qa-negative:
+      #     name: qa-negative-celery-2.0.0-buster
+      #     airflow_version: 2.0.0
+      #     dev_build: true
+      #     extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "celery"
+      #     test_type: "core"
+      #     requires:
+      #       - qa-core
+      # - qa-dagmodel:
+      #     name: qa-dagmodel-celery-2.0.0-buster
+      #     airflow_version: 2.0.0
+      #     dev_build: true
+      #     extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+      #     executor_type: "celery"
+      #     test_type: "core"
+      #     requires:
+      #       - qa-core
+      - qa-k8s:
+          name: qa-k8s-celery-2.0.0-buster
+          airflow_version: 2.0.0
+          dev_build: true
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "celery"
+          test_type: "core"
+          requires:
+            - qa-core
+      
       # - qa-core:
       #     name: qa-core-k8s-2.0.0-buster
       #     airflow_version: 2.0.0
@@ -283,11 +311,8 @@ jobs:
         type: string
     steps:
       - run: sudo apt-get -y update
-      - run: sudo apt-get -y install git
-      - run: sudo apt-get -y install curl
-      - run: sudo apt-get -y install wget
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      - run: sudo apt-get install nodejs
       - run: npm -v
       - run: node -v
       - run:
@@ -303,27 +328,109 @@ jobs:
             cd qa-regression
             ls
             chmod 744 *.sh
-            echo "Run Deployment Script1"
+            echo "Run Deployment Script"
             bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
             cd ..
       - run: mkdir -p $CORE_TEST_REPORTS/core/
       - run:
           name: Run the DAGS
           command:   |
-            cd project/qa-scenario-dags/scripts/dagstest
-            pip install -e .
-            export AIRFLOW_API_URL=https://yourairflowdeployment/api/v1
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circle/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl") 
             export DAGSTEST_DB_HOST=yourdbhostname
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=yourdatabasename
             export DAGSTEST_DB_USER=yourdbusername
             export DAGSTEST_DB_PASSWORD=yourdbpassword
+            dags connections --header "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
             dags trigger --header "Authorization":"$QA_CLUSTER_SERVICEACCOUNT"
-            dags trigger -e 2020-10-30T16:20Z -t core
+            dags trigger -t core
       - store_artifacts:
-          path: /tmp/circleci-test-results
+          path: /tmp/core-test-results
       - store_test_results:
-          path: /tmp/circleci-test-results
+          path: /tmp/core-test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  qa-k8s:
+    description: "Run the k8s DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/core-test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      extra_tags:
+        description: "Extra args to pass to pass to Docker build command"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      # - run: sudo apt-get -y update
+      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      # - run: npm -v
+      # - run: node -v
+      # - run:
+      #     name: Avoid hosts unknown for github
+      #     command:   |
+      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      # - run: git clone git@github.com:astronomer/qa-regression.git
+      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      # - run:
+      #     name: Run Shell Script for creating deployments
+      #     command:  |
+      #       cd qa-regression
+      #       ls
+      #       chmod 744 *.sh
+      #       echo "Run Deployment Script"
+      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+      #       cd ..
+      # - run: mkdir -p $CORE_TEST_REPORTS/core/
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circle/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl") 
+            export DAGSTEST_DB_HOST=yourdbhostname
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=yourdatabasename
+            export DAGSTEST_DB_USER=yourdbusername
+            export DAGSTEST_DB_PASSWORD=yourdbpassword
+            dags connections --header "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
+            dags trigger --header "Authorization":"$QA_CLUSTER_SERVICEACCOUNT"
+            dags trigger -t k8s
+      - store_artifacts:
+          path: /tmp/core-test-results
+      - store_test_results:
+          path: /tmp/core-test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
   static-checks:
     executor: machine-executor
     description: Static Checks
