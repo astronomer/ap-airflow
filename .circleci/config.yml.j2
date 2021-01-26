@@ -147,7 +147,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -162,7 +162,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -218,7 +218,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -233,7 +233,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
