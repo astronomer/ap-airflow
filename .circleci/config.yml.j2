@@ -372,14 +372,17 @@ jobs:
             . env/bin/activate
             fileurl="/home/circle/project/env_current_api_url"
             export AIRFLOW_API_URL=$(cat "$fileurl")
-            export DAGSTEST_DB_HOST=yourdbhostname
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
             export DAGSTEST_DB_PORT=5432
-            export DAGSTEST_DB_NAME=yourdatabasename
-            export DAGSTEST_DB_USER=yourdbusername
-            export DAGSTEST_DB_PASSWORD=yourdbpassword
-            dags connections --header "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
-            dags trigger --header "Authorization":"$QA_CLUSTER_SERVICEACCOUNT"
-            dags trigger -t core
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t core
+            sleep 240
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
       - store_artifacts:
           path: /tmp/test-results
       - store_test_results:
@@ -436,30 +439,18 @@ jobs:
             cd ..
       - run: mkdir -p $CORE_TEST_REPORTS/restapi/
       - run:
-          name: Run the DAGS
+          name: Run the RESTAPI
           command:   |
-            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
-            pip3 install -e .
-            python3 -m venv env
-            . env/bin/activate
-            fileurl="/home/circle/project/env_current_api_url"
-            export AIRFLOW_API_URL=$(cat "$fileurl")
-            export DAGSTEST_DB_HOST=yourdbhostname
-            export DAGSTEST_DB_PORT=5432
-            export DAGSTEST_DB_NAME=yourdatabasename
-            export DAGSTEST_DB_USER=yourdbusername
-            export DAGSTEST_DB_PASSWORD=yourdbpassword
-            dags connections --header "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
-            dags trigger --header "Authorization":"$QA_CLUSTER_SERVICEACCOUNT"
-            dags trigger -t core
+            cd /home/circleci/project/qa-regression/postman_rest
+            chmod 744 run_restapi_smoke.sh
+            bash ./run_restapi_smoke.sh
+            cp result.out /tmp/test-results/restapi/
+            grep -q "404 Not Found" result.out && exit 1
+            grep -q "500 INTERNAL SERVER ERROR" result.out && exit 1
       - store_artifacts:
           path: /tmp/test-results
       - store_test_results:
           path: /tmp/test-results
-      - persist_to_workspace:
-          root: .
-          paths:
-            - project
   qa-k8s:
     description: "Run the k8s DAGS"
     environment:
@@ -518,14 +509,17 @@ jobs:
             . env/bin/activate
             fileurl="/home/circle/project/env_current_api_url"
             export AIRFLOW_API_URL=$(cat "$fileurl")
-            export DAGSTEST_DB_HOST=yourdbhostname
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
             export DAGSTEST_DB_PORT=5432
-            export DAGSTEST_DB_NAME=yourdatabasename
-            export DAGSTEST_DB_USER=yourdbusername
-            export DAGSTEST_DB_PASSWORD=yourdbpassword
-            dags connections --header "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
-            dags trigger --header "Authorization":"$QA_CLUSTER_SERVICEACCOUNT"
-            dags trigger -t k8s
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
+            sleep 240
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
       - store_artifacts:
           path: /tmp/test-results
       - store_test_results:
