@@ -71,7 +71,7 @@ workflows:
           requires:
             - qa-core-celery-2.0.0-buster
       - qa-restapi:
-          name: qa-restapio-2.0.0-buster
+          name: qa-restapi-2.0.0-buster
           airflow_version: 2.0.0
           dev_build: true
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM}"
