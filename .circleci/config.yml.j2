@@ -148,7 +148,7 @@ workflows:
             - quay.io
           requires:
             # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
@@ -234,7 +234,7 @@ workflows:
             - quay.io
           requires:
             # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:

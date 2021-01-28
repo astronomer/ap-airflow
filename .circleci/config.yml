@@ -135,7 +135,7 @@ workflows:
             - quay.io
           requires:
             # - scan-clair-2.0.0-buster-onbuild
-            - scan-trivy-2.0.0-buster-onbuild
+            # - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
             branches:
@@ -214,7 +214,7 @@ workflows:
             - quay.io
           requires:
             # - scan-clair-2.0.0-buster-onbuild
-            - scan-trivy-2.0.0-buster-onbuild
+            # - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
             branches:
