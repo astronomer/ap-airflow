@@ -127,13 +127,13 @@ workflows:
       #     distribution_name: {{ distribution }}-onbuild
       #     requires:
       #       - build-{{ airflow_version }}-{{ distribution }}
-      - scan-trivy:
-          name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
-          distribution: {{ distribution }}
-          distribution_name: {{ distribution }}-onbuild
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+      # - scan-trivy:
+      #     name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+      #     airflow_version: {{ airflow_version }}
+      #     distribution: {{ distribution }}
+      #     distribution_name: {{ distribution }}-onbuild
+      #     requires:
+      #       - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           tag: "{{ airflow_version }}-{{ distribution }}"
@@ -163,7 +163,7 @@ workflows:
             - quay.io
           requires:
             # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
@@ -198,13 +198,13 @@ workflows:
       #     distribution_name: {{ distribution }}-onbuild
       #     requires:
       #       - build-{{ airflow_version }}-{{ distribution }}
-      - scan-trivy:
-          name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
-          distribution: {{ distribution }}
-          distribution_name: {{ distribution }}-onbuild
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+      # - scan-trivy:
+      #     name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+      #     airflow_version: {{ airflow_version }}
+      #     distribution: {{ distribution }}
+      #     distribution_name: {{ distribution }}-onbuild
+      #     requires:
+      #       - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           tag: "{{ airflow_version }}-{{ distribution }}"
@@ -219,7 +219,7 @@ workflows:
             - quay.io
           requires:
             # - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+            # - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
@@ -1005,8 +1005,8 @@ commands:
                     failed_jobs_url="${running_job_prefix}${running_jobs_branch}${failed_jobs_suffix}"
                     curl -f -s $failed_jobs_url > /tmp/swissknife/failed_jobs.json
                     total_workflows_failed=$(jq 'unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("certified-airflow")) .status' /tmp/swissknife/failed_jobs.json)
-                    echo "RecentJobStatus"$total_workflows_failed
-                    if [ "$total_workflows_failed" == "failed" ] || [ "$total_workflows_failed" == "cancelled" ]; then
+                    echo "RecentJobStatus:"$total_workflows_failed
+                    if [ "$total_workflows_failed" == "\"failed\"" ] || [ "$total_workflows_failed" == "\"cancelled\"" ]; then
                       kill_workflow
                     else
                       return 0
