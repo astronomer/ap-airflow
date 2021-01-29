@@ -20,4 +20,3 @@ Astronomer Certified 2.0.0-1.dev
 ### Improvements
 
 - Make-Smart-Sensors-DB-Migration-idempotent-13892 ([commit](https://github.com/apache/airflow/1650fa297))
-- Add-extra-field-to-get_connnection-REST-endpoint-13885 ([commit](https://github.com/apache/airfl
