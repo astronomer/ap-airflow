@@ -929,7 +929,7 @@ commands:
             description: If true and time exceeds max wait time, dies without failing the job
             type: string
         max-wait-time:
-            default: "900"
+            default: "1800"
             description: |
                 The max wait time in seconds a job should wait for before killing itself.
             type: string
@@ -994,17 +994,21 @@ commands:
                 get_num_running_workflows() {
                   running_job_prefix="https://circleci.com/api/v1.1/project/$slug";
                   running_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=running&limit=100";
+                  q_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=queued&limit=100";
                   failed_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&limit=1";
                   running_jobs_branch="";
                   if [[ "$branch_to_consider" != "all" ]]; then
                     running_jobs_branch="/tree/$branch_to_consider";
                   fi
                   running_jobs_url="${running_job_prefix}${running_jobs_branch}${running_jobs_suffix}"
+                  q_jobs_url="${running_job_prefix}${running_jobs_branch}${q_jobs_suffix}"
                   echo "ER:"$running_jobs_url
                   curl -f -s $running_jobs_url > /tmp/swissknife/running_jobs.json
+                  curl -f -s $q_jobs_url > /tmp/swissknife/q_jobs.json
                   total_workflows_running=$(jq --arg curworkflow "$CIRCLE_WORKFLOW_ID" '[unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("<< parameters.workflow-name >>")) | select(.workflows.workflow_id|test($curworkflow)|not) ] | length' /tmp/swissknife/running_jobs.json)
+                  total_workflows_q=$(jq --arg curworkflow "$CIRCLE_WORKFLOW_ID" '[unique_by(.workflows.workflow_id) | .[] | select(.workflows.workflow_name|test("<< parameters.workflow-name >>")) | select(.workflows.workflow_id|test($curworkflow)|not) ] | length' /tmp/swissknife/q_jobs.json)
                   # If no other workflows are running, we're good. just return
-                  if [ "$total_workflows_running" == "0" ]; then
+                  if [ "$total_workflows_running" == "0" ] && [ "$total_workflows_q" == "0" ]; then
                     #Validate if the workflow failed
                     failed_jobs_url="${running_job_prefix}${running_jobs_branch}${failed_jobs_suffix}"
                     curl -f -s $failed_jobs_url > /tmp/swissknife/failed_jobs.json
