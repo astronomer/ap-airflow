@@ -370,14 +370,14 @@ jobs:
             pip3 install -e .
             python3 -m venv env
             . env/bin/activate
-            fileurl="/home/circle/project/env_current_api_url"
+            fileurl="/home/circleci/project/env_current_api_url"
             export AIRFLOW_API_URL=$(cat "$fileurl")
             export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=axsrggsp
             export DAGSTEST_DB_USER=axsrggsp
             export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
-            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t core
             sleep 240
@@ -445,8 +445,12 @@ jobs:
             chmod 744 run_restapi_smoke.sh
             bash ./run_restapi_smoke.sh
             cp result.out /tmp/test-results/restapi/
-            grep -q "404 Not Found" result.out && exit 1
-            grep -q "500 INTERNAL SERVER ERROR" result.out && exit 1
+            FOUND_404=0
+            FOUND_500=0
+            grep -q "404 Not Found" result.out && FOUND_404=1
+            grep -q "500 INTERNAL SERVER ERROR" result.out && FOUND_500=1
+            if [[ "$FOUND_404" -eq 1 ]]; then echo "404 Errors Found";exit 1; fi
+            if [[ "$FOUND_500" -eq 1 ]]; then echo "500 Errors Found";exit 1; fi
       - store_artifacts:
           path: /tmp/test-results
       - store_test_results:
@@ -514,7 +518,7 @@ jobs:
             export DAGSTEST_DB_NAME=axsrggsp
             export DAGSTEST_DB_USER=axsrggsp
             export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
-            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f airflow_settings.yaml
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
             sleep 240
