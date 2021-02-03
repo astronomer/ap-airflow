@@ -10,33 +10,33 @@ workflows:
 {%- set dev_build = "true" if "dev" in ac_version else "false" -%}
 {%- for distribution in distributions %}
     {%- if airflow_version|checkair2 == true %}
-      # - qa-ui:
-      #     name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
-      #     airflow_version: {{ airflow_version }}
-      #     dev_build: {{ dev_build }}
-      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-      #     executor_type: "celery"
-      #     test_type: "testim"
-      #     requires:
-      #       - waiter
-      # - qa-ui:
-      #     name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
-      #     airflow_version: {{ airflow_version }}
-      #     dev_build: {{ dev_build }}
-      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-      #     executor_type: "kubernetes"
-      #     test_type: "testim"
-      #     requires:
-      #       - waiter
-      # - qa-ui:
-      #     name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
-      #     airflow_version: {{ airflow_version }}
-      #     dev_build: {{ dev_build }}
-      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-      #     executor_type: "kubernetes"
-      #     test_type: "testim"
-      #     requires:
-      #       - waiter
+      - qa-ui:
+          name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "celery"
+          test_type: "testim"
+          requires:
+            - waiter
+      - qa-ui:
+          name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - waiter
+      - qa-ui:
+          name: qa-ui-regression-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "local"
+          test_type: "testim"
+          requires:
+            - waiter
       - qa-core:
           name: qa-core-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -74,7 +74,7 @@ workflows:
           requires:
             - qa-core-celery-{{ airflow_version }}-{{ distribution }}
       - qa-restapi:
-          name: qa-restapi-{{ airflow_version }}-{{ distribution }}
+          name: qa-restapi-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           dev_build: {{ dev_build }}
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
@@ -82,6 +82,24 @@ workflows:
           test_type: "rest"
           requires:
             - waiter
+      - qa-restapi:
+        name: qa-restapi-local-{{ airflow_version }}-{{ distribution }}
+        airflow_version: {{ airflow_version }}
+        dev_build: {{ dev_build }}
+        extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+        executor_type: "local"
+        test_type: "rest"
+        requires:
+          - qa-restapi-celery-{{ airflow_version }}-{{ distribution }}
+      - qa-restapi:
+        name: qa-restapi-k8s-{{ airflow_version }}-{{ distribution }}
+        airflow_version: {{ airflow_version }}
+        dev_build: {{ dev_build }}
+        extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+        executor_type: "kubernetes"
+        test_type: "rest"
+        requires:
+          - qa-restapi-local-{{ airflow_version }}-{{ distribution }}
       # - qa-core:
       #     name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
       #     airflow_version: {{ airflow_version }}
@@ -518,6 +536,12 @@ jobs:
       #       cd ..
       - run: mkdir -p $CORE_TEST_REPORTS/k8s/
       - run:
+          name: Run the Pre-Reqs for running K8s
+          command:   |
+            cd /home/circleci/project/qa-regression
+            chmod 744 pre-req-kubernetes.sh
+            bash ./pre-req-kubernetes.sh
+      - run:
           name: Run the DAGS
           command:   |
             cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
@@ -534,6 +558,90 @@ jobs:
             #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
+            sleep 240
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
+            FOUND_FAILURES=0
+            grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
+            cat /tmp/test-results/results_k8s_dags.out
+            if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            cd /home/circleci/project/qa-regression
+            chmod 744 delete_deployment.sh
+            bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  qa-negative:
+    description: "Run the Negative DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      extra_tags:
+        description: "Extra args to pass to pass to Docker build command"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - attach_workspace:
+          at: ~/
+      # - run: sudo apt-get -y update
+      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      # - run: npm -v
+      # - run: node -v
+      # - run:
+      #     name: Avoid hosts unknown for github
+      #     command:   |
+      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      # - run: git clone git@github.com:astronomer/qa-regression.git
+      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      # - run:
+      #     name: Run Shell Script for creating deployments
+      #     command:  |
+      #       cd qa-regression
+      #       ls
+      #       chmod 744 *.sh
+      #       echo "Run Deployment Script"
+      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+      #       cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/negative/
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circle/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t negative
             sleep 240
             echo "Sleeping for 240s"
             dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
