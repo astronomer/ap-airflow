@@ -83,24 +83,24 @@ workflows:
           requires:
             - waiter
       - qa-restapi:
-        name: qa-restapi-local-{{ airflow_version }}-{{ distribution }}
-        airflow_version: {{ airflow_version }}
-        dev_build: {{ dev_build }}
-        extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-        executor_type: "local"
-        test_type: "rest"
-        requires:
-          - qa-restapi-celery-{{ airflow_version }}-{{ distribution }}
+          name: qa-restapi-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-{{ airflow_version }}-{{ distribution }}
       - qa-restapi:
-        name: qa-restapi-k8s-{{ airflow_version }}-{{ distribution }}
-        airflow_version: {{ airflow_version }}
-        dev_build: {{ dev_build }}
-        extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-        executor_type: "kubernetes"
-        test_type: "rest"
-        requires:
-          - qa-restapi-local-{{ airflow_version }}-{{ distribution }}
-      # - qa-core:
+          name: qa-restapi-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-{{ airflow_version }}-{{ distribution }}
+        # - qa-core:
       #     name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
       #     airflow_version: {{ airflow_version }}
       #     dev_build: {{ dev_build }}

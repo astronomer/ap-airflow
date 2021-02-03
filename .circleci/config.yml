@@ -80,24 +80,24 @@ workflows:
           requires:
             - waiter
       - qa-restapi:
-        name: qa-restapi-local-2.0.1-buster
-        airflow_version: 2.0.1
-        dev_build: true
-        extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
-        executor_type: "local"
-        test_type: "rest"
-        requires:
-          - qa-restapi-celery-2.0.1-buster
+          name: qa-restapi-local-2.0.1-buster
+          airflow_version: 2.0.1
+          dev_build: true
+          extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-2.0.1-buster
       - qa-restapi:
-        name: qa-restapi-k8s-2.0.1-buster
-        airflow_version: 2.0.1
-        dev_build: true
-        extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
-        executor_type: "kubernetes"
-        test_type: "rest"
-        requires:
-          - qa-restapi-local-2.0.1-buster
-      # - qa-core:
+          name: qa-restapi-k8s-2.0.1-buster
+          airflow_version: 2.0.1
+          dev_build: true
+          extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-2.0.1-buster
+        # - qa-core:
       #     name: qa-core-k8s-2.0.1-buster
       #     airflow_version: 2.0.1
       #     dev_build: true
