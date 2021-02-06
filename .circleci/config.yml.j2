@@ -55,15 +55,6 @@ workflows:
       #     test_type: "core"
       #     requires:
       #       - qa-core
-      # - qa-dagmodel:
-      #     name: qa-dagmodel-celery-{{ airflow_version }}-{{ distribution }}
-      #     airflow_version: {{ airflow_version }}
-      #     dev_build: {{ dev_build }}
-      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-      #     executor_type: "celery"
-      #     test_type: "core"
-      #     requires:
-      #       - qa-core
       - qa-k8s:
           name: qa-k8s-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
