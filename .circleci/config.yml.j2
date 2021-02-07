@@ -91,24 +91,24 @@ workflows:
           test_type: "rest"
           requires:
             - qa-restapi-local-{{ airflow_version }}-{{ distribution }}
-        # - qa-core:
-      #     name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
-      #     airflow_version: {{ airflow_version }}
-      #     dev_build: {{ dev_build }}
-      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-      #     executor_type: "kubernetes"
-      #     test_type: "core"
-      #     requires:
-      #       - waiter
-      # - qa-core:
-      #     name: qa-core-local-{{ airflow_version }}-{{ distribution }}
-      #     airflow_version: {{ airflow_version }}
-      #     dev_build: {{ dev_build }}
-      #     extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
-      #     executor_type: "local"
-      #     test_type: "core"
-      #     requires:
-      #       - waiter test
+      - qa-core:
+          name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "core"
+          requires:
+            - waiter
+      - qa-core:
+          name: qa-core-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          dev_build: {{ dev_build }}
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "local"
+          test_type: "core"
+          requires:
+            - waiter
     {%- endif %}
 {%- endfor %}
 {%- endfor %}
