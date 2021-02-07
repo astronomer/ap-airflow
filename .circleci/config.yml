@@ -24,7 +24,7 @@ workflows:
           executor_type: "kubernetes"
           test_type: "testim"
           requires:
-            - waiter
+            - qa-ui-regression-celery-2.0.1-buster
       - qa-ui:
           name: qa-ui-regression-local-2.0.1-buster
           airflow_version: 2.0.1
@@ -33,7 +33,7 @@ workflows:
           executor_type: "local"
           test_type: "testim"
           requires:
-            - waiter
+            - qa-ui-regression-k8s-2.0.1-buster
       - qa-core:
           name: qa-core-celery-2.0.1-buster
           airflow_version: 2.0.1

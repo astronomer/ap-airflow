@@ -27,7 +27,7 @@ workflows:
           executor_type: "kubernetes"
           test_type: "testim"
           requires:
-            - waiter
+            - qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
       - qa-ui:
           name: qa-ui-regression-local-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -36,7 +36,7 @@ workflows:
           executor_type: "local"
           test_type: "testim"
           requires:
-            - waiter
+            - qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
       - qa-core:
           name: qa-core-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
