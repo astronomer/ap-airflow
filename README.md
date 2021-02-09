@@ -4,8 +4,6 @@
 
 Astronomer makes it easy to run, monitor, and scale [Apache Airflow](https://github.com/apache/airflow) deployments in our cloud or yours. Source code is made available for the benefit of customers.
 
-If you'd like to see the platform in action, [start a free trial on our SaaS service, Astronomer Cloud](https://astronomer.io/trial) and run through our [getting started guide](https://www.astronomer.io/docs/getting-started/). This is a good first step, even if you're ultimately interested in running Astronomer in your own Kubernetes cluster.
-
 ## Docker images
 
 Docker images for deploying and running Astronomer Core are currently available on
