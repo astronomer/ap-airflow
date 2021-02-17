@@ -1,18 +1,86 @@
 # Warning: automatically generated file
 # Please edit config.yml.j2, and use the script generate_circleci_config.py
 version: 2.1
+
 workflows:
-  version: 2.1
   certified-airflow:
     jobs:
       - static-checks
+      - slack/on-hold:
+          name: Slack_Notification-1.10.5
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-1.10.5
+          requires:
+            - Slack_Notification-1.10.5
+          type: approval
+
       - build:
           name: build-1.10.5-alpine3.10
           airflow_version: 1.10.5
           distribution_name: alpine3.10
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.5
       - scan-clair:
           name: scan-clair-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
@@ -61,13 +129,14 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
       - build:
           name: build-1.10.5-buster
           airflow_version: 1.10.5
           distribution_name: buster
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.5
       - scan-clair:
           name: scan-clair-1.10.5-buster-onbuild
           airflow_version: 1.10.5
@@ -116,13 +185,14 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
       - build:
           name: build-1.10.5-rhel7
           airflow_version: 1.10.5
           distribution_name: rhel7
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.5
       - scan-clair:
           name: scan-clair-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
@@ -171,13 +241,82 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.7
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-1.10.7
+          requires:
+            - Slack_Notification-1.10.7
+          type: approval
+
       - build:
           name: build-1.10.7-alpine3.10
           airflow_version: 1.10.7
           distribution_name: alpine3.10
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.7
       - scan-clair:
           name: scan-clair-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
@@ -226,13 +365,14 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
       - build:
           name: build-1.10.7-buster
           airflow_version: 1.10.7
           distribution_name: buster
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.7
       - scan-clair:
           name: scan-clair-1.10.7-buster-onbuild
           airflow_version: 1.10.7
@@ -281,13 +421,82 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.10
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-1.10.10
+          requires:
+            - Slack_Notification-1.10.10
+          type: approval
+
       - build:
           name: build-1.10.10-alpine3.10
           airflow_version: 1.10.10
           distribution_name: alpine3.10
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.10
       - scan-clair:
           name: scan-clair-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
@@ -336,13 +545,14 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
       - build:
           name: build-1.10.10-buster
           airflow_version: 1.10.10
           distribution_name: buster
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.10
       - scan-clair:
           name: scan-clair-1.10.10-buster-onbuild
           airflow_version: 1.10.10
@@ -391,13 +601,82 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.12
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-1.10.12
+          requires:
+            - Slack_Notification-1.10.12
+          type: approval
+
       - build:
           name: build-1.10.12-alpine3.10
           airflow_version: 1.10.12
           distribution_name: alpine3.10
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.12
       - scan-clair:
           name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
@@ -446,13 +725,14 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
       - build:
           name: build-1.10.12-buster
           airflow_version: 1.10.12
           distribution_name: buster
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.12
       - scan-clair:
           name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
@@ -501,13 +781,82 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.14
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-1.10.14
+          requires:
+            - Slack_Notification-1.10.14
+          type: approval
+
       - build:
           name: build-1.10.14-buster
           airflow_version: 1.10.14
           distribution_name: buster
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-1.10.14
       - scan-clair:
           name: scan-clair-1.10.14-buster-onbuild
           airflow_version: 1.10.14
@@ -556,13 +905,82 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.0.0
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-2.0.0
+          requires:
+            - Slack_Notification-2.0.0
+          type: approval
+
       - build:
           name: build-2.0.0-buster
           airflow_version: 2.0.0
           distribution_name: buster
           dev_build: false
           requires:
-            - static-checks
+            - Need-Approval-2.0.0
       - scan-clair:
           name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -611,6 +1029,75 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.0.1
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-2.0.1
+          requires:
+            - Slack_Notification-2.0.1
+          type: approval
+
       - build:
           name: build-2.0.1-buster
           airflow_version: 2.0.1
@@ -618,7 +1105,7 @@ workflows:
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.1.build)"
           requires:
-            - static-checks
+            - Need-Approval-2.0.1
       - scan-clair:
           name: scan-clair-2.0.1-buster-onbuild
           airflow_version: 2.0.1
@@ -667,6 +1154,7 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
   nightly:
     triggers:
       - schedule:
@@ -874,6 +1362,7 @@ jobs:
           prod_core_docker_repo_quay_io: "<< parameters.prod_core_docker_repo_quay_io >>"
 
 orbs:
+  slack: circleci/slack@4.2.0
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
   docker-executor:

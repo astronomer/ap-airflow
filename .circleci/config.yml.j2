@@ -1,13 +1,79 @@
 version: 2.1
+
 workflows:
-  version: 2.1
   certified-airflow:
     jobs:
       - static-checks
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
-{%- set dev_build = "true" if "dev" in ac_version else "false" -%}
+{%- set dev_build = "true" if "dev" in ac_version else "false" %}
+      - slack/on-hold:
+          name: Slack_Notification-{{ airflow_version }}
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
 
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+      - pause_workflow:
+          name: Need-Approval-{{ airflow_version }}
+          requires:
+            - Slack_Notification-{{ airflow_version }}
+          type: approval
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
@@ -18,7 +84,7 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
           requires:
-            - static-checks
+            - Need-Approval-{{ airflow_version }}
       - scan-clair:
           name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -67,6 +133,7 @@ workflows:
             branches:
               only:
                 - master
+                - slack-build-approvals
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -284,6 +351,7 @@ jobs:
           prod_core_docker_repo_quay_io: "<< parameters.prod_core_docker_repo_quay_io >>"
 
 orbs:
+  slack: circleci/slack@4.2.0
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
   docker-executor:
