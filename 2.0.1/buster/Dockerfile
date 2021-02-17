@@ -32,7 +32,6 @@ LABEL io.astronomer.docker.uid="${ASTRONOMER_UID}"
 ARG ORG="astronomer"
 
 
-ENV AIRFLOW_REPOSITORY="https://github.com/${ORG}/airflow"
 ENV AIRFLOW_HOME="/usr/local/airflow"
 ENV PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}${AIRFLOW_HOME}
 
@@ -59,7 +58,6 @@ RUN apt-get update \
            curl \
            libmariadb3 \
            freetds-bin \
-           git \
            gosu \
            libffi6 \
            libkrb5-3 \
@@ -104,33 +102,24 @@ RUN apt-get update \
         libpq-dev \
         libsasl2-dev \
         libssl-dev \
-        nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.5-11"
-ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
-ENV AIRFLOW_MODULE="git+${AIRFLOW_REPOSITORY}@${VERSION}#egg=apache-airflow[${SUBMODULES}]"
-ARG AIRFLOW_VERSION="1.10.5"
+ARG VERSION="2.0.1-1.*"
+ARG SUBMODULES="async,azure,amazon,celery,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
+ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
+ARG AIRFLOW_VERSION="2.0.1"
 
-# Force pip to install these specific versions when ever it installs a module
-ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
+# Make pip look at our pip repo too, and force it to install these specific
+# versions when ever it installs a module.
+COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" \
+RUN pip install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.7.txt" \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-  && pip install "https://github.com/astronomer/astronomer-fab-securitymanager/releases/download/v1.2.1/astronomer_fab_security_manager-1.2.1-py3-none-any.whl"
+	&& pip install "astronomer-fab-security-manager~=1.5"
 
-RUN cd usr/local/lib/python3.7/site-packages/airflow/www_rbac \
-  && npm install \
-  && npm run prod \
-  && rm -rf node_modules
-
-
-################################
-# Installing node_node modules #
-################################
 
 ## move this to same layer as airflow because its from tag.
 
@@ -144,8 +133,8 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.5-11"
-ARG AIRFLOW_VERSION="1.10.5"
+ARG VERSION="2.0.1-1.*"
+ARG AIRFLOW_VERSION="2.0.1"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
@@ -154,11 +143,19 @@ COPY --from=devel /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.
 COPY --from=devel /usr/local/bin /usr/local/bin
 
 # Force pip to install these specific versions when ever it installs a module
-ENV PIP_CONSTRAINT=/usr/local/share/astronomer-pip-constraints.txt
+COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
-# Run pods spun up by Kubernetes Executor as astro user
-RUN sed -i -e 's/^run_as_user =.*/run_as_user = 50000/g' /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
+RUN sed -i \
+    # Run pods spun up by Kubernetes Executor as astro user
+    -e 's/^run_as_user =.*/run_as_user = 50000/g' \
+    # Needed by astronomer-version-check-plugin
+    -e 's/^lazy_load_plugins =.*/lazy_load_plugins = False/g' \
+    # We sync permissions in the entrypoint so do not need to run in the Webserver again
+    -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
+    # Use Auth Backend defined in Astronomer FAB Security Manager
+    -e 's/^auth_backend =.*/auth_backend = astronomer.flask_appbuilder.current_user_backend/g' \
+    /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory, so we can own it when we mount volumes
 RUN install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}" \

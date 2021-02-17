@@ -1,0 +1,17 @@
+# Constraint the version pip will install during docker build
+
+apache-airflow-providers-amazon==1.0.0
+apache-airflow-providers-celery==1.0.0
+apache-airflow-providers-cncf-kubernetes==1.0.1
+apache-airflow-providers-elasticsearch==1.0.1
+apache-airflow-providers-ftp==1.0.0
+apache-airflow-providers-google==1.0.0
+apache-airflow-providers-http==1.0.0
+apache-airflow-providers-imap==1.0.0
+apache-airflow-providers-microsoft-azure==1.1.0
+apache-airflow-providers-mysql==1.0.0
+apache-airflow-providers-postgres==1.0.0
+apache-airflow-providers-redis==1.0.0
+apache-airflow-providers-slack==1.0.0
+apache-airflow-providers-sqlite==1.0.0
+apache-airflow-providers-ssh==1.0.0
