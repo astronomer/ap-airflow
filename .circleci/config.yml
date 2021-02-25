@@ -61,6 +61,15 @@ workflows:
           test_type: "k8s"
           requires:
             - qa-core-celery-2.0.1-buster
+      - qa-params:
+          name: qa-params-celery-2.0.1-buster
+          airflow_version: 2.0.1
+          dev_build: true
+          extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "celery"
+          test_type: "params"
+          requires:
+            - qa-k8s-celery-2.0.1-buster
       - qa-restapi:
           name: qa-restapi-celery-2.0.1-buster
           airflow_version: 2.0.1
@@ -97,6 +106,33 @@ workflows:
           test_type: "core"
           requires:
             - waiter
+      - qa-k8s:
+          name: qa-k8s-k8s-2.0.1-buster
+          airflow_version: 2.0.1
+          dev_build: true
+          extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "k8s"
+          requires:
+            - qa-core-k8s-2.0.1-buster
+      - qa-params:
+          name: qa-params-k8s-2.0.1-buster
+          airflow_version: 2.0.1
+          dev_build: true
+          extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "params"
+          requires:
+            - qa-k8s-k8s-2.0.1-buster
+      - qa-negative:
+          name: qa-negative-k8s-2.0.1-buster
+          airflow_version: 2.0.1
+          dev_build: true
+          extra_tags: "2.0.1-buster-onbuild-${CIRCLE_BUILD_NUM}"
+          executor_type: "kubernetes"
+          test_type: "negative"
+          requires:
+             - qa-params-k8s-2.0.1-buster
       - qa-core:
           name: qa-core-local-2.0.1-buster
           airflow_version: 2.0.1
