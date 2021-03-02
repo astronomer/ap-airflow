@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ARG APT_DEPS_IMAGE="airflow-apt-deps"
-ARG PYTHON_BASE_IMAGE="python:3.7-slim"
+ARG PYTHON_MAJOR_MINOR_VERSION="3.7"
+ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim"
 
 FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
@@ -42,6 +43,8 @@ ENV ASTRONOMER_UID=${ASTRONOMER_UID}
 # But the default value carries from the one set before FROM
 ARG PYTHON_BASE_IMAGE
 ENV PYTHON_BASE_IMAGE=${PYTHON_BASE_IMAGE}
+ARG PYTHON_MAJOR_MINOR_VERSION
+ENV PYTHON_MAJOR_MINOR_VERSION=${PYTHON_MAJOR_MINOR_VERSION}
 
 # Make sure noninteractie debian install is used and language variables set
 ENV DEBIAN_FRONTEND=noninteractive LANGUAGE=C.UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8 \
@@ -116,7 +119,7 @@ COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.7.txt" \
+RUN pip install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt" \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip install "astronomer-fab-security-manager~=1.2, >=1.2.2"
 
@@ -139,7 +142,7 @@ LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
 # Copy all installed python modules. This gets us the compiled without needing dev installed
-COPY --from=devel /usr/local/lib/python3.7/site-packages /usr/local/lib/python3.7/site-packages
+COPY --from=devel /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages
 COPY --from=devel /usr/local/bin /usr/local/bin
 
 # Force pip to install these specific versions when ever it installs a module
@@ -151,7 +154,7 @@ RUN sed -i \
     -e 's/^run_as_user =.*/run_as_user = 50000/g' \
     # We sync permissions in the entrypoint so do not need to run in the Webserver again
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
-    /usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
+    /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory, so we can own it when we mount volumes
 RUN install --directory --owner="${ASTRONOMER_USER}" "${AIRFLOW_HOME}" \
