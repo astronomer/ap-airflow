@@ -1454,7 +1454,7 @@ commands:
       - store_test_results:
           path: /tmp/test-reports
   push:
-    description: "Push a Docker image to DockerHub"
+    description: "Push a Docker image to DockerHub "
     parameters:
       dev_release:
         description: "Indicate if this is a dev release"
@@ -1509,7 +1509,7 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
-               
+
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
