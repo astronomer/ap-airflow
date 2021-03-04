@@ -323,10 +323,6 @@ jobs:
         description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "astronomerinc/ap-airflow"
         type: string
-      dev_docker_repo_docker_hub:
-        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
-        default: "astronomerio/ap-airflow"
-        type: string
       prod_docker_repo_quay_io:
         description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "quay.io/astronomer/ap-airflow"
@@ -345,7 +341,6 @@ jobs:
           extra_tags: "<< parameters.extra_tags >>"
           tag: "<< parameters.tag >>"
           prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
-          dev_docker_repo_docker_hub: "<< parameters.dev_docker_repo_docker_hub >>"
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
           prod_core_docker_repo_quay_io: "<< parameters.prod_core_docker_repo_quay_io >>"
@@ -465,9 +460,6 @@ commands:
       prod_docker_repo_docker_hub:
         default: astronomerinc/ap-airflow
         type: string
-      dev_docker_repo_docker_hub:
-        default: "astronomerio/ap-airflow"
-        type: string
       prod_docker_repo_quay_io:
         default: quay.io/astronomer/ap-airflow
         type: string
@@ -507,9 +499,6 @@ commands:
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
-                echo "Tagging and pushing image <<parameters.image_name>>:${tag} to << parameters.dev_docker_repo_docker_hub >>"
-                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:$tag"
-                docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
@@ -527,9 +516,6 @@ commands:
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
-                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_docker_hub >>"
-                docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
-                docker push "<< parameters.dev_docker_repo_docker_hub >>:${tag}"
               fi
             done
 
@@ -551,10 +537,6 @@ commands:
                 docker tag "$image" "<< parameters.prod_core_docker_repo_quay_io >>:<< parameters.tag >>"
                 docker push "<< parameters.prod_core_docker_repo_quay_io >>:<< parameters.tag >>"
               fi
-
-              echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.dev_docker_repo_docker_hub >>"
-              docker tag "$image" "<< parameters.dev_docker_repo_docker_hub >>:<< parameters.tag >>"
-              docker push "<< parameters.dev_docker_repo_docker_hub >>:<< parameters.tag >>"
 
               echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.dev_docker_repo_quay_io >>"
               docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:<< parameters.tag >>"
