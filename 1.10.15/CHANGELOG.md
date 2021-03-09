@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 1.10.15-1.dev, 
+Astronomer Certified 1.10.15-1.dev
 -----------------------------------------------
 
 ### Bug Fixes
