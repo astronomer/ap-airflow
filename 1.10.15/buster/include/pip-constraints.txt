@@ -1,0 +1,6 @@
+# Constraint the version pip will install, if it ever needs to install a module
+
+redis!=3.4.0
+
+# Details: https://github.com/apache/airflow/pull/8833
+azure-storage<0.37.0
