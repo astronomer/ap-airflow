@@ -68,11 +68,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.5
           requires:
             - Slack_Notification-1.10.5
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.5-alpine3.10
@@ -81,6 +89,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.5
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
@@ -137,6 +146,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.5
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-buster-onbuild
           airflow_version: 1.10.5
@@ -193,6 +203,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.5
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
@@ -304,11 +315,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.7
           requires:
             - Slack_Notification-1.10.7
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.7-alpine3.10
@@ -317,6 +336,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.7
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
@@ -373,6 +393,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.7
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.7-buster-onbuild
           airflow_version: 1.10.7
@@ -484,11 +505,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.10
           requires:
             - Slack_Notification-1.10.10
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.10-alpine3.10
@@ -497,6 +526,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.10
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
@@ -553,6 +583,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.10
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.10-buster-onbuild
           airflow_version: 1.10.10
@@ -664,11 +695,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.12
           requires:
             - Slack_Notification-1.10.12
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.12-alpine3.10
@@ -677,6 +716,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.12
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
@@ -733,6 +773,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.12
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
@@ -844,11 +885,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.14
           requires:
             - Slack_Notification-1.10.14
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.14-buster
@@ -857,6 +906,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.14
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.14-buster-onbuild
           airflow_version: 1.10.14
@@ -968,11 +1018,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.15
           requires:
             - Slack_Notification-1.10.15
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.15-buster
@@ -982,6 +1040,7 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.15.build)"
           requires:
             - Need-Approval-1.10.15
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.15-buster-onbuild
           airflow_version: 1.10.15
@@ -1093,11 +1152,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-2.0.0
           requires:
             - Slack_Notification-2.0.0
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-2.0.0-buster
@@ -1106,6 +1173,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-2.0.0
+            - static-checks
       - scan-clair:
           name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -1217,11 +1285,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-2.0.1
           requires:
             - Slack_Notification-2.0.1
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-2.0.1-buster
@@ -1231,6 +1307,7 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.1.build)"
           requires:
             - Need-Approval-2.0.1
+            - static-checks
       - scan-clair:
           name: scan-clair-2.0.1-buster-onbuild
           airflow_version: 2.0.1
