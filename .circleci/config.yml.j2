@@ -69,11 +69,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
             - Slack_Notification-{{ airflow_version }}
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}

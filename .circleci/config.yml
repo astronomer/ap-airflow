@@ -68,11 +68,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.5
           requires:
             - Slack_Notification-1.10.5
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.5-alpine3.10
@@ -304,11 +312,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.7
           requires:
             - Slack_Notification-1.10.7
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.7-alpine3.10
@@ -484,11 +500,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.10
           requires:
             - Slack_Notification-1.10.10
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.10-alpine3.10
@@ -664,11 +688,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.12
           requires:
             - Slack_Notification-1.10.12
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.12-alpine3.10
@@ -844,11 +876,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.14
           requires:
             - Slack_Notification-1.10.14
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.14-buster
@@ -968,11 +1008,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-1.10.15
           requires:
             - Slack_Notification-1.10.15
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-1.10.15-buster
@@ -1093,11 +1141,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-2.0.0
           requires:
             - Slack_Notification-2.0.0
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-2.0.0-buster
@@ -1217,11 +1273,19 @@ workflows:
               }
           requires:
             - static-checks
+          filters:
+            branches:
+              only:
+                - master
       - pause_workflow:
           name: Need-Approval-2.0.1
           requires:
             - Slack_Notification-2.0.1
           type: approval
+          filters:
+            branches:
+              only:
+                - master
 
       - build:
           name: build-2.0.1-buster
