@@ -89,6 +89,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.5
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
@@ -145,6 +146,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.5
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-buster-onbuild
           airflow_version: 1.10.5
@@ -201,6 +203,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.5
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.5-rhel7-onbuild
           airflow_version: 1.10.5
@@ -333,6 +336,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.7
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
@@ -389,6 +393,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.7
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.7-buster-onbuild
           airflow_version: 1.10.7
@@ -521,6 +526,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.10
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
@@ -577,6 +583,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.10
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.10-buster-onbuild
           airflow_version: 1.10.10
@@ -709,6 +716,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.12
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
@@ -765,6 +773,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.12
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.12-buster-onbuild
           airflow_version: 1.10.12
@@ -897,6 +906,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-1.10.14
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.14-buster-onbuild
           airflow_version: 1.10.14
@@ -1030,6 +1040,7 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-1.10.15.build)"
           requires:
             - Need-Approval-1.10.15
+            - static-checks
       - scan-clair:
           name: scan-clair-1.10.15-buster-onbuild
           airflow_version: 1.10.15
@@ -1162,6 +1173,7 @@ workflows:
           dev_build: false
           requires:
             - Need-Approval-2.0.0
+            - static-checks
       - scan-clair:
           name: scan-clair-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -1295,6 +1307,7 @@ workflows:
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.1.build)"
           requires:
             - Need-Approval-2.0.1
+            - static-checks
       - scan-clair:
           name: scan-clair-2.0.1-buster-onbuild
           airflow_version: 2.0.1
