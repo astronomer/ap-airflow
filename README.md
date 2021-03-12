@@ -7,12 +7,12 @@ Astronomer makes it easy to run, monitor, and scale [Apache Airflow](https://git
 ## Docker images
 
 Docker images for deploying and running Astronomer Core are currently available on
-[DockerHub](https://hub.docker.com/u/astronomerinc/).
+[Quay](https://quay.io/repository/astronomer/ap-airflow?tab=tags).
 
-We publish 2 variants for each AC Version (example: `1.10.10-3`) and distribution (`debian buster` and `alpine`):
+We publish 2 variants for each AC Version (example: `1.10.10-3`):
 
-1. `astronomerinc/ap-airflow:1.10.10-3-buster`
-2. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild`
+1. `quay.io/astronomer/ap-airflow:1.10.10-3-buster`
+2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild`
 
 The only difference between them is that the `-onbuild` images uses Docker `ONBUILD` commands to
 copy `packages.txt`, `requirements.txt` and the entire project directory (including `dags`,
@@ -20,9 +20,9 @@ copy `packages.txt`, `requirements.txt` and the entire project directory (includ
 
 For each of our `-onbuild` images we publish two flavors of tag:
 
-1. `astronomerinc/ap-airflow:1.10.10-buster-onbuild` which is our latest release of the `1.10.10` series,
+1. `quay.io/astronomer/ap-airflow:1.10.10-buster-onbuild` which is our latest release of the `1.10.10` series,
 including latest security patches. This tag is "floating" or movable.
-2. `astronomerinc/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
+2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
 
 ## Contents of this repo
 
@@ -44,6 +44,7 @@ All changes applied to available point releases will be documented in the `CHANG
 - [1.10.12 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.12/CHANGELOG.md)
 - [1.10.14 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.14/CHANGELOG.md)
 - [2.0.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.0.0/CHANGELOG.md)
+- [2.0.1 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.0.1/CHANGELOG.md)
 
 ## Testing
 
