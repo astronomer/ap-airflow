@@ -565,7 +565,7 @@ jobs:
       - run:
           name: Run the Pre-Reqs for running K8s
           command:   |
-            cd /home/circleci/project/qa-regression
+            cd /home/circleci/project/qa-regression/core_dags_executor
             chmod 744 pre-req-kubernetes.sh
             bash ./pre-req-kubernetes.sh
       - run:
