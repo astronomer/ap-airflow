@@ -1,5 +1,14 @@
 # Changelog
 
+Astronomer Certified 1.10.14-3, 2021-03-18
+------------------------------------------
+
+## Bugfixes
+
+- Fix `sync-perm` to work correctly when `update_fab_perms = False` (apache#14847) ([commit](https://github.com/astronomer/airflow/commit/c5ea249db4d1a5528118e4168f125da3eadb59ed))
+- Webserver: Sanitize string passed to origin param (apache#14738) ([commit](https://github.com/astronomer/airflow/commit/d38d3625540a0d802470177a32efb5991158f70a))
+- `KubernetesPodOperator` should retry log tailing in case of interruption (apache#11325) ([commit](https://github.com/astronomer/airflow/commit/0138e6aac25556e2cf44055a7de30351a131dabc))
+
 Astronomer Certified 1.10.14-2, 2021-01-05
 -----------------------------------------------
 
