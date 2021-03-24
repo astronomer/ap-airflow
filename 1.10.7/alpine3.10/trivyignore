@@ -30,3 +30,6 @@ CVE-2020-7660
 
 # tar
 CVE-2018-20834
+
+# dev sub dependencies(#2708)
+CVE-2021-27290

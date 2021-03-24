@@ -33,3 +33,6 @@ CVE-2018-20834
 
 # only applies to running psql interactively -- low risk for us
 CVE-2020-25696
+
+# dev sub dependencies(#2708)
+CVE-2021-27290
