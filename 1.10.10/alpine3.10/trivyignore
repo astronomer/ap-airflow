@@ -18,3 +18,6 @@ CVE-2019-10746
 
 # nodejs-set-value
 CVE-2019-10747
+
+# dev sub dependencies(#2708)
+CVE-2021-27290
