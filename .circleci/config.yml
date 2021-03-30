@@ -1223,6 +1223,140 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.0.2
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+      - pause_workflow:
+          name: Need-Approval-2.0.2
+          requires:
+            - Slack_Notification-2.0.2
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+
+      - build:
+          name: build-2.0.2-buster
+          airflow_version: 2.0.2
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.2.build)"
+          requires:
+            - Need-Approval-2.0.2
+            - static-checks
+      - scan-clair:
+          name: scan-clair-2.0.2-buster-onbuild
+          airflow_version: 2.0.2
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.2-buster
+      - scan-trivy:
+          name: scan-trivy-2.0.2-buster-onbuild
+          airflow_version: 2.0.2
+          distribution: buster
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.2-buster
+      - test:
+          name: test-2.0.2-buster-images
+          tag: "2.0.2-buster"
+          requires:
+            - build-2.0.2-buster
+      - push:
+          name: push-2.0.2-buster
+          tag: "2.0.2-buster"
+          dev_build: true
+          extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM},2.0.2-1.dev-buster"
+          context:
+            - quay.io
+          requires:
+            - scan-clair-2.0.2-buster-onbuild
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.0.2-buster-onbuild
+          tag: "2.0.2-buster-onbuild"
+          dev_build: true
+          extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-1.dev-buster-onbuild"
+          context:
+            - quay.io
+          requires:
+            - scan-clair-2.0.2-buster-onbuild
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - slack-build-approvals
   nightly:
     triggers:
       - schedule:
@@ -1282,6 +1416,60 @@ workflows:
             - scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - build:
+          name: build-2.0.2-buster
+          airflow_version: 2.0.2
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.2.build)"
+      - scan-clair:
+          name: scan-clair-2.0.2-buster-onbuild
+          airflow_version: 2.0.2
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.2-buster
+      - scan-trivy:
+          name: scan-trivy-2.0.2-buster-onbuild
+          airflow_version: 2.0.2
+          distribution: buster
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.2-buster
+      - test:
+          name: test-2.0.2-buster-images
+          tag: "2.0.2-buster"
+          requires:
+            - build-2.0.2-buster
+      - push:
+          name: push-2.0.2-buster
+          tag: "2.0.2-buster"
+          dev_build: true
+          extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+          requires:
+            - scan-clair-2.0.2-buster-onbuild
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.0.2-buster-onbuild
+          tag: "2.0.2-buster-onbuild"
+          dev_build: true
+          extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-1.dev-buster-onbuild"
+          context:
+            - quay.io
+          requires:
+            - scan-clair-2.0.2-buster-onbuild
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
           filters:
             branches:
               only:
