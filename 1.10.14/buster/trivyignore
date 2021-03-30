@@ -24,3 +24,6 @@ CVE-2020-25696
 
 # dev sub dependencies(#2708)
 CVE-2021-27290
+
+#pollution vulnerability
+CVE-2020-7774
