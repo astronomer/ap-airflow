@@ -66,6 +66,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 		linux-headers \
 		nodejs \
 		nodejs-npm \
+		openssl-dev \
 		python3-dev \
 		tzdata \
 	&& apk add --no-cache \
@@ -102,7 +103,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& cd /usr/lib/python3.7/site-packages/airflow/www_rbac \
 	&& npm install \
 	&& npm run build \
-	&& rm -rf node_modules \
+	&& rm -rf node_modules package.json yarn.lock package-lock.json \
 	&& apk del .build-deps py3-numpy-dev \
 	&& ln -sf /usr/bin/python3 /usr/bin/python \
 	&& ln -sf /usr/bin/pip3 /usr/bin/pip \

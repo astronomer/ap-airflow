@@ -28,3 +28,9 @@ pyOpenSSL<20.0
 
 # https://github.com/apache/airflow/pull/11974
 kubernetes<12.0
+
+# Compat fix for other SQLA versions
+flask-admin~=1.5.7
+
+# Older versions of Airflow don't work with 1.4
+SQLAlchemy~=1.3

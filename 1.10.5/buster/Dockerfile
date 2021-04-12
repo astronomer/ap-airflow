@@ -128,7 +128,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
 RUN cd usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/www_rbac \
   && npm install \
   && npm run prod \
-  && rm -rf node_modules
+  && rm -rf node_modules package.json yarn.lock package-lock.json
 
 
 ################################
