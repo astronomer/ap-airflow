@@ -1,5 +1,52 @@
 # Changelog
 
+Astronomer Certified 2.0.0-4, 2021-04-13
+-----------------------------------------
+
+## Bugfixes
+
+- Change the default celery worker_concurrency to 16 ([commit](https://github.com/astronomer/airflow/commit/924ba1c4f))
+- Fix backfill crash on task retry or reschedule ([commit](https://github.com/astronomer/airflow/commit/a0407d2d9))
+- Disables provider's manager warning for source-installed prod image. ([commit](https://github.com/astronomer/airflow/commit/66078273f))
+- Setting `max_tis_per_query` to 0 now correctly removes the limit ([commit](https://github.com/astronomer/airflow/commit/1f96b4c0c))
+- Add __repr__ for Executors ([commit](https://github.com/astronomer/airflow/commit/779030136))
+- Fix SQL syntax to check duplicate connections ([commit](https://github.com/astronomer/airflow/commit/db0296264))
+- Fix `TaskNotFound` in log endpoint ([commit](https://github.com/astronomer/airflow/commit/fedf636dc))
+- Fix dag run type enum query for mysqldb driver ([commit](https://github.com/astronomer/airflow/commit/88221df57))
+- Bugfix: Don't try to create a duplicate Dag Run in Scheduler ([commit](https://github.com/astronomer/airflow/commit/f492f79e8))
+- Bugfix: Scheduler fails if task is removed at runtime ([commit](https://github.com/astronomer/airflow/commit/cfb562184))
+- Bugfix: Manual DagRun trigger should not skip scheduled runs ([commit](https://github.com/astronomer/airflow/commit/6eca58d94))
+- Unable to trigger backfill or manual jobs with Kubernetes executor. ([commit](https://github.com/astronomer/airflow/commit/217aa1c1b))
+- Bugfix: Fix overriding `pod_template_file` in KubernetesExecutor ([commit](https://github.com/astronomer/airflow/commit/6076fb5f7))
+- Pass queue to `BaseExecutor.execute_async` like in airflow 1.10 ([commit](https://github.com/astronomer/airflow/commit/e8d858569))
+- Scheduler: Remove TIs from starved pools from the critical path. ([commit](https://github.com/astronomer/airflow/commit/aa995b59a))
+- Remove extra/needless deprecation warnings from airflow.contrib module ([commit](https://github.com/astronomer/airflow/commit/1d87b16f2))
+- Fix support for long dag_id and task_id in KubernetesExecutor ([commit](https://github.com/astronomer/airflow/commit/4641f8e73))
+- Bugfix: resources in `executor_config` breaks Graph View in UI ([commit](https://github.com/astronomer/airflow/commit/a74efa2fd))
+- Fix invalid value error caused by long k8s pod name ([commit](https://github.com/astronomer/airflow/commit/b0276e5b2))
+- Fix `KubernetesExecutor` issue with deleted pending pods ([commit](https://github.com/astronomer/airflow/commit/44d305944))
+- Avoid scheduler/parser manager deadlock by using non-blocking IO ([commit](https://github.com/astronomer/airflow/commit/9746f5171))
+- Add different modes to sort dag files for parsing ([commit](https://github.com/astronomer/airflow/commit/66dc00c92))
+- Remove duplicate call to sync_metadata inside DagFileProcessorManager ([commit](https://github.com/astronomer/airflow/commit/19a21d218))
+- Bump Redoc to resolve vulnerability in sub-dependency ([commit](https://github.com/astronomer/airflow/commit/b00b845bb))
+- Bump dompurify from 2.0.12 to 2.2.6 in /airflow/www ([commit](https://github.com/astronomer/airflow/commit/66830abd7))
+- Scheduler should not fail when invalid executor_config is passed ([commit](https://github.com/astronomer/airflow/commit/bf5e385f3))
+- BugFix: Fix taskInstance API call fails if a task is removed from running DAG ([commit](https://github.com/astronomer/airflow/commit/5f416f4a1))
+- Fix crash when user clicks on  "Task Instance Details" caused by start_date being None ([commit](https://github.com/astronomer/airflow/commit/432fff9e4))
+- Gracefully handle missing start_date and end_date for DagRun ([commit](https://github.com/astronomer/airflow/commit/587123326))
+- Fix logging error with task error when JSON logging is enabled ([commit](https://github.com/astronomer/airflow/commit/8f2e99d52))
+- BugFix: TypeError in `monitor_pod` ([commit](https://github.com/astronomer/airflow/commit/b0e334bfb))
+- Bugfix: Plugins endpoint was unauthenticated ([commit](https://github.com/astronomer/airflow/commit/a87a20d5d))
+- Pin SQLAlchemy to <1.4 due to breakage of sqlalchemy-utils ([commit](https://github.com/astronomer/airflow/commit/ce2849ed0))
+- Disable row level locking for Mariadb and MySQL <8 ([commit](https://github.com/astronomer/airflow/commit/a1af062bc))
+- Compare string values, not if strings are the same object ([commit](https://github.com/astronomer/airflow/commit/c6e10c1b1))
+- Sort lists, sets and tuples in Serialized DAGs ([commit](https://github.com/astronomer/airflow/commit/e8f872849))
+- Simplify cleaning string passed to origin param (#14738) ([commit](https://github.com/astronomer/airflow/commit/3c61a3b81))
+- BugFix: Serialize `max_retry_delay` as a timedelta ([commit](https://github.com/astronomer/airflow/commit/c1136e05c))
+- Fix `sync-perm` to work correctly when update_fab_perms = False ([commit](https://github.com/astronomer/airflow/commit/471c95cee))
+- Webserver: Sanitize string passed to origin param ([commit](https://github.com/astronomer/airflow/commit/a5b18475a))
+- AC Docker: Fix CVEs for `curl`: CVE-2020-8169, CVE-2020-8177, CVE-2020-8231, CVE-2020-8285, CVE-2020-8286, CVE-2020-8169, CVE-2020-8177, CVE-2020-8285, CVE-2020-8286
+
 Astronomer Certified 2.0.0-3, 2021-02-16
 -----------------------------------------
 
