@@ -265,6 +265,11 @@ def test_airflow_configs(scheduler, docker_client):
             "grep '^auth_backend' | awk '{print $3}'"
         ) == "astronomer.flask_appbuilder.current_user_backend", \
             "[api] auth_backend needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
+
+        assert scheduler.check_output(
+            f"cat {config_file_path} | "
+            "grep '^operation_timeout' | awk '{print $3}'"
+        ) == "10.0", "[celery] operation_timeout needs to be set for AC >= 2.0.0"
     else:
         # Confirm that run_as_user is the UID for astro user (and not root) for AC images
         assert scheduler.check_output(
@@ -276,7 +281,6 @@ def test_airflow_configs(scheduler, docker_client):
             f"cat {config_file_path} | "
             "grep '^update_fab_perms' | awk '{print $3}'"
         ) == "False", "[webserver] update_fab_perms needs to be False for AC >= 1.10.10"
-
 
 def test_labels_for_onbuild_image(docker_client):
     """ Ensure correct labels exists on onbuild image """
