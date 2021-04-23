@@ -1315,12 +1315,12 @@ workflows:
           distribution_name: buster
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
-      - scan-clair:
-          name: scan-clair-2.0.0-buster-onbuild
-          airflow_version: 2.0.0
-          distribution_name: buster-onbuild
-          requires:
-            - build-2.0.0-buster
+      #- scan-clair:
+      #    name: scan-clair-2.0.0-buster-onbuild
+      #    airflow_version: 2.0.0
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -1341,7 +1341,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.0-buster-onbuild
+            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1356,7 +1356,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.0-buster-onbuild
+            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
