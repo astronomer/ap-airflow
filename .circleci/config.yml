@@ -90,12 +90,12 @@ workflows:
           requires:
             - Need-Approval-1.10.5
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.5-alpine3.10-onbuild
-          airflow_version: 1.10.5
-          distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.5-alpine3.10
+      #- scan-clair:
+      #    name: scan-clair-1.10.5-alpine3.10-onbuild
+      #    airflow_version: 1.10.5
+      #    distribution_name: alpine3.10-onbuild
+      #    requires:
+      #      - build-1.10.5-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
@@ -116,7 +116,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.5-alpine3.10-onbuild
+            #- scan-clair-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-images
           filters:
@@ -131,7 +131,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.5-alpine3.10-onbuild
+            #- scan-clair-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-images
           filters:
@@ -147,12 +147,12 @@ workflows:
           requires:
             - Need-Approval-1.10.5
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.5-buster-onbuild
-          airflow_version: 1.10.5
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.5-buster
+      #- scan-clair:
+      #    name: scan-clair-1.10.5-buster-onbuild
+      #    airflow_version: 1.10.5
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-1.10.5-buster
       - scan-trivy:
           name: scan-trivy-1.10.5-buster-onbuild
           airflow_version: 1.10.5
@@ -173,7 +173,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.5-buster-onbuild
+            #- scan-clair-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
             - test-1.10.5-buster-images
           filters:
@@ -188,7 +188,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.5-buster-onbuild
+            #- scan-clair-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
             - test-1.10.5-buster-images
           filters:
@@ -280,12 +280,12 @@ workflows:
           requires:
             - Need-Approval-1.10.7
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.7-alpine3.10-onbuild
-          airflow_version: 1.10.7
-          distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.7-alpine3.10
+      #- scan-clair:
+      #    name: scan-clair-1.10.7-alpine3.10-onbuild
+      #    airflow_version: 1.10.7
+      #    distribution_name: alpine3.10-onbuild
+      #    requires:
+      #      - build-1.10.7-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
@@ -306,7 +306,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.7-alpine3.10-onbuild
+            #- scan-clair-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
           filters:
@@ -321,7 +321,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.7-alpine3.10-onbuild
+            #- scan-clair-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
           filters:
@@ -337,12 +337,12 @@ workflows:
           requires:
             - Need-Approval-1.10.7
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.7-buster-onbuild
-          airflow_version: 1.10.7
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.7-buster
+      #- scan-clair:
+      #    name: scan-clair-1.10.7-buster-onbuild
+      #    airflow_version: 1.10.7
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-1.10.7-buster
       - scan-trivy:
           name: scan-trivy-1.10.7-buster-onbuild
           airflow_version: 1.10.7
@@ -363,7 +363,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.7-buster-onbuild
+            #- scan-clair-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
           filters:
@@ -378,7 +378,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.7-buster-onbuild
+            #- scan-clair-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
           filters:
@@ -470,12 +470,12 @@ workflows:
           requires:
             - Need-Approval-1.10.10
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.10-alpine3.10-onbuild
-          airflow_version: 1.10.10
-          distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.10-alpine3.10
+      #- scan-clair:
+      #    name: scan-clair-1.10.10-alpine3.10-onbuild
+      #    airflow_version: 1.10.10
+      #    distribution_name: alpine3.10-onbuild
+      #    requires:
+      #      - build-1.10.10-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
@@ -496,7 +496,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.10-alpine3.10-onbuild
+            #- scan-clair-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
           filters:
@@ -511,7 +511,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.10-alpine3.10-onbuild
+            #- scan-clair-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
           filters:
@@ -527,12 +527,12 @@ workflows:
           requires:
             - Need-Approval-1.10.10
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.10-buster-onbuild
-          airflow_version: 1.10.10
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.10-buster
+      #- scan-clair:
+      #    name: scan-clair-1.10.10-buster-onbuild
+      #    airflow_version: 1.10.10
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-1.10.10-buster
       - scan-trivy:
           name: scan-trivy-1.10.10-buster-onbuild
           airflow_version: 1.10.10
@@ -553,7 +553,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.10-buster-onbuild
+            #- scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
           filters:
@@ -568,7 +568,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.10-buster-onbuild
+            #- scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
           filters:
@@ -660,12 +660,12 @@ workflows:
           requires:
             - Need-Approval-1.10.12
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.12-alpine3.10-onbuild
-          airflow_version: 1.10.12
-          distribution_name: alpine3.10-onbuild
-          requires:
-            - build-1.10.12-alpine3.10
+      #- scan-clair:
+      #    name: scan-clair-1.10.12-alpine3.10-onbuild
+      #    airflow_version: 1.10.12
+      #    distribution_name: alpine3.10-onbuild
+      #    requires:
+      #      - build-1.10.12-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
@@ -686,7 +686,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.12-alpine3.10-onbuild
+            #- scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -701,7 +701,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.12-alpine3.10-onbuild
+            #- scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -717,12 +717,12 @@ workflows:
           requires:
             - Need-Approval-1.10.12
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.12-buster-onbuild
-          airflow_version: 1.10.12
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.12-buster
+      #- scan-clair:
+      #    name: scan-clair-1.10.12-buster-onbuild
+      #    airflow_version: 1.10.12
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-1.10.12-buster
       - scan-trivy:
           name: scan-trivy-1.10.12-buster-onbuild
           airflow_version: 1.10.12
@@ -743,7 +743,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.12-buster-onbuild
+            #- scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
@@ -758,7 +758,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.12-buster-onbuild
+            #- scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
@@ -850,12 +850,12 @@ workflows:
           requires:
             - Need-Approval-1.10.14
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.14-buster-onbuild
-          airflow_version: 1.10.14
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.14-buster
+      #- scan-clair:
+      #    name: scan-clair-1.10.14-buster-onbuild
+      #    airflow_version: 1.10.14
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-1.10.14-buster
       - scan-trivy:
           name: scan-trivy-1.10.14-buster-onbuild
           airflow_version: 1.10.14
@@ -876,7 +876,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.14-buster-onbuild
+            #- scan-clair-1.10.14-buster-onbuild
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
           filters:
@@ -891,7 +891,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.14-buster-onbuild
+            #- scan-clair-1.10.14-buster-onbuild
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
           filters:
@@ -983,12 +983,12 @@ workflows:
           requires:
             - Need-Approval-1.10.15
             - static-checks
-      - scan-clair:
-          name: scan-clair-1.10.15-buster-onbuild
-          airflow_version: 1.10.15
-          distribution_name: buster-onbuild
-          requires:
-            - build-1.10.15-buster
+      #- scan-clair:
+      #    name: scan-clair-1.10.15-buster-onbuild
+      #    airflow_version: 1.10.15
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-1.10.15-buster
       - scan-trivy:
           name: scan-trivy-1.10.15-buster-onbuild
           airflow_version: 1.10.15
@@ -1009,7 +1009,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.15-buster-onbuild
+            #- scan-clair-1.10.15-buster-onbuild
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
           filters:
@@ -1024,7 +1024,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-1.10.15-buster-onbuild
+            #- scan-clair-1.10.15-buster-onbuild
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
           filters:
@@ -1117,12 +1117,12 @@ workflows:
           requires:
             - Need-Approval-2.0.0
             - static-checks
-      - scan-clair:
-          name: scan-clair-2.0.0-buster-onbuild
-          airflow_version: 2.0.0
-          distribution_name: buster-onbuild
-          requires:
-            - build-2.0.0-buster
+      #- scan-clair:
+      #    name: scan-clair-2.0.0-buster-onbuild
+      #    airflow_version: 2.0.0
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -1143,7 +1143,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.0-buster-onbuild
+            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1158,7 +1158,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.0-buster-onbuild
+            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1251,12 +1251,12 @@ workflows:
           requires:
             - Need-Approval-2.0.2
             - static-checks
-      - scan-clair:
-          name: scan-clair-2.0.2-buster-onbuild
-          airflow_version: 2.0.2
-          distribution_name: buster-onbuild
-          requires:
-            - build-2.0.2-buster
+      #- scan-clair:
+      #    name: scan-clair-2.0.2-buster-onbuild
+      #    airflow_version: 2.0.2
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-2.0.2-buster
       - scan-trivy:
           name: scan-trivy-2.0.2-buster-onbuild
           airflow_version: 2.0.2
@@ -1277,7 +1277,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.2-buster-onbuild
+            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1292,7 +1292,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.2-buster-onbuild
+            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1369,12 +1369,12 @@ workflows:
           distribution_name: buster
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.2.build)"
-      - scan-clair:
-          name: scan-clair-2.0.2-buster-onbuild
-          airflow_version: 2.0.2
-          distribution_name: buster-onbuild
-          requires:
-            - build-2.0.2-buster
+      #- scan-clair:
+      #    name: scan-clair-2.0.2-buster-onbuild
+      #    airflow_version: 2.0.2
+      #    distribution_name: buster-onbuild
+      #    requires:
+      #      - build-2.0.2-buster
       - scan-trivy:
           name: scan-trivy-2.0.2-buster-onbuild
           airflow_version: 2.0.2
@@ -1395,7 +1395,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.2-buster-onbuild
+            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1410,7 +1410,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-2.0.2-buster-onbuild
+            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
