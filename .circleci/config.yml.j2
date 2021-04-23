@@ -94,12 +94,12 @@ workflows:
           requires:
             - Need-Approval-{{ airflow_version }}
             - static-checks
-      - scan-clair:
-          name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
-          distribution_name: {{ distribution }}-onbuild
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+      #- scan-clair:
+      #    name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+      #    airflow_version: {{ airflow_version }}
+      #    distribution_name: {{ distribution }}-onbuild
+      #    requires:
+      #      - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -120,7 +120,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            #- scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -135,7 +135,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            #- scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -165,12 +165,12 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
-      - scan-clair:
-          name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
-          distribution_name: {{ distribution }}-onbuild
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+      #- scan-clair:
+      #    name: scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+      #    airflow_version: {{ airflow_version }}
+      #    distribution_name: {{ distribution }}-onbuild
+      #    requires:
+      #      - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -191,7 +191,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            #- scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -206,7 +206,7 @@ workflows:
           context:
             - quay.io
           requires:
-            - scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
+            #- scan-clair-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
