@@ -1,5 +1,24 @@
 # Changelog
 
+Astronomer Certified 2.0.0-5, 2021-04-26
+-----------------------------------------
+
+User-facing CHANGELOG for AC 2.0.0+astro.5 from AC 2.0.0+astro.4:
+
+## Bugfixes
+
+- Bugfix: `TypeError` when Serializing & sorting iterables (#15395) ([commit](https://github.com/astronomer/airflow/commit/14f18b3fd))
+- Add Traceback in LogRecord in `JSONFormatter` (#15414) ([commit](https://github.com/astronomer/airflow/commit/7787ede4d))
+- Fix Task adoption in Kubernetes Executor ([commit](https://github.com/astronomer/airflow/commit/b7b73ac12))
+- Further fix trimmed `pod_id` for `KubernetesPodOperator` (#15445) ([commit](https://github.com/astronomer/airflow/commit/4fef61621))
+- Bugfix: Invalid name when trimmed `pod_id` ends with hyphen in `KubernetesPodOperator` (#15443) ([commit](https://github.com/astronomer/airflow/commit/07a191f90))
+- Fix to ensure 100vh min plays nicely w/ Linux+Chrome (#13857) ([commit](https://github.com/astronomer/airflow/commit/540eda273))
+- Fix `used_group_ids` in partial_subset (#13700) (#15308) ([commit](https://github.com/astronomer/airflow/commit/c68ea977f))
+- Fix password masking in CLI `action_logging` (#15143) ([commit](https://github.com/astronomer/airflow/commit/477de9407))
+- Change default of `[kubernetes] enable_tcp_keepalive` to `True` (#15338) ([commit](https://github.com/astronomer/airflow/commit/4c3803aaf))
+- Adds missing LDAP "extra" dependencies to ldap provider. (apache#13308) ([commit](https://github.com/astronomer/airflow/commit/674bd98))
+- Add missing Azure Storage libraries ([commit](https://github.com/astronomer/airflow/commit/206c6a6))
+
 Astronomer Certified 2.0.0-4, 2021-04-13
 -----------------------------------------
 
