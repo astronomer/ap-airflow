@@ -90,12 +90,6 @@ workflows:
           requires:
             - Need-Approval-1.10.5
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.5-alpine3.10-onbuild
-      #    airflow_version: 1.10.5
-      #    distribution_name: alpine3.10-onbuild
-      #    requires:
-      #      - build-1.10.5-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.5-alpine3.10-onbuild
           airflow_version: 1.10.5
@@ -116,7 +110,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-images
           filters:
@@ -131,7 +124,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.5-alpine3.10-onbuild
             - scan-trivy-1.10.5-alpine3.10-onbuild
             - test-1.10.5-alpine3.10-images
           filters:
@@ -147,12 +139,6 @@ workflows:
           requires:
             - Need-Approval-1.10.5
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.5-buster-onbuild
-      #    airflow_version: 1.10.5
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-1.10.5-buster
       - scan-trivy:
           name: scan-trivy-1.10.5-buster-onbuild
           airflow_version: 1.10.5
@@ -173,7 +159,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
             - test-1.10.5-buster-images
           filters:
@@ -188,7 +173,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.5-buster-onbuild
             - scan-trivy-1.10.5-buster-onbuild
             - test-1.10.5-buster-images
           filters:
@@ -280,12 +264,6 @@ workflows:
           requires:
             - Need-Approval-1.10.7
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.7-alpine3.10-onbuild
-      #    airflow_version: 1.10.7
-      #    distribution_name: alpine3.10-onbuild
-      #    requires:
-      #      - build-1.10.7-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.7-alpine3.10-onbuild
           airflow_version: 1.10.7
@@ -306,7 +284,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
           filters:
@@ -321,7 +298,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.7-alpine3.10-onbuild
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
           filters:
@@ -337,12 +313,6 @@ workflows:
           requires:
             - Need-Approval-1.10.7
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.7-buster-onbuild
-      #    airflow_version: 1.10.7
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-1.10.7-buster
       - scan-trivy:
           name: scan-trivy-1.10.7-buster-onbuild
           airflow_version: 1.10.7
@@ -363,7 +333,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
           filters:
@@ -378,7 +347,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.7-buster-onbuild
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
           filters:
@@ -470,12 +438,6 @@ workflows:
           requires:
             - Need-Approval-1.10.10
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.10-alpine3.10-onbuild
-      #    airflow_version: 1.10.10
-      #    distribution_name: alpine3.10-onbuild
-      #    requires:
-      #      - build-1.10.10-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.10-alpine3.10-onbuild
           airflow_version: 1.10.10
@@ -496,7 +458,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
           filters:
@@ -511,7 +472,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.10-alpine3.10-onbuild
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
           filters:
@@ -527,12 +487,6 @@ workflows:
           requires:
             - Need-Approval-1.10.10
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.10-buster-onbuild
-      #    airflow_version: 1.10.10
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-1.10.10-buster
       - scan-trivy:
           name: scan-trivy-1.10.10-buster-onbuild
           airflow_version: 1.10.10
@@ -553,7 +507,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
           filters:
@@ -568,7 +521,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.10-buster-onbuild
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
           filters:
@@ -660,12 +612,6 @@ workflows:
           requires:
             - Need-Approval-1.10.12
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.12-alpine3.10-onbuild
-      #    airflow_version: 1.10.12
-      #    distribution_name: alpine3.10-onbuild
-      #    requires:
-      #      - build-1.10.12-alpine3.10
       - scan-trivy:
           name: scan-trivy-1.10.12-alpine3.10-onbuild
           airflow_version: 1.10.12
@@ -686,7 +632,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -701,7 +646,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.12-alpine3.10-onbuild
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
           filters:
@@ -717,12 +661,6 @@ workflows:
           requires:
             - Need-Approval-1.10.12
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.12-buster-onbuild
-      #    airflow_version: 1.10.12
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-1.10.12-buster
       - scan-trivy:
           name: scan-trivy-1.10.12-buster-onbuild
           airflow_version: 1.10.12
@@ -743,7 +681,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
@@ -758,7 +695,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.12-buster-onbuild
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
           filters:
@@ -850,12 +786,6 @@ workflows:
           requires:
             - Need-Approval-1.10.14
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.14-buster-onbuild
-      #    airflow_version: 1.10.14
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-1.10.14-buster
       - scan-trivy:
           name: scan-trivy-1.10.14-buster-onbuild
           airflow_version: 1.10.14
@@ -876,7 +806,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.14-buster-onbuild
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
           filters:
@@ -891,7 +820,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.14-buster-onbuild
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
           filters:
@@ -983,12 +911,6 @@ workflows:
           requires:
             - Need-Approval-1.10.15
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-1.10.15-buster-onbuild
-      #    airflow_version: 1.10.15
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-1.10.15-buster
       - scan-trivy:
           name: scan-trivy-1.10.15-buster-onbuild
           airflow_version: 1.10.15
@@ -1009,7 +931,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.15-buster-onbuild
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
           filters:
@@ -1024,7 +945,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-1.10.15-buster-onbuild
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
           filters:
@@ -1117,12 +1037,6 @@ workflows:
           requires:
             - Need-Approval-2.0.0
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-2.0.0-buster-onbuild
-      #    airflow_version: 2.0.0
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -1143,7 +1057,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1158,7 +1071,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1251,12 +1163,6 @@ workflows:
           requires:
             - Need-Approval-2.0.2
             - static-checks
-      #- scan-clair:
-      #    name: scan-clair-2.0.2-buster-onbuild
-      #    airflow_version: 2.0.2
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-2.0.2-buster
       - scan-trivy:
           name: scan-trivy-2.0.2-buster-onbuild
           airflow_version: 2.0.2
@@ -1277,7 +1183,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1292,7 +1197,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1315,12 +1219,6 @@ workflows:
           distribution_name: buster
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.0.build)"
-      #- scan-clair:
-      #    name: scan-clair-2.0.0-buster-onbuild
-      #    airflow_version: 2.0.0
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-2.0.0-buster
       - scan-trivy:
           name: scan-trivy-2.0.0-buster-onbuild
           airflow_version: 2.0.0
@@ -1341,7 +1239,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1356,7 +1253,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.0-buster-onbuild
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
           filters:
@@ -1369,12 +1265,6 @@ workflows:
           distribution_name: buster
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.2.build)"
-      #- scan-clair:
-      #    name: scan-clair-2.0.2-buster-onbuild
-      #    airflow_version: 2.0.2
-      #    distribution_name: buster-onbuild
-      #    requires:
-      #      - build-2.0.2-buster
       - scan-trivy:
           name: scan-trivy-2.0.2-buster-onbuild
           airflow_version: 2.0.2
@@ -1395,7 +1285,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1410,7 +1299,6 @@ workflows:
           context:
             - quay.io
           requires:
-            #- scan-clair-2.0.2-buster-onbuild
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
           filters:
@@ -1461,19 +1349,6 @@ jobs:
     steps:
       - airflow-image-test:
           tag: "<< parameters.tag >>"
-  scan-clair:
-    executor: clair-scanner/default
-    description: Test Airflow images
-    parameters:
-      airflow_version:
-        description: "The Airflow version, for example '1.10.5'"
-        type: string
-      distribution_name:
-        description: "The base distribution of the container"
-        type: string
-    steps:
-      - clair-scan:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
   scan-trivy:
     docker:
       - image: docker:18.09-git
@@ -1559,7 +1434,7 @@ executors:
       - image: circleci/python:3
   machine-executor:
     machine:
-      image: ubuntu-2004:202008-01
+      image: ubuntu-2004:202010-01
 
 commands:
   docker-build-base-and-onbuild:
@@ -1739,159 +1614,3 @@ commands:
               echo "Image with Tag ($image) not pushed as it is not a new point release"
             fi
             set +x
-  clair-scan:
-    description: "Vulnerability scan a Docker image"
-    parameters:
-      image_name:
-        type: string
-        default: $CIRCLE_PROJECT_REPONAME
-      allowlist:
-        type: string
-        default: cve-allowlist.yaml
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: /tmp/workspace
-      - run:
-          name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
-      - modified-orb:
-          allowlist: "<< parameters.allowlist >>"
-          image: "<< parameters.image_name >>"
-  # TODO: move to an Astronomer orbs repo, push orb.
-  # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
-  modified-orb:
-    description: "Scan an image for vulnerabilities"
-    parameters:
-      image:
-        type: "string"
-        description: "Name of the image to scan"
-        default: ""
-      image_file:
-        type: "string"
-        description: "Path to a file of images to scan"
-        default: ""
-      allowlist:
-        type: "string"
-        description: "Path to a CVE allowlist"
-        default: ""
-      severity_threshold:
-        type: "string"
-        description: "The threshold (equal and above) at which discovered vulnerabilities are reported. May be 'Defcon1', 'Critical', 'High', 'Medium', 'Low', 'Negligible' or 'Unknown'"
-        default: "High"
-      fail_on_discovered_vulnerabilities:
-        type: "boolean"
-        description: "Fail command when vulnerabilities at severity equal to or above the threshold are discovered"
-        default: true
-      fail_on_unsupported_images:
-        type: "boolean"
-        description: "Fail command when image cannot be scanned for vulnerabilities"
-        default: true
-      disable_verbose_console_output:
-        type: "boolean"
-        description: "Disable verbose console output"
-        default: false
-      docker_tar_dir:
-        type: "string"
-        description: "Path of directory that Docker tarballs are stored"
-        default: "/docker-tars"
-    steps:
-      - run:
-          name: "Vulnerability scan"
-          command: |
-            #!/usr/bin/env bash
-
-            set -xe
-
-            DOCKER_TAR_DIR="<< parameters.docker_tar_dir >>"
-
-            if [ -z "<< parameters.image_file >><< parameters.image >>" ] && [ -z "$(ls -A "$DOCKER_TAR_DIR" 2>/dev/null)" ]; then
-                echo "image_file or image parameters or docker tarballs must be present"
-                exit 255
-            fi
-
-            REPORT_DIR=/clair-reports
-            mkdir $REPORT_DIR
-
-            DB=$(docker run -p 5432:5432 -d arminc/clair-db:latest)
-            CLAIR=$(docker run -p 6060:6060 --link "$DB":postgres -d arminc/clair-local-scan:latest)
-            CLAIR_SCANNER=$(docker run -v /var/run/docker.sock:/var/run/docker.sock -d ovotech/clair-scanner@sha256:8a4f920b4e7e40dbcec4a6168263d45d3385f2970ee33e5135dd0e3b75d39c75 tail -f /dev/null)
-
-            clair_ip=$(docker exec -it "$CLAIR" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-            scanner_ip=$(docker exec -it "$CLAIR_SCANNER" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-
-            if [ -n "<< parameters.allowlist >>" ]; then
-                cat "<< parameters.allowlist >>"
-                docker cp "<< parameters.allowlist >>" "$CLAIR_SCANNER:/allowlist.yml"
-
-                allowlist="-w /allowlist.yml"
-            fi
-
-            function scan() {
-                local image=$1
-                # replace forward-slashes and colons with underscores
-                munged_image=$(echo "$image" | sed 's/\//_/g' | sed 's/:/_/g')
-                sanitised_image_filename="${munged_image}.json"
-                local ret=0
-                local docker_cmd=(docker exec -it "$CLAIR_SCANNER" clair-scanner \
-                    --ip "$scanner_ip" \
-                    --clair=http://"$clair_ip":6060 \
-                    -t "<< parameters.severity_threshold >>" \
-                    --report "/$sanitised_image_filename" \
-                    --log "/log.json" \
-                    --whitelist /allowlist.yml \
-                    --reportAll=true \
-                    --exit-when-no-features=false \
-                    "$image")
-
-                # if verbose output is disabled, analyse status code for more fine-grained output
-                if [ "<< parameters.disable_verbose_console_output >>" == "true" ];then
-                    "${docker_cmd[@]}" > /dev/null 2>&1 || ret=$?
-                else
-                    "${docker_cmd[@]}" 2>&1 || ret=$?
-                fi
-                if [ "$ret" -eq 0 ]; then
-                    echo "No unapproved vulnerabilities"
-                elif [ "$ret" -eq 1 ]; then
-                    echo "Unapproved vulnerabilities found"
-                    if [ "<< parameters.fail_on_discovered_vulnerabilities >>" == "true" ];then
-                        EXIT_STATUS=1
-                    fi
-                elif [ "$ret" -eq 5 ]; then
-                    echo "Image was not scanned, not supported."
-                    if [ "<< parameters.fail_on_unsupported_images >>" == "true" ];then
-                        EXIT_STATUS=1
-                    fi
-                else
-                    echo "Unknown clair-scanner return code $ret."
-                    EXIT_STATUS=1
-                fi
-
-                docker cp "$CLAIR_SCANNER:/$sanitised_image_filename" "$REPORT_DIR/$sanitised_image_filename" || true
-            }
-
-            EXIT_STATUS=0
-
-            for entry in "$DOCKER_TAR_DIR"/*.tar; do
-                [ -e "$entry" ] || continue
-                images=$(docker load -i "$entry" | sed -e 's/Loaded image: //g')
-                for image in $images; do
-                    scan "$image"
-                done
-            done
-
-            if [ -n "<< parameters.image_file >>" ]; then
-                images=$(cat "<< parameters.image_file >>")
-                for image in $images; do
-                    scan "$image"
-                done
-            fi
-            if [ -n "<< parameters.image >>" ]; then
-                image="<< parameters.image >>"
-                scan "$image"
-            fi
-
-            exit $EXIT_STATUS
-      - store_artifacts:
-          path: /clair-reports
