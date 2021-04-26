@@ -11,7 +11,6 @@ import re
 from jinja2 import Environment, FileSystemLoader
 
 IMAGE_MAP = collections.OrderedDict([
-    ("1.10.5-11", ["alpine3.10", "buster"]),
     ("1.10.7-17", ["alpine3.10", "buster"]),
     ("1.10.10-7", ["alpine3.10", "buster"]),
     ("1.10.12-4", ["alpine3.10", "buster"]),
@@ -22,7 +21,7 @@ IMAGE_MAP = collections.OrderedDict([
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
-DEV_ALLOWLIST = ["1.10.5"]
+DEV_ALLOWLIST = []
 
 
 def dev_releases(all_releases):
