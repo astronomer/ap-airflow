@@ -17,7 +17,7 @@ FROM alpine:3.10
 LABEL maintainer="Astronomer <humans@astronomer.io>"
 
 ARG ORG="astronomer"
-ARG VERSION="1.10.10-7"
+ARG VERSION="1.10.10-8"
 ARG SUBMODULES="all, statsd, elasticsearch"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG REPO_BRANCH=master
@@ -47,6 +47,12 @@ COPY include/humans@astronomer.io.rsa.pub /etc/apk/keys
 # versions when ever it installs a module.
 COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
+
+# This constraints will be only used during docker-build
+# and won't be included in the final image
+# It is useful to install airflow-providers that work but still allow users to
+# install providers of their choice (as opposed to entries in astronomer-pip-constraints.txt)
+COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Install packages
 RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-packages/3.10/repo >> /etc/apk/repositories \
@@ -93,7 +99,7 @@ RUN echo https://github.com/astronomer/ap-airflow/raw/${REPO_BRANCH}/alpine-pack
 	&& update-ca-certificates \
 	&& cp /usr/share/zoneinfo/UTC /etc/localtime \
 	&& pip3 install --no-cache-dir --upgrade snowflake-connector-python==1.9.1 \
-	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" \
+	&& pip3 install --no-cache-dir "${AIRFLOW_MODULE}" --constraint /tmp/build-time-pip-constraints.txt \
 	&& pip3 install --no-cache-dir "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip3 install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2" \
 	&& apk del .build-deps py3-numpy-dev \
