@@ -71,6 +71,16 @@ def test_version(webserver, docker_client):
     ac_version = get_label(docker_client, 'io.astronomer.docker.ac.version')
     assert airflow_ver in ac_version
 
+    ac_version_output = webserver.check_output("pip show apache-airflow | grep Version | sed -e  's|Version: ||'")
+    assert ac_version_output
+    assert "+astro." in ac_version_output
+    ac_version_postfix_output = ac_version_output.rsplit('+astro.')[-1]
+
+    # Example: 1.10.10-8 will give '8'
+    post_fix_version_astro = ac_version.rsplit('-')[-1]
+    assert post_fix_version_astro == ac_version_postfix_output, \
+        f"Incorrect post-fix version in {ac_version_output}"
+
 
 def test_elasticsearch_version(webserver):
     """ Astronomer runs a version of ElasticSearch that requires
