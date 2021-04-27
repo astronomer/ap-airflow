@@ -1,5 +1,14 @@
 # Changelog
 
+Astronomer Certified 1.10.7-18, 2021-04-27
+--------------------------------------------
+
+### Bug Fixes
+
+- Fix `sync-perm` to work correctly when `update_fab_perms = False` (#14847) ([commit](https://github.com/astronomer/airflow/commit/8e49e8f22))
+- Webserver: Sanitize string passed to origin param (#14738) ([commit](https://github.com/astronomer/airflow/commit/c0c4ff8b3))
+- Correctly parse (and copy) extras with python version to metadist ([commit](https://github.com/astronomer/airflow/commit/38de13b67))
+
 Astronomer Certified 1.10.7-17, 2021-01-05
 -------------------------------------------
 
