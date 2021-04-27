@@ -1,12 +1,10 @@
 alembic==1.4.3
 amqp==2.6.1
-apache-airflow==1!1.10.10+astro.7
 apispec==1.3.3
 appdirs==1.4.4
 argcomplete==1.12.2
 astronomer-airflow-scripts==0.0.5
 astronomer-airflow-version-check==1.0.7
-astronomer-certified==1.10.10.post7
 astronomer-fab-security-manager==1.5.0
 attrs==19.3.0
 azure-common==1.1.26
