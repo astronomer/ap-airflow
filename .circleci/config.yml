@@ -109,6 +109,7 @@ workflows:
           extra_tags: "1.10.7-alpine3.10-${CIRCLE_BUILD_NUM},1.10.7-18-alpine3.10"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
@@ -123,6 +124,7 @@ workflows:
           extra_tags: "1.10.7-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.7-18-alpine3.10-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.7-alpine3.10-onbuild
             - test-1.10.7-alpine3.10-images
@@ -158,6 +160,7 @@ workflows:
           extra_tags: "1.10.7-buster-${CIRCLE_BUILD_NUM},1.10.7-18-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
@@ -172,6 +175,7 @@ workflows:
           extra_tags: "1.10.7-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.7-18-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.7-buster-onbuild
             - test-1.10.7-buster-images
@@ -283,6 +287,7 @@ workflows:
           extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-8-alpine3.10"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
@@ -297,6 +302,7 @@ workflows:
           extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-8-alpine3.10-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
@@ -332,6 +338,7 @@ workflows:
           extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-8-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
@@ -346,6 +353,7 @@ workflows:
           extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-8-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
@@ -457,6 +465,7 @@ workflows:
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-4-alpine3.10"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
@@ -471,6 +480,7 @@ workflows:
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-4-alpine3.10-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
@@ -506,6 +516,7 @@ workflows:
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-4-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
@@ -520,6 +531,7 @@ workflows:
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-4-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
@@ -631,6 +643,7 @@ workflows:
           extra_tags: "1.10.14-buster-${CIRCLE_BUILD_NUM},1.10.14-3-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
@@ -645,6 +658,7 @@ workflows:
           extra_tags: "1.10.14-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.14-3-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
@@ -756,6 +770,7 @@ workflows:
           extra_tags: "1.10.15-buster-${CIRCLE_BUILD_NUM},1.10.15-1-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
@@ -770,6 +785,7 @@ workflows:
           extra_tags: "1.10.15-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.15-1-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
@@ -881,6 +897,7 @@ workflows:
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-5-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
@@ -895,6 +912,7 @@ workflows:
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-5-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
@@ -1006,6 +1024,7 @@ workflows:
           extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM},2.0.2-1-buster"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
@@ -1020,6 +1039,7 @@ workflows:
           extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-1-buster-onbuild"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
