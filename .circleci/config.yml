@@ -1001,7 +1001,8 @@ workflows:
           name: build-2.0.2-buster
           airflow_version: 2.0.2
           distribution_name: buster
-          dev_build: false
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.2.build)"
           requires:
             - Need-Approval-2.0.2
             - static-checks
@@ -1020,8 +1021,8 @@ workflows:
       - push:
           name: push-2.0.2-buster
           tag: "2.0.2-buster"
-          dev_build: false
-          extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM},2.0.2-1-buster"
+          dev_build: true
+          extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM},2.0.2-2.dev-buster"
           context:
             - quay.io
             - docker.io
@@ -1035,8 +1036,8 @@ workflows:
       - push:
           name: push-2.0.2-buster-onbuild
           tag: "2.0.2-buster-onbuild"
-          dev_build: false
-          extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-1-buster-onbuild"
+          dev_build: true
+          extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-2.dev-buster-onbuild"
           context:
             - quay.io
             - docker.io
@@ -1048,6 +1049,62 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          name: build-2.0.2-buster
+          airflow_version: 2.0.2
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.0.2.build)"
+      - scan-trivy:
+          name: scan-trivy-2.0.2-buster-onbuild
+          airflow_version: 2.0.2
+          distribution: buster
+          distribution_name: buster-onbuild
+          requires:
+            - build-2.0.2-buster
+      - test:
+          name: test-2.0.2-buster-images
+          tag: "2.0.2-buster"
+          requires:
+            - build-2.0.2-buster
+      - push:
+          name: push-2.0.2-buster
+          tag: "2.0.2-buster"
+          dev_build: true
+          extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+          requires:
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.0.2-buster-onbuild
+          tag: "2.0.2-buster-onbuild"
+          dev_build: true
+          extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-2.dev-buster-onbuild"
+          context:
+            - quay.io
+          requires:
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+
 jobs:
   static-checks:
     executor: machine-executor
