@@ -1083,6 +1083,7 @@ workflows:
           extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM}"
           context:
             - quay.io
+            - docker.io
           requires:
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
