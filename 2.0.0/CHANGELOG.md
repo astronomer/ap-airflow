@@ -1,5 +1,13 @@
 # Changelog
 
+Astronomer Certified 2.0.0-6, TBC
+-----------------------------------------
+
+## Bugfixes
+
+- Remove unused dependency (#15762) ([commit](https://github.com/astronomer/airflow/commit/1beedfa06))
+- Mask passwords and sensitive info in task logs and UI (#15599) ([commit](https://github.com/astronomer/airflow/commit/e07b1d156))
+
 Astronomer Certified 2.0.0-5, 2021-04-26
 -----------------------------------------
 
