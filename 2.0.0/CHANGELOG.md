@@ -1,12 +1,14 @@
 # Changelog
 
-Astronomer Certified 2.0.0-6, TBC
+Astronomer Certified 2.0.0-6, 2021-05-12
 -----------------------------------------
 
 ## Bugfixes
 
-- Remove unused dependency (#15762) ([commit](https://github.com/astronomer/airflow/commit/1beedfa06))
-- Mask passwords and sensitive info in task logs and UI (#15599) ([commit](https://github.com/astronomer/airflow/commit/e07b1d156))
+- Mask passwords and sensitive info in task logs and UI (#15599) ([commit](https://github.com/astronomer/airflow/commit/2f88ffc41))
+- Bump stylelint to remove vulnerable sub-dependency (#15784) ([commit](https://github.com/astronomer/airflow/commit/c21820064))
+- Add resolution to force dependencies to use patched version of `lodash` (#15777) ([commit](https://github.com/astronomer/airflow/commit/3c48c0084))
+- Remove unused dependency (#15762) ([commit](https://github.com/astronomer/airflow/commit/15be415e5))
 
 Astronomer Certified 2.0.0-5, 2021-04-26
 -----------------------------------------
