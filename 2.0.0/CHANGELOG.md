@@ -9,6 +9,7 @@ Astronomer Certified 2.0.0-6, 2021-05-12
 - Bump stylelint to remove vulnerable sub-dependency (#15784) ([commit](https://github.com/astronomer/airflow/commit/c21820064))
 - Add resolution to force dependencies to use patched version of `lodash` (#15777) ([commit](https://github.com/astronomer/airflow/commit/3c48c0084))
 - Remove unused dependency (#15762) ([commit](https://github.com/astronomer/airflow/commit/15be415e5))
+- Docker: Bump `apache-airflow-providers-elasticsearch` to `1.0.4`
 
 Astronomer Certified 2.0.0-5, 2021-04-26
 -----------------------------------------
