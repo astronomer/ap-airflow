@@ -16,9 +16,9 @@ IMAGE_MAP = collections.OrderedDict([
     ("1.10.12-4", ["alpine3.10", "buster"]),
     ("1.10.14-3", ["buster"]),
     ("1.10.15-1", ["buster"]),
-    ("2.0.0-6", ["buster"]),
-    ("2.0.2-2", ["buster"]),
-    ("2.1.0-1", ["buster"]),
+    ("2.0.0-7.dev", ["buster"]),
+    ("2.0.2-3.dev", ["buster"]),
+    ("2.1.0-2.dev", ["buster"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
@@ -146,18 +146,18 @@ def verify_changelog_entry():
             changelog_path = os.path.join(project_directory, airflow_version, "CHANGELOG.md")
             assert os.path.exists(changelog_path), f"Please add the Changelog.md file for {ac_version}"
 
-            # Changelog Readme URL to include
-            readme_changelog_links += (
-                f"- [{airflow_version} Changelog]"
-                f"(https://github.com/astronomer/ap-airflow/blob/master/{airflow_version}/CHANGELOG.md)\n"
-            )
-
             with open(changelog_path) as changelog_file:
                 changelog_contents = changelog_file.read()
 
                 # Replace AC Version
                 assert f"Astronomer Certified {ac_version}" in changelog_contents, \
                     f"Please add Changelog entry for {ac_version} in {changelog_path}"
+
+        # Changelog Readme URL to include
+        readme_changelog_links += (
+            f"- [{airflow_version} Changelog]"
+            f"(https://github.com/astronomer/ap-airflow/blob/master/{airflow_version}/CHANGELOG.md)\n"
+        )
 
     # Update the Changelog URLs in README.md
     with open(os.path.join(project_directory, "README.md"), "r") as readme_file:
