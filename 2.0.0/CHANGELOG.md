@@ -1,5 +1,15 @@
 # Changelog
 
+Astronomer Certified 2.0.0-7, TBC
+----------------------------------------
+
+- Update Kubernetes Provider to `1!1.2.1` to fix Pod hanging due to Istio container
+- Fill the "job_id" field for `airflow task run` without `--local`/`--raw` for KubeExecutor (#16108) ([commit](https://github.com/astronomer/airflow/commit/b84ded19b))
+- Parse recently modified files even if just parsed (#16075) ([commit](https://github.com/astronomer/airflow/commit/ebb9c30ba))
+- Ensure that we don't try to mask empty string in logs (#16057) ([commit](https://github.com/astronomer/airflow/commit/a3e624ccf))
+- Don't die when masking `log.exception` when there is no exception (#16047) ([commit](https://github.com/astronomer/airflow/commit/ae8613d2e))
+- Ensure that secrets are masked no matter what logging config is in use (#15899) ([commit](https://github.com/astronomer/airflow/commit/aea4ad99e))
+
 Astronomer Certified 2.0.0-6, 2021-05-12
 -----------------------------------------
 

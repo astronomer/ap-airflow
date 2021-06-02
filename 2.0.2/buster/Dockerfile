@@ -110,7 +110,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.0.2-2"
+ARG VERSION="2.0.2-3.*"
 ARG SUBMODULES="async,azure,amazon,celery,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="2.0.2"
@@ -122,13 +122,12 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # This constraints will be only used during docker-build
 # and won't be included in the final image
-# It is useful to install airflow-providers that work but still allow users to
-# install providers of their choice (as opposed to entries in astronomer-pip-constraints.txt)
+# It is useful to install packages that are known to work but still allow users to
+# override versions (as opposed to entries in astronomer-pip-constraints.txt)
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
 RUN pip install "${AIRFLOW_MODULE}" \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt" \
     --constraint /tmp/build-time-pip-constraints.txt \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip install "astronomer-fab-security-manager~=1.5"
@@ -146,7 +145,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.0.2-2"
+ARG VERSION="2.0.2-3.*"
 ARG AIRFLOW_VERSION="2.0.2"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
