@@ -15,7 +15,7 @@ IMAGE_MAP = collections.OrderedDict([
     ("1.10.10-8", ["alpine3.10", "buster"]),
     ("1.10.12-4", ["alpine3.10", "buster"]),
     ("1.10.14-3", ["buster"]),
-    ("1.10.15-1", ["buster"]),
+    ("1.10.15-2.dev", ["buster"]),
     ("2.0.0-7.dev", ["buster"]),
     ("2.0.2-3.dev", ["buster"]),
     ("2.1.0-2.dev", ["buster"]),
@@ -76,6 +76,7 @@ def replace_version_info():
     for ac_version, distros in IMAGE_MAP.items():
         dev_version = False
         airflow_version = get_airflow_version(ac_version)
+        ac_version_raw = ac_version
         for distro in distros:
             file_name = os.path.join(project_directory, airflow_version, distro, "Dockerfile")
 
@@ -104,7 +105,9 @@ def replace_version_info():
                 # Replace Moving Constraints Version to a tag for "non-dev" version (e.g constraints-2.1.0)
                 # For Dev versions we use a moving constraints branch (e.g constraints-2-1)
                 # We only do this for all buster images
-                if dev_version:
+                # If it is the first post-fix version in AC / Airflow series use constraints-branch, if not
+                # use the constraints from Airflow Version tag.
+                if dev_version and "-1.dev" in ac_version_raw:
                     branch = "-".join(airflow_version.split(".", 3)[0:2])
                     constraints_url = (
                         f'https://raw.githubusercontent.com/apache/airflow/constraints-{branch}/'
