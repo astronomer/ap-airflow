@@ -8,6 +8,7 @@ Astronomer Certified 1.10.15-2.dev, TBC
 - KubernetesPodOperator should retry log tailing in case of interruption (#11325) ([commit](https://github.com/astronomer/airflow/commit/8848651ba))
 - Correctly parse (and copy) extras with python version to metadist ([commit](https://github.com/astronomer/airflow/commit/176a2a3ec))
 - Respect LogFormat when using ES logging with Json Format (#13310) ([commit](https://github.com/astronomer/airflow/commit/0dbd0f3a3))
+- Bump JS dependencies & remove unwanted deps ([commit](https://github.com/astronomer/airflow/commit/65a07cf73))
 
 Astronomer Certified 1.10.15-1, 2021-03-19
 ------------------------------------------
