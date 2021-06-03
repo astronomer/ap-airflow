@@ -1796,3 +1796,388 @@ commands:
               echo "Image with Tag ($image) not pushed as it is not a new point release"
             fi
             set +x
+      - store_artifacts:
+          path: /tmp/build
+  clair-scan:
+    description: "Vulnerability scan a Docker image"
+    parameters:
+      image_name:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+      allowlist:
+        type: string
+        default: cve-allowlist.yaml
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
+      - modified-orb:
+          allowlist: "<< parameters.allowlist >>"
+          image: "<< parameters.image_name >>"
+  wait_workflow_orb:
+    description: |
+        This command waits for running workflows of a kind on a given branch to complete. Adding This
+        as the first step in a job will make the job wait till it is the only running workflow.
+        This requires a Circle CI token be set as $CIRCLE_API_USER_TOKEN
+    parameters:
+        branch-to-consider:
+            default: master
+            description: The branch on which we will wait for workflows. If set to "all" this will wait across all branches
+            type: string
+        kill-gracefully:
+            default: "true"
+            description: If true and time exceeds max wait time, dies without failing the job
+            type: string
+        max-wait-time:
+            default: "1800"
+            description: |
+                The max wait time in seconds a job should wait for before killing itself.
+            type: string
+        run-on-branch:
+            default: '*'
+            description: |
+                The branches to actually wait on. By default this waits on all branches. If set to anything but
+                '*' the wait will run only on the specified branch
+            type: string
+        sleep-time-between-checks:
+            default: "30"
+            description: How long to sleep between checks.
+            type: string
+        vcs-type:
+            default: github
+            description: What is the VCS for this project
+            type: string
+        workflow-name:
+            default: '*'
+            description: The type of workflows to wait for. This can be a regex
+            type: string
+        airflow-version:
+            default: '2.0.0'
+            description: Airflow version to be followeds
+            type: string
+    steps:
+        - run:
+            command: |
+                if [ -z "$BASH" ]; then
+                  echo Bash not installed.
+                  exit 1
+                fi
+                hash jq 2>/dev/null || { echo >&2 "jq is not installed.  Aborting."; exit 1; }
+                if [[ "$CIRCLE_API_USER_TOKEN" == "" ]]; then
+                  echo "CIRCLE_API_USER_TOKEN not set. Set a token to access the circle API in the env var CIRCLE_API_USER_TOKEN";
+                  exit 1;
+                fi
+
+                if [[ "<< parameters.run-on-branch >>" != "*" && "<< parameters.run-on-branch >>" != "$CIRCLE_BRANCH" ]]; then
+                  echo "Chosen to run only on << parameters.run-on-branch >> and currently we are on $CIRCLE_BRANCH, exiting";
+                  exit 0;
+                fi
+
+                slug="<< parameters.vcs-type >>/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+                branch_to_consider="<< parameters.branch-to-consider >>"
+
+                # Assume there is one workflow running.
+                total_workflows_running="1"
+                can_i_run="false"
+                # Set the Job Name. This job needs to be checked before running the regression
+                airflow_version="<< parameters.airflow-version >>"
+                current_job_name="push-"$airflow_version"-buster-onbuild"
+
+                mkdir -p /tmp/swissknife
+
+                # This is a global variable used to get return value for get_workflow_start_time
+                workflow_start_time=""
+
+                get_workflow_start_time() {
+                  wf_url="https://circleci.com/api/v2/workflow/%7B$1%7D?circle-token=${CIRCLE_API_USER_TOKEN}"
+                  echo $wf_url
+                  curl -f -s $wf_url > /tmp/swissknife/wf_$1.json
+                  workflow_start_time=$(jq '.created_at' /tmp/swissknife/wf_$1.json)
+                  echo "Reached"
+                }
+
+                get_current_workflowid(){
+                    # Step1: Look at running the jobs - Prepare the URL
+                    running_job_prefix="https://circleci.com/api/v1.1/project/$slug";
+                    if [[ "$branch_to_consider" != "all" ]]; then
+                      running_jobs_branch="/tree/$branch_to_consider";
+                    fi
+                    running_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=running&shallow=true";
+                    running_jobs_url="${running_job_prefix}${running_jobs_branch}${running_jobs_suffix}"
+
+                    current_threshold_time=0
+
+                    while true; do
+                        # Run the URL to get the details of the all the jobs and workflows
+                        curl -f -s $running_jobs_url > /tmp/swissknife/running_workflow.json
+
+                        # Step2: JQ -> Get the workflowid which will later be used for checking the status
+                        # Added -r in jq to remove double qoutes which cannot be used in the other API
+                        workflow_id=$(jq -r '.[] | select(.workflows.workflow_name|test("certified-airflow")) | .workflows.workflow_id' /tmp/swissknife/running_workflow.json)
+                        if [ "$workflow_id" == "" ]; then
+                            echo "Debug:Workflow is yet to start"
+                        else
+                            echo "Debug:The current workflow id:"$workflow_id
+                            return 0
+                        fi
+                        sleep 30
+                        current_wait_time=$(( current_wait_time + 30 ))
+                        if (( $current_threshold_time > << parameters.max-wait-time >> )); then
+                          if [[ "<< parameters.kill-gracefully >>" == "true" ]]; then
+                            echo "Killing workflow since could not get the workflowID by cancelling.WorkflowID:"$workflow_id;
+                            kill_workflow
+                          else
+                            echo "Killing workflow by exiting forcefully since could not get the workflowID:"$workflow_id;
+                            exit 1;
+                          fi
+                        fi
+
+                    done
+
+                }
+
+                get_num_running_workflows() {
+
+                    # Step1: Look at all the jobs - Prepare the URL
+                    all_job_prefix="https://circleci.com/api/v1.1/project/$slug";
+                    if [[ "$branch_to_consider" != "all" ]]; then
+                      all_jobs_branch="/tree/$branch_to_consider";
+                    fi
+                    all_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}";
+                    #all_jobs_url="https://circleci.com/api/v1.1/project/github/astronomer/ap-airflow/tree/waiter_for_each_airflowv?circle-token=fdfcf6d10bc404b50195da9bace517f8ab59365f&limit=100"
+                    all_jobs_url="${all_job_prefix}${all_jobs_branch}${all_jobs_suffix}"
+
+                    # Run the URL to get the details of the all the jobs and workflows
+                    curl -f -s $all_jobs_url > /tmp/swissknife/all_jobs.json
+
+                    # Step2: JQ -> Check push for onbuild job
+                    echo "Debug:Checking the status of the job-"$current_job_name
+
+                    status_check=$(jq --arg job "$current_job_name" '.[] | select(.workflows.workflow_name|test("certified-airflow")) | select(.workflows.job_name|test($job)) | .status' /tmp/swissknife/all_jobs.json)
+                    if [ "$status_check" == "" ]; then
+                        echo "Debug:Job is yet to start"
+                    else
+                        echo "Debug:The current status of the job "$current_job_name":"$status_check
+                    fi
+                    should_continue=0
+                    if [ "$status_check" == "\"failed\"" ] || [ "$status_check" == "\"cancelled\"" ]; then
+                        echo "INFO:Job has either failed or cancelled"
+                        kill_workflow
+                    else
+                        should_continue=1
+                        return 0
+                    fi
+                }
+
+                get_job_status_workflows() {
+
+                    # Run the URL to get the details of the all the jobs and workflows
+                    workflow_jobs_url="https://circleci.com/api/v2/workflow/$workflow_id/job?shallow=true"
+
+                    echo "Debug:"$workflow_jobs_url
+
+                    curl --request GET --url $workflow_jobs_url --header 'authorization: Basic ${CIRCLE_API_USER_TOKEN}' > /tmp/swissknife/job_status.json
+
+                    cat /tmp/swissknife/job_status.json
+
+                    # Step2: JQ -> Check status for onbuild job
+                    echo "Debug:Checking the status of the job:"$current_job_name
+                    status_check=$(jq --arg job "$current_job_name" '.items[] | select(.name|test($job)) | .status' /tmp/swissknife/job_status.json)
+                    echo "Debug:Status:"$status_check
+                    if [ "$status_check" == "" ]; then
+                        echo "Debug:Job is yet to start"
+                    else
+                        echo "Debug:The current status of the job "$current_job_name":"$status_check
+                    fi
+                    should_continue=0
+                    if [ "$status_check" == "\"failed\"" ] || [ "$status_check" == "\"cancelled\"" ]; then
+                        echo "INFO:Job has either failed or cancelled"
+                        kill_workflow
+                    else
+                        should_continue=1
+                        return 0
+                    fi
+                }
+
+                kill_workflow(){
+                  echo "Cancelling workflow for build ${CIRCLE_BUILD_NUM}"
+                  cancel_workflow_url="https://circleci.com/api/v1.1/project/$slug/${CIRCLE_BUILD_NUM}/cancel?circle-token=${CIRCLE_API_USER_TOKEN}"
+                  curl -s -X POST $cancel_workflow_url > /dev/null
+                  # Give Circle CI enough time to kill this workflow
+                  sleep 30
+                  # If the job wasnt canceled in 30 seconds fail.
+                  exit 1;
+                }
+
+                current_wait_time=0
+
+                ##### MAIN CODE BLOCK #########
+
+                #Get the workflow ID of the latest running
+                get_current_workflowid
+                #WAIT FOR 30 secs
+                sleep 30
+                while true; do
+                  echo "Debug:Iterting through until the job is completed..\n"
+                  get_job_status_workflows
+                  if [[ "$should_continue" == 0 || "$can_i_run" == "true" ]]; then
+                    echo "INFO: Its finally my turn. exiting"
+                    exit 0
+                  else
+                    echo "INFO:Looks like $current_job_name is still running or yet to start. and can_i_run:$can_i_run"
+                    echo "DEBUG:Going to sleep for << parameters.sleep-time-between-checks >>"
+                    sleep << parameters.sleep-time-between-checks >>
+                    current_wait_time=$(( current_wait_time + << parameters.sleep-time-between-checks >> ))
+                  fi
+
+                  if (( $current_wait_time > << parameters.max-wait-time >> )); then
+                    if [[ "<< parameters.kill-gracefully >>" == "true" ]]; then
+                      echo "Killing workflow by cancelling";
+                      kill_workflow
+                    else
+                      echo "Killing workflow by exiting forcefully";
+                      exit 1;
+                    fi
+                  fi
+                done
+            name: Swissknife - Wait for workflows - ER
+  # TODO: move to an Astronomer orbs repo, publish orb.
+  # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
+  modified-orb:
+    description: "Scan an image for vulnerabilities"
+    parameters:
+      image:
+        type: "string"
+        description: "Name of the image to scan"
+        default: ""
+      image_file:
+        type: "string"
+        description: "Path to a file of images to scan"
+        default: ""
+      allowlist:
+        type: "string"
+        description: "Path to a CVE allowlist"
+        default: ""
+      severity_threshold:
+        type: "string"
+        description: "The threshold (equal and above) at which discovered vulnerabilities are reported. May be 'Defcon1', 'Critical', 'High', 'Medium', 'Low', 'Negligible' or 'Unknown'"
+        default: "High"
+      fail_on_discovered_vulnerabilities:
+        type: "boolean"
+        description: "Fail command when vulnerabilities at severity equal to or above the threshold are discovered"
+        default: true
+      fail_on_unsupported_images:
+        type: "boolean"
+        description: "Fail command when image cannot be scanned for vulnerabilities"
+        default: true
+      disable_verbose_console_output:
+        type: "boolean"
+        description: "Disable verbose console output"
+        default: false
+      docker_tar_dir:
+        type: "string"
+        description: "Path of directory that Docker tarballs are stored"
+        default: "/docker-tars"
+    steps:
+      - run:
+          name: "Vulnerability scan"
+          command: |
+            #!/usr/bin/env bash
+
+            set -xe
+
+            DOCKER_TAR_DIR="<< parameters.docker_tar_dir >>"
+
+            if [ -z "<< parameters.image_file >><< parameters.image >>" ] && [ -z "$(ls -A "$DOCKER_TAR_DIR" 2>/dev/null)" ]; then
+                echo "image_file or image parameters or docker tarballs must be present"
+                exit 255
+            fi
+
+            REPORT_DIR=/clair-reports
+            mkdir $REPORT_DIR
+
+            DB=$(docker run -p 5432:5432 -d arminc/clair-db:latest)
+            CLAIR=$(docker run -p 6060:6060 --link "$DB":postgres -d arminc/clair-local-scan:latest)
+            CLAIR_SCANNER=$(docker run -v /var/run/docker.sock:/var/run/docker.sock -d ovotech/clair-scanner@sha256:8a4f920b4e7e40dbcec4a6168263d45d3385f2970ee33e5135dd0e3b75d39c75 tail -f /dev/null)
+
+            clair_ip=$(docker exec -it "$CLAIR" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+            scanner_ip=$(docker exec -it "$CLAIR_SCANNER" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+
+            if [ -n "<< parameters.allowlist >>" ]; then
+                cat "<< parameters.allowlist >>"
+                docker cp "<< parameters.allowlist >>" "$CLAIR_SCANNER:/allowlist.yml"
+
+                allowlist="-w /allowlist.yml"
+            fi
+
+            function scan() {
+                local image=$1
+                # replace forward-slashes and colons with underscores
+                munged_image=$(echo "$image" | sed 's/\//_/g' | sed 's/:/_/g')
+                sanitised_image_filename="${munged_image}.json"
+                local ret=0
+                local docker_cmd=(docker exec -it "$CLAIR_SCANNER" clair-scanner \
+                    --ip "$scanner_ip" \
+                    --clair=http://"$clair_ip":6060 \
+                    -t "<< parameters.severity_threshold >>" \
+                    --report "/$sanitised_image_filename" \
+                    --log "/log.json" \
+                    --whitelist /allowlist.yml \
+                    --reportAll=true \
+                    --exit-when-no-features=false \
+                    "$image")
+
+                # if verbose output is disabled, analyse status code for more fine-grained output
+                if [ "<< parameters.disable_verbose_console_output >>" == "true" ];then
+                    "${docker_cmd[@]}" > /dev/null 2>&1 || ret=$?
+                else
+                    "${docker_cmd[@]}" 2>&1 || ret=$?
+                fi
+                if [ "$ret" -eq 0 ]; then
+                    echo "No unapproved vulnerabilities"
+                elif [ "$ret" -eq 1 ]; then
+                    echo "Unapproved vulnerabilities found"
+                    if [ "<< parameters.fail_on_discovered_vulnerabilities >>" == "true" ];then
+                        EXIT_STATUS=1
+                    fi
+                elif [ "$ret" -eq 5 ]; then
+                    echo "Image was not scanned, not supported."
+                    if [ "<< parameters.fail_on_unsupported_images >>" == "true" ];then
+                        EXIT_STATUS=1
+                    fi
+                else
+                    echo "Unknown clair-scanner return code $ret."
+                    EXIT_STATUS=1
+                fi
+
+                docker cp "$CLAIR_SCANNER:/$sanitised_image_filename" "$REPORT_DIR/$sanitised_image_filename" || true
+            }
+
+            EXIT_STATUS=0
+
+            for entry in "$DOCKER_TAR_DIR"/*.tar; do
+                [ -e "$entry" ] || continue
+                images=$(docker load -i "$entry" | sed -e 's/Loaded image: //g')
+                for image in $images; do
+                    scan "$image"
+                done
+            done
+
+            if [ -n "<< parameters.image_file >>" ]; then
+                images=$(cat "<< parameters.image_file >>")
+                for image in $images; do
+                    scan "$image"
+                done
+            fi
+            if [ -n "<< parameters.image >>" ]; then
+                image="<< parameters.image >>"
+                scan "$image"
+            fi
+
+            exit $EXIT_STATUS
+      - store_artifacts:
+          path: /clair-reports
