@@ -18,7 +18,7 @@ IMAGE_MAP = collections.OrderedDict([
     ("1.10.15-2.dev", ["buster"]),
     ("2.0.0-7.dev", ["buster"]),
     ("2.0.2-3.dev", ["buster"]),
-    ("2.1.0-2.dev", ["buster"]),
+    ("2.1.0-2", ["buster"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
