@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.0.2-3, TBC
+Astronomer Certified 2.0.2-3, 2021-06-03
 ----------------------------------------
 
 ### Bugfixes
