@@ -57,6 +57,7 @@ def main():
     template_env = Environment(loader=FileSystemLoader(searchpath=circle_directory), autoescape=True)
     template_env.filters['dev_releases'] = dev_releases
     template_env.filters['get_airflow_version'] = get_airflow_version
+    template_env.filters['checkair2'] = checkair2
     template = template_env.get_template("config.yml.j2")
 
     config = template.render(
@@ -70,6 +71,12 @@ def main():
         circle_ci_config_file.write(config)
         circle_ci_config_file.write("\n")
 
+def checkair2(airflow_version):
+    airflow2_version_found= re.search(r'^2',airflow_version)
+    if airflow2_version_found is None:
+        return False
+    else:
+        return True
 
 def replace_version_info():
     """

@@ -1,6 +1,149 @@
 version: 2.1
 
 workflows:
+  version: 2.1
+
+{%- for ac_version, distributions in image_map.items() %}
+{%- set airflow_version = ac_version | get_airflow_version -%}
+{%- set dev_build = "true" if "dev" in ac_version else "false" -%}
+{%- for distribution in distributions %}
+    {%- if airflow_version|checkair2 == true %}
+  regression-{{ airflow_version }}-{{ distribution }}:
+    jobs:
+      - waiter:
+          name: waiter-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "celery"
+          test_type: "testim"
+          requires:
+            - waiter-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "local"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-k8s-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "celery"
+          test_type: "core"
+          requires:
+            - waiter-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "celery"
+          test_type: "k8s"
+          requires:
+            - qa-core-celery-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "celery"
+          test_type: "params"
+          requires:
+            - qa-core-celery-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-celery-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "celery"
+          test_type: "rest"
+          requires:
+            - waiter-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "kubernetes"
+          test_type: "core"
+          requires:
+            - waiter-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "kubernetes"
+          test_type: "k8s"
+          requires:
+            - qa-core-k8s-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "kubernetes"
+          test_type: "params"
+          requires:
+            - qa-k8s-k8s-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-negative:
+          name: qa-negative-k8s-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "kubernetes"
+          test_type: "negative"
+          requires:
+            - qa-params-k8s-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-local-{{ airflow_version }}-{{ distribution }}
+          airflow_version: {{ airflow_version }}
+          executor_type: "local"
+          test_type: "core"
+          requires:
+            - waiter-{{ airflow_version }}-{{ distribution }}
+          context:
+            - qa
+    {%- endif %}
+{%- endfor %}
+{%- endfor %}
   certified-airflow:
     jobs:
       - static-checks
@@ -17,7 +160,7 @@ workflows:
                     "type": "header",
                     "text": {
                       "type": "plain_text",
-                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
                       "emoji": true
                     }
                   },
@@ -73,6 +216,7 @@ workflows:
             branches:
               only:
                 - master
+                - waiter_for_each_airflowv
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
@@ -82,6 +226,7 @@ workflows:
             branches:
               only:
                 - master
+                - waiter_for_each_airflowv
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
@@ -136,6 +281,8 @@ workflows:
             branches:
               only:
                 - master
+                - testim_workflows
+                - waiter_for_each_airflowv
                 - slack-build-approvals
 {%- endfor %}
 {%- endfor %}
@@ -201,11 +348,456 @@ workflows:
             branches:
               only:
                 - master
+                - testim_workflows
 {%- endfor %}
 {%- endif %}
 {%- endfor %}
 {% endif %}
 jobs:
+  waiter:
+    executor: docker-executor
+    resource_class: small
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+    steps:
+      #- run: sleep 120
+      - wait_workflow_orb:
+          workflow-name: certified-airflow
+          max-wait-time: '100000'
+          sleep-time-between-checks: '60'
+          branch-to-consider: ${CIRCLE_BRANCH}
+          airflow-version: << parameters.airflow_version >>
+  qa-ui:
+    description: "Run UI Regression Tests using Testim"
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
+      - run:
+          name: Run the Testim Tests
+          command:   |
+            npm i -g @testim/testim-cli
+            cd /home/circleci/project/qa-regression
+            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 5 --retries 3 --result-label << parameters.airflow_version >>
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+  qa-core:
+    description: "Run the Core DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: "core"
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/core/
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circleci/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t core
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > /tmp/test-results/results_core_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_core_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_core_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project
+  qa-restapi:
+    description: "Run the REST APIS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: "restapi"
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/restapi/
+      - run:
+          name: Run the RESTAPI
+          command:   |
+            cd /home/circleci/project/qa-regression/postman_rest
+            chmod 744 restapi_executor_ci.sh
+            bash ./restapi_executor_ci.sh
+            cp result.out /tmp/test-results/restapi/
+            #FOUND_404=0
+            #FOUND_500=0
+            #ASSERTION_ERRORS=0
+            #grep -q "404 Not Found" result.out && FOUND_404=1
+            #grep -q "500 INTERNAL SERVER ERROR" result.out && FOUND_500=1
+            #grep -q "AssertionError" result.out && ASSERTION_ERRORS=1
+            #if [[ "$FOUND_404" -eq 1 ]]; then echo "404 Errors Found";exit 1; fi
+            #if [[ "$FOUND_500" -eq 1 ]]; then echo "500 Errors Found";exit 1; fi
+            #if [[ "$ASSERTION_ERRORS" -eq 1 ]]; then echo "Assertion Errors Found";exit 1; fi
+            #cd /home/circleci/project/qa-regression
+            #chmod 744 delete_deployment.sh
+            #bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+  qa-k8s:
+    description: "Run the k8s DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - attach_workspace:
+          at: ~/
+      # - run: sudo apt-get -y update
+      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      # - run: npm -v
+      # - run: node -v
+      # - run:
+      #     name: Avoid hosts unknown for github
+      #     command:   |
+      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      # - run: git clone git@github.com:astronomer/qa-regression.git
+      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      # - run:
+      #     name: Run Shell Script for creating deployments
+      #     command:  |
+      #       cd qa-regression
+      #       ls
+      #       chmod 744 *.sh
+      #       echo "Run Deployment Script"
+      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+      #       cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/k8s/
+      - run:
+          name: Run the Pre-Reqs for running K8s
+          command:   |
+            cd /home/circleci/project/qa-regression
+            chmod 744 pre-req-kubernetes.sh
+            bash ./pre-req-kubernetes.sh
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circle/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
+            sleep 420
+            echo "Sleeping for 420s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_k8s_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  qa-negative:
+    description: "Run the Negative DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - attach_workspace:
+          at: ~/
+      # - run: sudo apt-get -y update
+      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      # - run: npm -v
+      # - run: node -v
+      # - run:
+      #     name: Avoid hosts unknown for github
+      #     command:   |
+      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      # - run: git clone git@github.com:astronomer/qa-regression.git
+      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      # - run:
+      #     name: Run Shell Script for creating deployments
+      #     command:  |
+      #       cd qa-regression
+      #       ls
+      #       chmod 744 *.sh
+      #       echo "Run Deployment Script"
+      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+      #       cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/negative/
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circle/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t negative
+            sleep 500
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_k8s_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  qa-params:
+    description: "Run the DAG Parameters"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - attach_workspace:
+          at: ~/
+      # - run: sudo apt-get -y update
+      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      # - run: npm -v
+      # - run: node -v
+      # - run:
+      #     name: Avoid hosts unknown for github
+      #     command:   |
+      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      # - run: git clone git@github.com:astronomer/qa-regression.git
+      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      # - run:
+      #     name: Run Shell Script for creating deployments
+      #     command:  |
+      #       cd qa-regression
+      #       ls
+      #       chmod 744 *.sh
+      #       echo "Run Deployment Script"
+      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+      #       cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/dag-params
+      - run:
+          name: Run the DAGS
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circle/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t dagparams
+            sleep 500
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/dag-params/results_dag-params_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_dag-params_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_dag-params_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
   static-checks:
     executor: machine-executor
     description: Static Checks
@@ -323,7 +915,6 @@ jobs:
           prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
-
 orbs:
   slack: circleci/slack@4.2.0
   clair-scanner: ovotech/clair-scanner@1.6.0
@@ -421,6 +1012,18 @@ commands:
             .circleci/bin/test-airflow 'ap-airflow' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
+  clean:
+    description: "Clean up"
+    steps:
+      - run:
+          name: Clean Up Environment Variables
+          command: |
+            curl --request DELETE \
+                  --url https://circleci.com/api/v2/project/gh/astronomer/ap-airflow/envvar/v2_0_0 \
+                  --header "Circle-Token: $CIRCLE_API_USER_TOKEN"
+            curl --request POST \
+                  --url https://circleci.com/api/v2/project/gh/astronomer/ap-airflow/envvar/v2_0_1 \
+                  --header "Circle-Token: $CIRCLE_API_USER_TOKEN"
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
@@ -474,6 +1077,39 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                echo "Build TAG artifact using environment variables and into DB"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  release="$( cut -d '-' -f 1 \<<< "$tag" )"
+                  #release_new=v${release//./_}
+                  curl --request POST \
+                  --url https://circleci.com/api/v2/project/gh/astronomer/ap-airflow/envvar \
+                  --header "Circle-Token: $CIRCLE_API_USER_TOKEN" \
+                  --header 'content-type: application/json' \
+                  --data "{\"name\":\"${release_new}\", \"value\":\"${tag}\"}"
+                  sudo apt-get install postgresql postgresql-contrib
+                  echo "Insert into the DB with the latest TAG"
+                  export PORT=5432
+                  del_sql="DELETE FROM tag_version where version_1='${release}'"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$del_sql"
+
+                  insert_sql="INSERT INTO tag_version values('${release}','${tag}')"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$insert_sql"
+
+                fi
 
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
