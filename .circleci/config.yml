@@ -1276,7 +1276,7 @@ workflows:
           name: push-2.1.1-buster
           tag: "2.1.1-buster"
           dev_build: true
-          extra_tags: "2.1.1-buster-${CIRCLE_BUILD_NUM},2.1.1-dev-buster"
+          extra_tags: "2.1.1-buster-${CIRCLE_BUILD_NUM},2.1.1-1.dev-buster"
           context:
             - quay.io
             - docker.io
@@ -1291,7 +1291,7 @@ workflows:
           name: push-2.1.1-buster-onbuild
           tag: "2.1.1-buster-onbuild"
           dev_build: true
-          extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-dev-buster-onbuild"
+          extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-1.dev-buster-onbuild"
           context:
             - quay.io
             - docker.io
@@ -1349,7 +1349,7 @@ workflows:
           name: push-2.1.1-buster-onbuild
           tag: "2.1.1-buster-onbuild"
           dev_build: true
-          extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-dev-buster-onbuild"
+          extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-1.dev-buster-onbuild"
           context:
             - quay.io
             - docker.io
