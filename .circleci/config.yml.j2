@@ -1354,6 +1354,10 @@ commands:
                     if [ "$status_check" == "\"failed\"" ] || [ "$status_check" == "\"cancelled\"" ]; then
                         echo "INFO:Job has either failed or cancelled"
                         kill_workflow
+                    elif [ "$status_check" == "\"success\"" ]
+                    then
+                        should_continue=0
+                        return 0
                     else
                         should_continue=1
                         return 0
