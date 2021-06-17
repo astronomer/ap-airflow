@@ -130,7 +130,7 @@ COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 RUN pip install "${AIRFLOW_MODULE}" \
     --constraint /tmp/build-time-pip-constraints.txt \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-	&& pip install "astronomer-fab-security-manager~=1.5"
+       && pip install "astronomer-fab-security-manager~=1.6"
 
 
 ## move this to same layer as airflow because its from tag.

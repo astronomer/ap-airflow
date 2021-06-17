@@ -22,7 +22,7 @@ appdirs==1.4.4
 argcomplete==1.12.3
 astronomer-airflow-scripts==0.0.5
 astronomer-airflow-version-check==1.0.7
-astronomer-fab-security-manager==1.5.0
+astronomer-fab-security-manager==1.6.0
 attrs==20.3.0
 azure-batch==10.0.0
 azure-common==1.1.27
