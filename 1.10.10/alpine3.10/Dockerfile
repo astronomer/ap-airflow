@@ -115,7 +115,7 @@ RUN sed -i \
     /usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Pin apache-airflow version to avoid accidental upgrade
-RUN echo "apache-airflow==1!${VERSION}" >>  /usr/local/share/astronomer-pip-constraints.txt
+RUN pip3 freeze | grep "apache-airflow==" >>  /usr/local/share/astronomer-pip-constraints.txt
 
 # Create logs directory so we can own it when we mount volumes
 RUN mkdir -p ${AIRFLOW_HOME}/logs

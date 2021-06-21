@@ -340,7 +340,7 @@ def test_apache_airflow_in_requirements(tmp_path):
         output = subprocess.run(
             ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True
         )
-    assert output.returncode == 0
+    assert output.returncode == 0, output.stderr
 
 
 def test_airflow_in_constraints(scheduler):
