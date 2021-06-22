@@ -18,7 +18,7 @@ IMAGE_MAP = collections.OrderedDict([
     ("1.10.15-2", ["buster"]),
     ("2.0.0-7", ["buster"]),
     ("2.0.2-3", ["buster"]),
-    ("2.1.0-2", ["buster"]),
+    ("2.1.0-3.dev", ["buster"]),
     ("2.1.1-1.dev", ["buster"]),
 ])
 
