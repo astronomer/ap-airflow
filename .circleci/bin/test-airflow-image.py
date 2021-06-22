@@ -297,6 +297,7 @@ def test_airflow_configs(scheduler, docker_client):
             "grep '^update_fab_perms' | awk '{print $3}'"
         ) == "False", "[webserver] update_fab_perms needs to be False for AC >= 1.10.10"
 
+
 def test_labels_for_onbuild_image(docker_client):
     """ Ensure correct labels exists on onbuild image """
     labels = get_labels(docker_client, ImageType.ONBUILD.value)
@@ -328,10 +329,28 @@ def test_apache_airflow_in_requirements(tmp_path):
         assert output.returncode == 1
         assert b"Do not upgrade by specifying 'apache-airflow' in your requirements.txt" in output.stderr
 
-    # Test that you can still use backport-packages that start with "apache-airflow"
-    (test_project / "requirements.txt").write_text("apache-airflow-backport-providers-amazon")
-    output = subprocess.run(['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True)
-    assert output.returncode == 0
+    # Test that you can still use Provider (or backport providers) packages that start with "apache-airflow"
+    if airflow_2:
+        (test_project / "requirements.txt").write_text("apache-airflow-providers-amazon")
+        output = subprocess.run(
+            ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True
+        )
+    else:
+        (test_project / "requirements.txt").write_text("apache-airflow-backport-providers-amazon")
+        output = subprocess.run(
+            ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True
+        )
+    assert output.returncode == 0, output.stderr
+
+
+def test_airflow_in_constraints(scheduler):
+    """
+    Test that the installed Airflow version is added in constraints file to avoid accidental upgrades
+    """
+    installed_airflow_version = scheduler.pip_package.get_packages()["apache-airflow"]["version"]
+    pip_constraints_file = scheduler.file("/usr/local/share/astronomer-pip-constraints.txt").content_string
+
+    assert installed_airflow_version in pip_constraints_file
 
 
 @pytest.fixture(scope='session')

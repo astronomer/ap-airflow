@@ -157,6 +157,9 @@ COPY --from=devel /usr/local/bin /usr/local/bin
 COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
+# Pin apache-airflow version to avoid accidental upgrade
+RUN pip freeze | grep "apache-airflow==" >>  /usr/local/share/astronomer-pip-constraints.txt
+
 RUN sed -i \
     # Run pods spun up by Kubernetes Executor as astro user
     -e 's/^run_as_user =.*/run_as_user = 50000/g' \
