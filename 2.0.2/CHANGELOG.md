@@ -1,5 +1,25 @@
 # Changelog
 
+Astronomer Certified 2.0.2-4.dev, TBC
+----------------------------------------
+
+### Bugfixes
+
+- Avoid recursing too deep when redacting logs (#16491) ([commit](https://github.com/astronomer/airflow/commit/de563e385))
+- Switch to built-in data structures in SecretsMasker (#16424) ([commit](https://github.com/astronomer/airflow/commit/523bba07e))
+- Don't fail to log if we can't redact something (#16118) ([commit](https://github.com/astronomer/airflow/commit/ae0d11995))
+- Don't show stale Serialized DAGs if they are deleted in DB (#16368) ([commit](https://github.com/astronomer/airflow/commit/c95f6d96f))
+- Fix Orphaned tasks stuck in CeleryExecutor as running (#16550) ([commit](https://github.com/astronomer/airflow/commit/d44c223c1))
+- Redact conn secrets in webserver logs (#16579) ([commit](https://github.com/astronomer/airflow/commit/836803b64))
+- Don't crash attempting to mask secrets in dict with non-string keys (#16601) ([commit](https://github.com/astronomer/airflow/commit/a1f3daf7f))
+- Fix Dag Details start date bug (#16206) ([commit](https://github.com/astronomer/airflow/commit/39ff9d198))
+- Make task ID on legend have enough width and width of line chart to be 100%.  (#15915) ([commit](https://github.com/astronomer/airflow/commit/44ddad0e6))
+- Clean Markdown with dedent to respect indents (#16414) ([commit](https://github.com/astronomer/airflow/commit/19b303e27))
+- Exclude ``yarn.lock`` from built Python wheel file (#16577) ([commit](https://github.com/astronomer/airflow/commit/99d5ebd1f))
+- Add `passphrase` and `private_key` to default sensitive fileld names (#16392) ([commit](https://github.com/astronomer/airflow/commit/aba6acbda))
+- Dockerfile: Add constraint for installed Airflow version (#274) ([commit](https://github.com/astronomer/ap-airflow/commit/60174ec))
+- Dockerfile: Upgrade Fab Security manager to 1.6.0 (#272) ([commit](https://github.com/astronomer/ap-airflow/commit/417fd5993982e49424fb427941552d0d42ed567e))
+
 Astronomer Certified 2.0.2-3, 2021-06-03
 ----------------------------------------
 
