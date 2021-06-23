@@ -1,5 +1,22 @@
 # Changelog
 
+Astronomer Certified 2.0.0-8.dev, TBC
+----------------------------------------
+
+## Bugfixes
+
+- Avoid recursing too deep when redacting logs (#16491) ([commit](https://github.com/astronomer/airflow/commit/5a7e9ee21))
+- Switch to built-in data structures in SecretsMasker (#16424) ([commit](https://github.com/astronomer/airflow/commit/ddcb07317))
+- Don't fail to log if we can't redact something (#16118) ([commit](https://github.com/astronomer/airflow/commit/41d4f9d6c))
+- Don't show stale Serialized DAGs if they are deleted in DB (#16368) ([commit](https://github.com/astronomer/airflow/commit/df68d5c06))
+- Fix Orphaned tasks stuck in CeleryExecutor as running (#16550) ([commit](https://github.com/astronomer/airflow/commit/9c76e8f6b))
+- Redact conn secrets in webserver logs (#16579) ([commit](https://github.com/astronomer/airflow/commit/55b836b31))
+- Don't crash attempting to mask secrets in dict with non-string keys (#16601) ([commit](https://github.com/astronomer/airflow/commit/bc82a2353))
+- Exclude ``yarn.lock`` from built Python wheel file (#16577) ([commit](https://github.com/astronomer/airflow/commit/d3c5f8e2c))
+- Add `passphrase` and `private_key` to default sensitive fileld names (#16392) ([commit](https://github.com/astronomer/airflow/commit/692dc1885))
+- Dockerfile: Add constraint for installed Airflow version (#274) ([commit](https://github.com/astronomer/ap-airflow/commit/60174ec))
+- Dockerfile: Upgrade Fab Security manager to 1.6.0 (#272) ([commit](https://github.com/astronomer/ap-airflow/commit/417fd5993982e49424fb427941552d0d42ed567e))
+
 Astronomer Certified 2.0.0-7, 2021-06-04
 ----------------------------------------
 
