@@ -29,9 +29,14 @@ def wheel_urls_from_listing(url, version):
 
     soup = BeautifulSoup(listing.text, 'html.parser')
 
-    relative_wheels = [
-        a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl') and version in a['href']
-    ]
+    if version:
+        relative_wheels = [
+            a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl') and version in a['href']
+        ]
+    else:
+        relative_wheels = [
+            a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl')
+        ]
 
     for rel in relative_wheels:
         yield urljoin(listing.url, rel)
@@ -49,9 +54,13 @@ def download_wheel(url, destdir):
     return path
 
 
-def repack_wheel(output: str, url: str):
+def repack_wheel(output: str, url_or_path: str, local: bool = False):
     with TemporaryDirectory() as tmp:
-        src_filename = download_wheel(url, tmp)
+        if local:
+            src_filename = os.path.join(tmp, os.path.basename(url_or_path))
+            shutil.copy(url_or_path, src_filename)
+        else:
+            src_filename = download_wheel(url_or_path, tmp)
 
         match = WHEEL_INFO_RE.match(src_filename)
         namever = match.group('namever')
@@ -124,9 +133,14 @@ def main():
     )
     parser.add_argument(
         "--http_root",
-        default="https://dist.apache.org/repos/dist/dev/airflow/backport-providers/",
+        default="https://dist.apache.org/repos/dist/release/airflow/providers/",
         help="Root folder containing versioned release folders, for example "
-             "https://dist.apache.org/repos/dist/dev/airflow/backport-providers/"
+             "https://dist.apache.org/repos/dist/release/airflow/providers/"
+    )
+
+    parser.add_argument(
+        "--local-dir",
+        help="If you want to use wheels download in a local folder, pass the path of the folder"
     )
 
     parser.add_argument(
@@ -137,17 +151,39 @@ def main():
     )
 
     parser.add_argument(
-        "version",
+        "--version",
         help="Version to download and repackage",
     )
 
     args = parser.parse_args()
 
     os.mkdir(args.output)
+    version = args.version
+    local_dir = args.local_dir
 
-    wheels = wheel_urls_from_listing(args.http_root, args.version)
+    if local_dir:
+        wheels = glob(os.path.join(local_dir, "*.whl"), recursive=True)
+        if args.version:
+            wheels = [whl for whl in wheels if version in whl]
+    else:
+        wheels = wheel_urls_from_listing(args.http_root, version)
+
+    has_unpatched_kubernetes_provider = False
+
     for wheel in wheels:
-        repack_wheel(args.output, wheel)
+        if "kubernetes" in wheel and not local_dir:
+            has_unpatched_kubernetes_provider = wheel
+            continue
+        repack_wheel(args.output, wheel, bool(local_dir))
+
+    if has_unpatched_kubernetes_provider:
+        print()
+        print(
+            f"\033[31m '{has_unpatched_kubernetes_provider}' needs to be patched and released with Istio "
+            "commit. Example cherry-picked commit: \n"
+            "https://github.com/astronomer/airflow/commit/d2c42de0ae96637bb684a4b57d2b7ef99045f7c2"
+        )
+        print()
 
 
 if __name__ == "__main__":
