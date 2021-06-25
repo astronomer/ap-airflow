@@ -193,6 +193,9 @@ RUN groupadd gosuers \
 # Create man directory to solve issues installing JRE
 RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 
+# Environment Variables for Partner Programs
+ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
+
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
 # with this
