@@ -54,10 +54,6 @@ AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronome
 export AIRFLOW_VERSION
 echo "Airflow Version: $AIRFLOW_VERSION"
 
-CHART_VERSION=$(helm show chart astronomer/airflow --devel)
-export CHART_VERSION
-echo "Chart Version: $CHART_VERSION"
-
 kubectl get pods -n $NAMESPACE -w &
 WATCH_PID=$!
 
@@ -71,8 +67,6 @@ helm install --namespace $NAMESPACE \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
   --set airflowVersion=$AIRFLOW_VERSION \
-  --devel \
-  --version 0.18.0-build6 \
   $RELEASE_NAME astronomer/airflow
 
 if [ ! $? -eq 0 ]; then
