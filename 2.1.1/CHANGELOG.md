@@ -1,5 +1,13 @@
 # Changelog
 
+Astronomer Certified 2.1.1-2, TBC
+----------------------------------------
+
+### Bugfixes
+
+- Fix: Marking Task as success/failed ([commit](https://github.com/astronomer/airflow/commit/df1ff499c))
+- Fix "Invalid JSON configuration, must be a dict" (#16648) ([commit](https://github.com/astronomer/airflow/commit/2637d9a15))
+
 Astronomer Certified 2.1.1-1, 2021-07-02
 ----------------------------------------
 
