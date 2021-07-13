@@ -5,7 +5,13 @@ Astronomer Certified 2.1.1-2, 2021-07-13
 
 ### Bugfixes
 
-- [astro] Handle Istio containers with Kubernetes Executor Pod adoption (#1318) ([commit](https://github.com/astronomer/airflow/commit/98abd2fb7))
+- [astro] Handle Istio containers with Kubernetes Executor Pod adoption (#1318) ([commit](https://github.com/astronomer/airflow/commit/12349a100))
+- Introduce compat shim airflow.compat.functools (#15969) ([commit](https://github.com/astronomer/airflow/commit/72521e457))
+- Add Python 3.9 support (#15515) (#16883) ([commit](https://github.com/astronomer/airflow/commit/9b96fd1b9))
+- Fix ``CeleryKubernetesExecutor`` (#16700) ([commit](https://github.com/astronomer/airflow/commit/90aaf3d48))
+- yarn audit (#16440) ([commit](https://github.com/astronomer/airflow/commit/40accb2a4))
+- Fix impersonation issue with LocalTaskJob (#16852) ([commit](https://github.com/astronomer/airflow/commit/075622cbe))
+- Mask value if the key is ``token`` (#16474) ([commit](https://github.com/astronomer/airflow/commit/5834fb7ce))
 - Only allow webserver to request from the worker log server (#16754) ([commit](https://github.com/astronomer/airflow/commit/74fa1325c))
 - Set process title for ``serve-logs`` and ``LocalExecutor`` (#16644) ([commit](https://github.com/astronomer/airflow/commit/d8d851d70))
 - Fix: Marking Task as success/failed ([commit](https://github.com/astronomer/airflow/commit/df1ff499c))
