@@ -1,10 +1,12 @@
 # Changelog
 
-Astronomer Certified 2.0.2-4.dev, TBC
+Astronomer Certified 2.0.2-4, 2021-07-13
 ----------------------------------------
 
 ### Bugfixes
 
+- [astro] Handle Istio containers with Kubernetes Executor Pod adoption (#1318) ([commit](https://github.com/astronomer/airflow/commit/1141c186f))
+- Only allow webserver to request from the worker log server (#16754) ([commit](https://github.com/astronomer/airflow/commit/ebf2e305c))
 - Avoid recursing too deep when redacting logs (#16491) ([commit](https://github.com/astronomer/airflow/commit/de563e385))
 - Switch to built-in data structures in SecretsMasker (#16424) ([commit](https://github.com/astronomer/airflow/commit/523bba07e))
 - Don't fail to log if we can't redact something (#16118) ([commit](https://github.com/astronomer/airflow/commit/ae0d11995))

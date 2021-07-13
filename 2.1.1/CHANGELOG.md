@@ -1,10 +1,13 @@
 # Changelog
 
-Astronomer Certified 2.1.1-2, TBC
+Astronomer Certified 2.1.1-2, 2021-07-13
 ----------------------------------------
 
 ### Bugfixes
 
+- [astro] Handle Istio containers with Kubernetes Executor Pod adoption (#1318) ([commit](https://github.com/astronomer/airflow/commit/98abd2fb7))
+- Only allow webserver to request from the worker log server (#16754) ([commit](https://github.com/astronomer/airflow/commit/74fa1325c))
+- Set process title for ``serve-logs`` and ``LocalExecutor`` (#16644) ([commit](https://github.com/astronomer/airflow/commit/d8d851d70))
 - Fix: Marking Task as success/failed ([commit](https://github.com/astronomer/airflow/commit/df1ff499c))
 - Fix "Invalid JSON configuration, must be a dict" (#16648) ([commit](https://github.com/astronomer/airflow/commit/2637d9a15))
 
