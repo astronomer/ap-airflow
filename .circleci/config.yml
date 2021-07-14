@@ -767,7 +767,7 @@ workflows:
           name: push-1.10.15-buster
           tag: "1.10.15-buster"
           dev_build: false
-          extra_tags: "1.10.15-buster-${CIRCLE_BUILD_NUM},1.10.15-2-buster"
+          extra_tags: "1.10.15-buster-${CIRCLE_BUILD_NUM},1.10.15-3-buster"
           context:
             - quay.io
             - docker.io
@@ -782,7 +782,7 @@ workflows:
           name: push-1.10.15-buster-onbuild
           tag: "1.10.15-buster-onbuild"
           dev_build: false
-          extra_tags: "1.10.15-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.15-2-buster-onbuild"
+          extra_tags: "1.10.15-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.15-3-buster-onbuild"
           context:
             - quay.io
             - docker.io
