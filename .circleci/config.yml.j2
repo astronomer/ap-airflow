@@ -1,7 +1,6 @@
 version: 2.1
 
 workflows:
-  version: 2.1
 
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
