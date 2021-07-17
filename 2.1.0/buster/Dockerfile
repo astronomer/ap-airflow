@@ -130,7 +130,7 @@ COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 RUN pip install "${AIRFLOW_MODULE}" \
     --constraint /tmp/build-time-pip-constraints.txt \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-	&& pip install "astronomer-fab-security-manager~=1.5"
+       && pip install "astronomer-fab-security-manager~=1.6"
 
 
 ## move this to same layer as airflow because its from tag.
@@ -157,6 +157,9 @@ COPY --from=devel /usr/local/bin /usr/local/bin
 # Force pip to install these specific versions when ever it installs a module
 COPY include/pip.conf /etc/pip.conf
 COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
+
+# Pin apache-airflow version to avoid accidental upgrade
+RUN pip freeze | grep "apache-airflow==" >>  /usr/local/share/astronomer-pip-constraints.txt
 
 RUN sed -i \
     # Run pods spun up by Kubernetes Executor as astro user
@@ -189,6 +192,9 @@ RUN groupadd gosuers \
 
 # Create man directory to solve issues installing JRE
 RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
+
+# Environment Variables for Partner Programs
+ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
 
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
