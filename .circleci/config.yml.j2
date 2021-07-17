@@ -270,6 +270,7 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           dev_build: {{ dev_build }}
+          dev_build: true
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
           context:
             - quay.io
