@@ -150,7 +150,7 @@ workflows:
 {%- set airflow_version = ac_version | get_airflow_version -%}
 {%- set dev_build = "true" if "dev" in ac_version else "false" %}
       - slack/on-hold:
-          name: Slack_Notification-{{ airflow_version }}
+          name: Slack_Notifications-{{ airflow_version }}
           context: slack_ap-airflow
           custom: |
             {
