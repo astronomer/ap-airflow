@@ -539,7 +539,7 @@ workflows:
     jobs:
       - static-checks
       - slack/on-hold:
-          name: Slack_Notifications-1.10.7
+          name: Slack_Notification-1.10.7
           context: slack_ap-airflow
           custom: |
             {
@@ -727,7 +727,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-1.10.10
+          name: Slack_Notification-1.10.10
           context: slack_ap-airflow
           custom: |
             {
@@ -915,7 +915,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-1.10.12
+          name: Slack_Notification-1.10.12
           context: slack_ap-airflow
           custom: |
             {
@@ -1103,7 +1103,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-1.10.14
+          name: Slack_Notification-1.10.14
           context: slack_ap-airflow
           custom: |
             {
@@ -1236,7 +1236,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-1.10.15
+          name: Slack_Notification-1.10.15
           context: slack_ap-airflow
           custom: |
             {
@@ -1370,7 +1370,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-2.0.0
+          name: Slack_Notification-2.0.0
           context: slack_ap-airflow
           custom: |
             {
@@ -1503,7 +1503,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-2.0.2
+          name: Slack_Notification-2.0.2
           context: slack_ap-airflow
           custom: |
             {
@@ -1636,7 +1636,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-2.1.0
+          name: Slack_Notification-2.1.0
           context: slack_ap-airflow
           custom: |
             {
@@ -1769,7 +1769,7 @@ workflows:
                 - waiter_for_each_airflowv
                 - slack-build-approvals
       - slack/on-hold:
-          name: Slack_Notifications-2.1.1
+          name: Slack_Notification-2.1.1
           context: slack_ap-airflow
           custom: |
             {
