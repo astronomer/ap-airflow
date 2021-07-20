@@ -482,6 +482,9 @@ jobs:
             dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t core
+            echo "Sleeping"
+            sleep 420
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
             dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > /tmp/test-results/results_core_dags.out
             # FOUND_FAILURES=0
             # grep -q "failed" /tmp/test-results/results_core_dags.out && FOUND_FAILURES=1
@@ -630,6 +633,7 @@ jobs:
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
             sleep 420
             echo "Sleeping for 420s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
             dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
             # FOUND_FAILURES=0
             # grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
@@ -708,6 +712,7 @@ jobs:
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t negative
             sleep 500
             echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
             dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
             # FOUND_FAILURES=0
             # grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
@@ -786,6 +791,7 @@ jobs:
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t dagparams
             sleep 500
             echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
             dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/dag-params/results_dag-params_dags.out
             # FOUND_FAILURES=0
             # grep -q "failed" /tmp/test-results/results_dag-params_dags.out && FOUND_FAILURES=1
