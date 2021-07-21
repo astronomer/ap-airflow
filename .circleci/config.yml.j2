@@ -416,6 +416,7 @@ jobs:
       - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
       - run:
           name: Run the Testim Tests
+          no_output_timeout: 30m
           command:   |
             npm i -g @testim/testim-cli
             cd /home/circleci/project/qa-regression
@@ -467,6 +468,7 @@ jobs:
       - run: mkdir -p $CORE_TEST_REPORTS/core/
       - run:
           name: Run the DAGS
+          no_output_timeout: 30m
           command:   |
             cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
             pip3 install -e .
@@ -544,6 +546,7 @@ jobs:
       - run: mkdir -p $CORE_TEST_REPORTS/restapi/
       - run:
           name: Run the RESTAPI
+          no_output_timeout: 30m
           command:   |
             cd /home/circleci/project/qa-regression/postman_rest
             chmod 744 restapi_executor_ci.sh
@@ -616,6 +619,7 @@ jobs:
             bash ./pre-req-kubernetes.sh
       - run:
           name: Run the DAGS
+          no_output_timeout: 30m
           command:   |
             cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
             pip3 install -e .
@@ -695,6 +699,7 @@ jobs:
       - run: mkdir -p $CORE_TEST_REPORTS/negative/
       - run:
           name: Run the DAGS
+          no_output_timeout: 30m
           command:   |
             cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
             pip3 install -e .
@@ -774,6 +779,7 @@ jobs:
       - run: mkdir -p $CORE_TEST_REPORTS/dag-params
       - run:
           name: Run the DAGS
+          no_output_timeout: 30m
           command:   |
             cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
             pip3 install -e .
