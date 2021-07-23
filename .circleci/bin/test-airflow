@@ -24,7 +24,7 @@ source $DIR/install-ci-tools
 source $DIR/start-kind-cluster
 
 helm repo add stable https://charts.helm.sh/stable/
-helm repo add astronomer https://internal-helm.astronomer.io/
+helm repo add astronomer https://helm.astronomer.io/
 helm repo update
 
 set +e
@@ -54,6 +54,22 @@ AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronome
 export AIRFLOW_VERSION
 echo "Airflow Version: $AIRFLOW_VERSION"
 
+# Find alpine or debian
+DISTRO=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.distro" }}' "$REPOSITORY:$TEST_TAG")
+# This is handled by Houston for the platform: https://github.com/astronomer/houston-api/pull/581
+if [[ "$DISTRO" == "alpine" ]]; then
+  export IMAGE_UID="100"
+  export IMAGE_GID="101"
+else
+  export IMAGE_UID="50000"
+  export IMAGE_GID="50000"
+fi
+echo "Distro: $DISTRO - Setting UID to $IMAGE_UID and GID to $IMAGE_GID"
+
+CHART_VERSION=$(helm search repo astronomer/airflow | grep astronomer/airflow | awk '{print $2}')
+export CHART_VERSION
+echo "Chart Version: $CHART_VERSION"
+
 kubectl get pods -n $NAMESPACE -w &
 WATCH_PID=$!
 
@@ -67,6 +83,9 @@ helm install --namespace $NAMESPACE \
   --set images.flower.pullPolicy=Never \
   --set executor=KubernetesExecutor \
   --set airflowVersion=$AIRFLOW_VERSION \
+  --set uid=$IMAGE_UID \
+  --set gid=$IMAGE_GID \
+  --version=$CHART_VERSION \
   $RELEASE_NAME astronomer/airflow
 
 if [ ! $? -eq 0 ]; then
