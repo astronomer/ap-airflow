@@ -1,9 +1,22 @@
 # Changelog
 
+Astronomer Certified 1.10.14-4, TBC
+------------------------------------------
+
+### Bugfixes
+
+- Exclude ``yarn.lock`` from built Python wheel file (#16577) ([commit](https://github.com/astronomer/airflow/commit/25d46e4e9))
+- [backport] Fix bug with `executor_config` and Volumes ([commit](https://github.com/astronomer/airflow/commit/e268afd5c))
+- Only allow webserver to request from the worker log server (#16754) ([commit](https://github.com/astronomer/airflow/commit/815dcd5b4))
+- Dockerfile: Add constraint for installed Airflow version (#274) ([commit](https://github.com/astronomer/ap-airflow/commit/60174ec))
+- Dockerfile: Update / Override PIP version in Env Vars (#263) ([commit](https://github.com/astronomer/ap-airflow/commit/ab60218))
+- Dockerfile: Bump Epoch to fix CVEs (#239) ([commit](https://github.com/astronomer/ap-airflow/commit/6522368))
+- Dockerfile: Upgrade Fab Security Manager to 1.6.0
+
 Astronomer Certified 1.10.14-3, 2021-03-18
 ------------------------------------------
 
-## Bugfixes
+### Bugfixes
 
 - Fix `sync-perm` to work correctly when `update_fab_perms = False` (apache#14847) ([commit](https://github.com/astronomer/airflow/commit/c5ea249db4d1a5528118e4168f125da3eadb59ed))
 - Webserver: Sanitize string passed to origin param (apache#14738) ([commit](https://github.com/astronomer/airflow/commit/d38d3625540a0d802470177a32efb5991158f70a))

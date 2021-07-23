@@ -9,7 +9,7 @@ Astronomer Certified 1.10.15-3, 2021-07-14
 - [backport] Fix bug with `executor_config` and Volumes ([commit](https://github.com/astronomer/airflow/commit/7813076ac))
 - Only allow webserver to request from the worker log server (#16754) ([commit](https://github.com/astronomer/airflow/commit/b8db31c19))
 - Dockerfile: Add constraint for installed Airflow version (#274) ([commit](https://github.com/astronomer/ap-airflow/commit/60174ec))
-- Dockerfile: Upgrade Fab sec manager to 1.6.0 (#272) ([commit](https://github.com/astronomer/ap-airflow/commit/417fd59))
+- Dockerfile: Upgrade Fab Security Manager to 1.6.0 (#272) ([commit](https://github.com/astronomer/ap-airflow/commit/417fd59))
 
 Astronomer Certified 1.10.15-2, 2021-06-04
 ------------------------------------------
