@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 1.10.7-19, TBC
+--------------------------------------------
+
+### Bug Fixes
+
+- Exclude ``yarn.lock`` from built Python wheel file (#16577) ([commit](https://github.com/astronomer/airflow/commit/fc685c2ad))
+- Only allow webserver to request from the worker log server (#16754) ([commit](https://github.com/astronomer/airflow/commit/878e7aac4))
+- Dockerfile: Add constraint for installed Airflow version (#274) ([commit](https://github.com/astronomer/ap-airflow/commit/60174ec))
+- Dockerfile: Upgrade Fab Security Manager to 1.6.0 (#272) ([commit](https://github.com/astronomer/ap-airflow/commit/417fd59))
+- Dockerfile: Update / Override PIP version in Env Vars (#263) ([commit](https://github.com/astronomer/ap-airflow/commit/ab60218))
+
 Astronomer Certified 1.10.7-18, 2021-04-27
 --------------------------------------------
 
