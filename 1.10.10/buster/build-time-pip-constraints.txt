@@ -134,7 +134,7 @@ pyasn1-modules==0.2.8
 pycparser==2.20
 pydata-google-auth==1.1.0
 Pygments==2.7.3
-PyJWT==2.0.0
+PyJWT==1.7.1
 PyNaCl==1.4.0
 pyOpenSSL==20.0.1
 pyparsing==2.4.7
