@@ -137,7 +137,7 @@ RUN pip install "${AIRFLOW_MODULE}" --constraint /tmp/build-time-pip-constraints
 FROM ${APT_DEPS_IMAGE} as main
 
 # By increasing this number we force CI to upgrade all system packages
-ARG PACKAGE_UPGRADE_EPOCH_NUMBER="7"
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="8"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
