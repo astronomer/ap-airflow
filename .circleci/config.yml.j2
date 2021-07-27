@@ -480,7 +480,7 @@ jobs:
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=axsrggsp
             export DAGSTEST_DB_USER=axsrggsp
-            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
             dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t core
@@ -631,7 +631,7 @@ jobs:
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=axsrggsp
             export DAGSTEST_DB_USER=axsrggsp
-            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
             #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
@@ -711,7 +711,7 @@ jobs:
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=axsrggsp
             export DAGSTEST_DB_USER=axsrggsp
-            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
             #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t negative
@@ -791,7 +791,7 @@ jobs:
             export DAGSTEST_DB_PORT=5432
             export DAGSTEST_DB_NAME=axsrggsp
             export DAGSTEST_DB_USER=axsrggsp
-            export DAGSTEST_DB_PASSWORD=$QA_DAGSTEST_DB_PASSWORD
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
             #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
             dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t dagparams
