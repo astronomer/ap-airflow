@@ -2355,29 +2355,27 @@ jobs:
         default: ""
         type: string
     steps:
-      - attach_workspace:
-          at: ~/
-      # - run: sudo apt-get -y update
-      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
-      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      # - run: npm -v
-      # - run: node -v
-      # - run:
-      #     name: Avoid hosts unknown for github
-      #     command:   |
-      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      # - run: git clone git@github.com:astronomer/qa-regression.git
-      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
-      # - run:
-      #     name: Run Shell Script for creating deployments
-      #     command:  |
-      #       cd qa-regression
-      #       ls
-      #       chmod 744 *.sh
-      #       echo "Run Deployment Script"
-      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
-      #       cd ..
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
       - run: mkdir -p $CORE_TEST_REPORTS/k8s/
       - run:
           name: Run the Pre-Reqs for running K8s
@@ -2441,29 +2439,27 @@ jobs:
         default: ""
         type: string
     steps:
-      - attach_workspace:
-          at: ~/
-      # - run: sudo apt-get -y update
-      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
-      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      # - run: npm -v
-      # - run: node -v
-      # - run:
-      #     name: Avoid hosts unknown for github
-      #     command:   |
-      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      # - run: git clone git@github.com:astronomer/qa-regression.git
-      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
-      # - run:
-      #     name: Run Shell Script for creating deployments
-      #     command:  |
-      #       cd qa-regression
-      #       ls
-      #       chmod 744 *.sh
-      #       echo "Run Deployment Script"
-      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
-      #       cd ..
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
       - run: mkdir -p $CORE_TEST_REPORTS/negative/
       - run:
           name: Run the DAGS
@@ -2521,29 +2517,27 @@ jobs:
         default: ""
         type: string
     steps:
-      - attach_workspace:
-          at: ~/
-      # - run: sudo apt-get -y update
-      # - run: sudo apt-get -y install git curl wget libpq-dev nodejs
-      # - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-      # - run: npm -v
-      # - run: node -v
-      # - run:
-      #     name: Avoid hosts unknown for github
-      #     command:   |
-      #       [ ! -d ~/.ssh ] && mkdir ~/.ssh/
-      #       echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      # - run: git clone git@github.com:astronomer/qa-regression.git
-      # - run: git clone git@github.com:astronomer/qa-scenario-dags.git
-      # - run:
-      #     name: Run Shell Script for creating deployments
-      #     command:  |
-      #       cd qa-regression
-      #       ls
-      #       chmod 744 *.sh
-      #       echo "Run Deployment Script"
-      #       bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
-      #       cd ..
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
       - run: mkdir -p $CORE_TEST_REPORTS/dag-params
       - run:
           name: Run the DAGS
