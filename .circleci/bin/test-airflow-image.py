@@ -87,7 +87,7 @@ def test_version(webserver, docker_client):
         f"Incorrect post-fix version in {ac_version_output}"
     if get_label(docker_client, "io.astronomer.docker.distro") == "debian":
         pip_ver = webserver.check_output("pip --version")
-        assert pip_ver == "21.2.3"
+        assert "21.2.3" in pip_ver
 
 
 def test_elasticsearch_version(webserver):
