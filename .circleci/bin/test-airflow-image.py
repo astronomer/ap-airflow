@@ -85,7 +85,7 @@ def test_version(webserver, docker_client):
         post_fix_version_astro = ac_version.rsplit('-')[-1]
     assert post_fix_version_astro == ac_version_postfix_output, \
         f"Incorrect post-fix version in {ac_version_output}"
-    if get_label(docker_client, "io.astronomer.docker.distro") == "debian"
+    if get_label(docker_client, "io.astronomer.docker.distro") == "debian":
         pip_ver = webserver.check_output("pip --version")
         assert pip_ver == "21.2.3"
 
