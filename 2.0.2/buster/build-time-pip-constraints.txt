@@ -47,7 +47,6 @@ azure-nspkg==3.0.2
 azure-storage-blob==12.8.1
 azure-storage-common==2.1.0
 azure-storage-file==2.1.0
-Babel==2.9.0
 Babel==2.9.1
 backports.entry-points-selectable==1.1.0
 bcrypt==3.2.0
