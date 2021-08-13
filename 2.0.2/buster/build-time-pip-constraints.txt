@@ -3,13 +3,12 @@
 adal==1.2.7
 alembic==1.6.5
 amqp==2.6.1
-apache-airflow==1!2.0.2+astro.4
 apache-airflow-providers-amazon==1!1.4.0
 apache-airflow-providers-celery==1!1.0.1
 apache-airflow-providers-cncf-kubernetes==1!1.2.1
 apache-airflow-providers-elasticsearch==1!1.0.4
 apache-airflow-providers-ftp==1!1.1.0
-apache-airflow-providers-google==1!3.0.0
+apache-airflow-providers-google==1!2.2.0
 apache-airflow-providers-http==1!1.1.1
 apache-airflow-providers-imap==1!1.0.1
 apache-airflow-providers-microsoft-azure==1!1.3.0
@@ -56,7 +55,7 @@ boto3==1.17.112
 botocore==1.20.112
 cached-property==1.5.2
 cachetools==4.2.2
-cattrs==1.7.1
+cattrs==1.8.0
 celery==4.4.7
 certifi==2021.5.30
 cffi==1.14.6
@@ -219,7 +218,7 @@ rsa==4.7.2
 s3transfer==0.4.2
 setproctitle==1.2.2
 six==1.16.0
-slack-sdk==3.8.0
+slack-sdk==3.9.0
 SQLAlchemy==1.3.24
 SQLAlchemy-JSONField==1.0.0
 SQLAlchemy-Utils==0.37.8
@@ -239,7 +238,7 @@ urllib3==1.26.6
 vine==1.3.0
 virtualenv==20.7.2
 watchtower==0.7.3
-websocket-client==1.2.0
+websocket-client==1.2.1
 Werkzeug==1.0.1
 WTForms==2.3.3
 zipp==3.5.0
