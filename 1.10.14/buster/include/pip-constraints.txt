@@ -4,3 +4,6 @@ redis!=3.4.0
 
 # Details: https://github.com/apache/airflow/pull/8833
 azure-storage<0.37.0
+
+# https://github.com/astronomer/issues/issues/3347#issuecomment-901370036
+elasticsearch<7.14

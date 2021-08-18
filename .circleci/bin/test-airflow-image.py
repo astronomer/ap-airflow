@@ -101,6 +101,8 @@ def test_elasticsearch_version(webserver):
     version = elasticsearch_module['version']
     assert semantic_version(version) >= semantic_version('5.5.3'), \
         "elasticsearch module must be version 5.5.3 or greater"
+    assert semantic_version(version) < semantic_version('7.14'), \
+        "elasticsearch module must be less than 7.14 until https://github.com/astronomer/issues/issues/3347 is fixed"
 
 
 @pytest.mark.skipif(airflow_2, reason="Not needed for Airflow>=2")
