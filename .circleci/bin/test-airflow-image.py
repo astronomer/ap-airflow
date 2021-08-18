@@ -85,6 +85,9 @@ def test_version(webserver, docker_client):
         post_fix_version_astro = ac_version.rsplit('-')[-1]
     assert post_fix_version_astro == ac_version_postfix_output, \
         f"Incorrect post-fix version in {ac_version_output}"
+    if airflow_2:
+        pip_ver = webserver.pip_package.get_packages()["pip"]
+        assert semantic_version(pip_ver['version']) >= semantic_version('21.2.3')
 
 
 def test_elasticsearch_version(webserver):

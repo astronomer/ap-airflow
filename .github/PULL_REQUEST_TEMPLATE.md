@@ -9,4 +9,4 @@
 - [ ] If a new distribution or Airflow version is added, there Dockerfile in all base image directories
 - [ ] If a new distribution is added, it is supported by all Airflow versions
 - [ ] If a new Airflow version is added, it supports all distributions
-- [ ] If changing an image, add applicable test in .circleci/test-airflow-image.py
+- [ ] If changing an image, add applicable test in .circleci/bin/test-airflow-image.py
