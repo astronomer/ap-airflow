@@ -27,4 +27,4 @@ pyOpenSSL<20.0
 kubernetes<12.0
 
 # https://github.com/astronomer/issues/issues/3347#issuecomment-901370036
-elasticsearch<7.13.4
+elasticsearch<7.14
