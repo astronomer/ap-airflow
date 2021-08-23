@@ -632,7 +632,7 @@ jobs:
             export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
             dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
             EXEC_TIME=$(date +%FT%TZ)
-            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8s
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8
             sleep 420
             echo "Sleeping for 420s"
             dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
@@ -779,7 +779,7 @@ jobs:
             pip3 install -e .
             python3 -m venv env
             . env/bin/activate
-            fileurl="/home/circle/project/env_current_api_url"
+            fileurl="/home/circleci/project/env_current_api_url"
             export AIRFLOW_API_URL=$(cat "$fileurl")
             export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
             export DAGSTEST_DB_PORT=5432
