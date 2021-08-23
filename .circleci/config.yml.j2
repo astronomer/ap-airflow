@@ -63,7 +63,7 @@ workflows:
           name: qa-params-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           executor_type: "celery"
-          test_type: "params"
+          test_type: "dagparams"
           requires:
             - qa-core-celery-{{ airflow_version }}-{{ distribution }}
           context:
@@ -108,7 +108,7 @@ workflows:
           name: qa-k8s-k8s-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           executor_type: "kubernetes"
-          test_type: "k8s"
+          test_type: "k8"
           requires:
             - qa-core-k8s-{{ airflow_version }}-{{ distribution }}
           context:
@@ -117,7 +117,7 @@ workflows:
           name: qa-params-k8s-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
           executor_type: "kubernetes"
-          test_type: "params"
+          test_type: "dagparams"
           requires:
             - qa-k8s-k8s-{{ airflow_version }}-{{ distribution }}
           context:
