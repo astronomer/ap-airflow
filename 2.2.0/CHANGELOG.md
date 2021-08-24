@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.2.0-1, 2021-08-24
+Astronomer Certified 2.2.0-1.dev, TBC
 ----------------------------------------
 
 User-facing CHANGELOG for AC 2.2.0+astro.1 from Airflow 2.2.0:
