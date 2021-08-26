@@ -14,7 +14,7 @@
 # limitations under the License.
 ARG APT_DEPS_IMAGE="airflow-apt-deps"
 ARG PYTHON_MAJOR_MINOR_VERSION="3.9"
-ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim"
+ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-bullseye"
 
 FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
