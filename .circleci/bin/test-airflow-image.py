@@ -260,45 +260,42 @@ def test_airflow_trigger_dags(scheduler):
 def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
+    relative_config_path = "config_templates/default_airflow.cfg"
+    config_file_path = f'''
+    python -c "import airflow; import os; print(os.path.dirname(airflow.__file__) + "/{relative_config_path}")"
+    '''.strip()
 
     if distro == "debian":
-        config_file_path = "/usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = "50000"
     elif distro == "alpine":
-        config_file_path = "/usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = "100"
     elif distro == "rhel":
-        config_file_path = "/usr/local/lib/python3.6/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = "100"
     else:
-        config_file_path = "/usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = ""
 
     if airflow_2:
         assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^lazy_load_plugins' | awk '{print $3}'"
+            "airflow config list | grep '^lazy_load_plugins' | awk '{print $3}'"
         ) == "False", "[core] lazy_load_plugins needs to be False for astronomer-version-check plugin to work"
 
         assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^auth_backend' | awk '{print $3}'"
+            "airflow config list | grep '^auth_backend' | awk '{print $3}'"
         ) == "astronomer.flask_appbuilder.current_user_backend", \
             "[api] auth_backend needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
 
         assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^operation_timeout' | awk '{print $3}'"
+            "airflow config list | grep '^operation_timeout' | awk '{print $3}'"
         ) == "10.0", "[celery] operation_timeout needs to be set for AC >= 2.0.0"
     else:
         # Confirm that run_as_user is the UID for astro user (and not root) for AC images
         assert scheduler.check_output(
-            f"cat {config_file_path} | "
+            f"cat $({config_file_path}) | "
             "grep '^run_as_user' | awk '{print $3}'").strip() == expected_run_as_user
 
     if semantic_version(airflow_version) >= semantic_version('1.10.7'):
         assert scheduler.check_output(
-            f"cat {config_file_path} | "
+            f"cat $({config_file_path}) | "
             "grep '^update_fab_perms' | awk '{print $3}'"
         ) == "False", "[webserver] update_fab_perms needs to be False for AC >= 1.10.10"
 
