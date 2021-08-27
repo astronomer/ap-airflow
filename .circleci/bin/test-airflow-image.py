@@ -277,29 +277,29 @@ def test_airflow_configs(scheduler, docker_client):
 
     if airflow_2:
         assert scheduler.check_output(
-            f"cat $({config_file_path}) | "
+            f"cat {config_file_path} | "
             "grep '^lazy_load_plugins' | awk '{print $3}'"
         ) == "False", "[core] lazy_load_plugins needs to be False for astronomer-version-check plugin to work"
 
         assert scheduler.check_output(
-            f"cat $({config_file_path}) | "
+            f"cat {config_file_path} | "
             "grep '^auth_backend' | awk '{print $3}'"
         ) == "astronomer.flask_appbuilder.current_user_backend", \
             "[api] auth_backend needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
 
         assert scheduler.check_output(
-            f"cat $({config_file_path}) | "
+            f"cat {config_file_path} | "
             "grep '^operation_timeout' | awk '{print $3}'"
         ) == "10.0", "[celery] operation_timeout needs to be set for AC >= 2.0.0"
     else:
         # Confirm that run_as_user is the UID for astro user (and not root) for AC images
         assert scheduler.check_output(
-            f"cat $({config_file_path}) | "
+            f"cat {config_file_path} | "
             "grep '^run_as_user' | awk '{print $3}'").strip() == expected_run_as_user
 
     if semantic_version(airflow_version) >= semantic_version('1.10.7'):
         assert scheduler.check_output(
-            f"cat $({config_file_path}) | "
+            f"cat {config_file_path} | "
             "grep '^update_fab_perms' | awk '{print $3}'"
         ) == "False", "[webserver] update_fab_perms needs to be False for AC >= 1.10.10"
 
