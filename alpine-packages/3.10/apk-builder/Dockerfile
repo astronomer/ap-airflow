@@ -1,5 +1,5 @@
 # Based off https://github.com/andyshinn/docker-alpine-abuild but for apline 3.5
-FROM alpine:3.10
+FROM alpine:3.14
 RUN apk --no-cache add alpine-sdk coreutils \
   && adduser -G abuild -g "Alpine Package Builder" -s /bin/ash -D builder \
   && echo "builder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
