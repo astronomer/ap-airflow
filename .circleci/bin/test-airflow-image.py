@@ -260,11 +260,13 @@ def test_airflow_trigger_dags(scheduler):
 def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
-    relative_config_path = "config_templates/default_airflow.cfg"
-    airflow_dir = str(scheduler.check_output(
-        'python -c "import airflow; import os; print(os.path.dirname(airflow.__file__))"'
+    relative_config_path = "site-packages/airflow/config_templates/default_airflow.cfg"
+    python_install_dir = str(scheduler.check_output(
+        'python -c "import os; print(os.path.dirname(os.__file__))"'
     )).strip()
-    config_file_path = f"{airflow_dir}/{relative_config_path}"
+    config_file_path = f"{python_install_dir}/{relative_config_path}"
+
+    assert scheduler.file(config_file_path).exists, f"{relative_config_path} does not exist !"
 
     if distro == "debian":
         expected_run_as_user = "50000"
