@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ARG APT_DEPS_IMAGE="airflow-apt-deps"
-ARG PYTHON_MAJOR_MINOR_VERSION="3.7"
-ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-buster"
+ARG PYTHON_MAJOR_MINOR_VERSION="3.9"
+ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-bullseye"
 
 FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
@@ -64,7 +64,7 @@ RUN apt-get update \
            libmariadb3 \
            freetds-bin \
            gosu \
-           libffi6 \
+           libffi7 \
            libkrb5-3 \
            libpq5 \
            libsasl2-2 \
@@ -98,7 +98,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
 ENV PIP_NO_CACHE_DIR="true"
 
 RUN apt-get update \
-    && curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - \
+    && curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - \
     && apt-get install -y --no-install-recommends \
         build-essential \
         default-libmysqlclient-dev \
