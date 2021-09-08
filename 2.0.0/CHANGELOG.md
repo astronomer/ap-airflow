@@ -5,7 +5,9 @@ Astronomer Certified 2.0.0-9, 2021-09-08
 
 ## Bugfixes
 
-- Add missing permissions to varimport (#17468) ([commit](https://github.com/astronomer/airflow/commit/b1d28ec86))
+- Add missing permissions to `varimport` (#17468) ([commit](https://github.com/astronomer/airflow/commit/b1d28ec86))
+- Dockerfile: Pin `elasticsearch` python client version to `7.13.4` (#294)
+- Dockerfile: Update pip to latest version in buster images (#289)
 
 Astronomer Certified 2.0.0-8, 2021-07-13
 ----------------------------------------
