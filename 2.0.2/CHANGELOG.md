@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.0.2-5, TBD
+---------------------------------
+
+### Bugfixes
+
+- Add missing permissions to varimport (#17468) ([commit](https://github.com/astronomer/airflow/commit/2bbaec8b7))
+
 Astronomer Certified 2.0.2-4, 2021-07-13
 ----------------------------------------
 
