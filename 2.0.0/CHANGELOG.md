@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.0.0-10, TBC
+--------------------------------------------
+
+### Bug Fixes
+
+- [astro] Fix istio sidecar shutdown on newer GKE ([commit](https://github.com/astronomer/airflow/commit/77ceaf03c))
+
 Astronomer Certified 2.0.0-9, 2021-09-08
 ----------------------------------------
 
