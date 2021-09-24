@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.1.0-5, TBC
+Astronomer Certified 2.1.0-5, 2021-09-24
 --------------------------------------------
 
 ### Bug Fixes
