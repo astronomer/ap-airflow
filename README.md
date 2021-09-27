@@ -24,6 +24,16 @@ For each of our `-onbuild` images we publish two flavors of tag:
 including latest security patches. This tag is "floating" or movable.
 2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
 
+These are built roughly as follows:
+
+```
+STANDARD_IMAGE=local/ap-airflow:foo
+ONBUILD_IMAGE=${STANDARD_IMAGE}-onbuild
+DOCKER_BUILDKIT=1 docker build --tag $STANDARD_IMAGE --ssh=github="${HOME}/.ssh/id_rsa" .
+DOCKER_BUILDKIT=1 docker build --tag $ONBUILD_IMAGE --build-arg baseimage=$STANDARD_IMAGE -f Dockerfile.onbuild-buster .
+```
+
+
 ## Contents of this repo
 
 * The official Dockerfiles that build Astronomer Core Images

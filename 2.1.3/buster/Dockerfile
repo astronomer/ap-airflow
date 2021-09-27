@@ -196,6 +196,10 @@ RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 # Environment Variables for Partner Programs
 ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
 
+# Environment Variabels for 
+ENV ENTRYPOINT_STARTUP_SOURCE_D_DIR=/mnt/entrypoint-startup.source.d
+ENV ENTRYPOINT_SHUTDOWN_SOURCE_D_DIR=/mnt/entrypoint-shutdown.source.d
+
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
 # with this

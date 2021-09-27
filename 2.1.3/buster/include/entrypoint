@@ -1,5 +1,73 @@
 #!/usr/bin/env bash
 set -e
+set -x
+
+
+### TWO IMPLEMENTATION OPTIONS
+
+#### OPTION 1: Implicit sourcing
+# if the entrypoint startup addendum directory exists source in any startup addendum
+if [[ -d ${ENTRYPOINT_STARTUP_SOURCE_D_DIR} ]]; then
+  echo "Sourcing startup addendum."
+  for file in "${ENTRYPOINT_STARTUP_SOURCE_D_DIR}"/*; do
+    # this continue avoid infamous bash pitfall with empty sets in for loops
+    [ -e "$file" ] || continue
+    echo "Sourcing $file"
+    echo "NOPE IM NOT DISABLED FOR DEBUG"
+    #source $file
+  done
+fi
+
+#### OPTION 2: explicitly in-line the stuff otherwise sourced in dynamically
+#### Architect's Preference as per PEP-20 maxim #2
+# Optional sidecar logging keepalive support
+if [[ ! -z ${SIDECAR_LOGGING_KEEPALIVE_PORT+x} ]]; then
+  SIDECAR_LOGGING_KEEPALIVE_SOCKET=/dev/tcp/127.0.0.1/${SIDECAR_LOGGING_KEEPALIVE_PORT}
+  echo "Connecting to sidecar logging keepalive-daemon on ${SIDECAR_LOGGING_KEEPALIVE_SOCKET}"
+  # loop while we wait for the socket to come up, quashing stderr in the process
+  # once we do manage to make a connection, redirect it to fd #7
+  while true; do
+    set +e
+    exec 4>&2 2>/dev/null 7<>${SIDECAR_LOGGING_KEEPALIVE_SOCKET} 2>&4
+    set -e
+    if [ $? -eq 0 ]; then
+        echo "Connected to sidecar logging keepalive-daemon on ${SIDECAR_LOGGING_KEEPALIVE_SOCKET}"
+	break;
+    else
+      sleep .05;
+    fi
+  done
+fi
+
+#### Option 2 Continued
+# Optional support for shipping unstructured logs
+if [[ ! -z ${UNSTRUCTURED_LOGGING_HOST+x} ]]; then
+  if [[ -z ${COMPONENT} ]]; then
+    echo "COMPONENT must be set when using sidecar logging."
+    exit 2;
+  fi
+  UNSTRUCTURED_LOGGING_SOCKET=/dev/tcp/${UNSTRUCTURED_LOGGING_HOST}/${UNSTRUCTURED_LOGGING_PORT}
+  echo "Connecting to tcp logging daemon on ${UNSTRUCTURED_LOGGING_SOCKET}"
+  while true; do
+    set +e
+    # create a pointer to the origianl stdout and stderr
+    exec 3>&1 4>&2 2>&4
+    # clobber old stdout and stderr
+    set -e
+    if [ $? -eq 0 ]; then
+        echo "Connected to sidecar logging keepalive-daemon on ${SIDECAR_LOGGING_KEEPALIVE_SOCKET}"
+	break;
+    else
+      sleep .05;
+    fi
+  done
+  # perform actual io redirection
+  echo "Redirecting stdio and stderr to ${UNSTRUCTURED_LOGGING_SOCKET}"
+  # line-format for logs is versioned by the characters before the first space - see fluentd config for details
+  # v1 format is space delimited and is <version> <timestamp> <stream> <component> <message>
+  exec 1> >(tee >(sed "s/^/v1 $(date +%s%N) stdout ${COMPONENT} /" >>${UNSTRUCTURED_LOGGING_SOCKET}))
+  exec 2> >(tee >(sed "s/^/v1 $(date +%s%N) stderr ${COMPONENT} /" >>${UNSTRUCTURED_LOGGING_SOCKET}) >(cat >&4) 1 >> /dev/null)
+fi
 
 if [[ $UID == "${ASTRONOMER_UID:-1000}" ]]; then
   # Since we need to support running tini as another user, we can't put tini in
@@ -50,3 +118,21 @@ fi
 
 # Run the original command
 exec "$@"
+
+
+#### OPTION 1 Continued: more Implicit sourcing
+# if the entrypoint shutdown addendum directory exists source in any shutdown addendum
+if [[ -d ${ENTRYPOINT_SHUTDOWN_SOURCE_D_DIR} ]]; then
+  echo "Sourcing shutdown addendum."
+  for file in "${ENTRYPOINT_SHUTDOWN_SOURCE_D_DIR}"/*; do
+    # this continue avoid infamous bash pitfall with empty sets in for loops
+    [ -e "$file" ] || continue
+    echo "Sourcing $file"
+    source $file
+  done
+fi
+
+#### OPTION 2: explicitly in-line the stuff otherwise sourced in dynamically
+#### Architect's Preference as per PEP-20 maxim #2
+# TODO - send a line reading quit to the SIDECAR_LOGGING_KEEPALIVE_SOCKET
+
