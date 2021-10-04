@@ -3,23 +3,6 @@ set -e
 set -x
 
 
-### TWO IMPLEMENTATION OPTIONS
-
-#### OPTION 1: Implicit sourcing
-# if the entrypoint startup addendum directory exists source in any startup addendum
-if [[ -d ${ENTRYPOINT_STARTUP_SOURCE_D_DIR} ]]; then
-  echo "Sourcing startup addendum."
-  for file in "${ENTRYPOINT_STARTUP_SOURCE_D_DIR}"/*; do
-    # this continue avoid infamous bash pitfall with empty sets in for loops
-    [ -e "$file" ] || continue
-    echo "Sourcing $file"
-    echo "NOPE IM NOT DISABLED FOR DEBUG"
-    #source $file
-  done
-fi
-
-#### OPTION 2: explicitly in-line the stuff otherwise sourced in dynamically
-#### Architect's Preference as per PEP-20 maxim #2
 # Optional sidecar logging keepalive support
 if [[ ! -z ${SIDECAR_LOGGING_KEEPALIVE_PORT+x} ]]; then
   SIDECAR_LOGGING_KEEPALIVE_SOCKET=/dev/tcp/127.0.0.1/${SIDECAR_LOGGING_KEEPALIVE_PORT}
@@ -39,7 +22,6 @@ if [[ ! -z ${SIDECAR_LOGGING_KEEPALIVE_PORT+x} ]]; then
   done
 fi
 
-#### Option 2 Continued
 # Optional support for shipping unstructured logs
 if [[ ! -z ${UNSTRUCTURED_LOGGING_HOST+x} ]]; then
   if [[ -z ${COMPONENT} ]]; then
@@ -120,19 +102,7 @@ fi
 exec "$@"
 
 
-#### OPTION 1 Continued: more Implicit sourcing
-# if the entrypoint shutdown addendum directory exists source in any shutdown addendum
-if [[ -d ${ENTRYPOINT_SHUTDOWN_SOURCE_D_DIR} ]]; then
-  echo "Sourcing shutdown addendum."
-  for file in "${ENTRYPOINT_SHUTDOWN_SOURCE_D_DIR}"/*; do
-    # this continue avoid infamous bash pitfall with empty sets in for loops
-    [ -e "$file" ] || continue
-    echo "Sourcing $file"
-    source $file
-  done
+# If we are using a sidecar logging keepalive socket hang up
+if [[ ! -z ${SIDECAR_LOGGING_KEEPALIVE_SOCKET+x} ]]; then
+  echo "goodbye" >> $SIDECAR_LOGGING_KEEPALIVE_SOCKET
 fi
-
-#### OPTION 2: explicitly in-line the stuff otherwise sourced in dynamically
-#### Architect's Preference as per PEP-20 maxim #2
-# TODO - send a line reading quit to the SIDECAR_LOGGING_KEEPALIVE_SOCKET
-
