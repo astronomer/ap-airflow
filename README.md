@@ -39,7 +39,6 @@ including latest security patches. This tag is "floating" or movable.
 ## Changelog
 
 All changes applied to available point releases will be documented in the `CHANGELOG.md` files within each version folder:
-- [1.10.7 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.7/CHANGELOG.md)
 - [1.10.10 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.10/CHANGELOG.md)
 - [1.10.12 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.12/CHANGELOG.md)
 - [1.10.14 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.14/CHANGELOG.md)
@@ -49,6 +48,7 @@ All changes applied to available point releases will be documented in the `CHANG
 - [2.1.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.0/CHANGELOG.md)
 - [2.1.1 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.1/CHANGELOG.md)
 - [2.1.3 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.3/CHANGELOG.md)
+- [2.1.4 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.4/CHANGELOG.md)
 - [2.2.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.0/CHANGELOG.md)
 <!-- CHANGELOG END -->
 

@@ -45,7 +45,7 @@ ARG PYTHON_BASE_IMAGE
 ENV PYTHON_BASE_IMAGE=${PYTHON_BASE_IMAGE}
 ARG PYTHON_MAJOR_MINOR_VERSION
 ENV PYTHON_MAJOR_MINOR_VERSION=${PYTHON_MAJOR_MINOR_VERSION}
-ARG PIP_VERSION="19.3.1"
+ARG PIP_VERSION="21.2.4"
 ENV PYTHON_PIP_VERSION=${PIP_VERSION}
 
 # Make sure noninteractie debian install is used and language variables set
@@ -110,10 +110,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.7-19"
-ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
+ARG VERSION="2.1.4-2"
+ARG SUBMODULES="async,azure,amazon,celery,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
-ARG AIRFLOW_VERSION="1.10.7"
+ARG AIRFLOW_VERSION="2.1.4"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -122,14 +122,15 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # This constraints will be only used during docker-build
 # and won't be included in the final image
-# It is useful to install airflow-providers that work but still allow users to
-# install providers of their choice (as opposed to entries in astronomer-pip-constraints.txt)
+# It is useful to install packages that are known to work but still allow users to
+# override versions (as opposed to entries in astronomer-pip-constraints.txt)
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" --constraint /tmp/build-time-pip-constraints.txt \
+RUN pip install "${AIRFLOW_MODULE}" \
+    --constraint /tmp/build-time-pip-constraints.txt \
   && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-	&& pip install --no-cache-dir "astronomer-fab-security-manager~=1.2, >=1.2.2"
+	&& pip install "astronomer-fab-security-manager~=1.6"
 
 
 ## move this to same layer as airflow because its from tag.
@@ -144,8 +145,8 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.7-19"
-ARG AIRFLOW_VERSION="1.10.7"
+ARG VERSION="2.1.4-2"
+ARG AIRFLOW_VERSION="2.1.4"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
@@ -163,8 +164,14 @@ RUN pip freeze | grep "apache-airflow==" >>  /usr/local/share/astronomer-pip-con
 RUN sed -i \
     # Run pods spun up by Kubernetes Executor as astro user
     -e 's/^run_as_user =.*/run_as_user = 50000/g' \
+    # Needed by astronomer-version-check-plugin
+    -e 's/^lazy_load_plugins =.*/lazy_load_plugins = False/g' \
     # We sync permissions in the entrypoint so do not need to run in the Webserver again
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
+    # Use Auth Backend defined in Astronomer FAB Security Manager
+    -e 's/^auth_backend =.*/auth_backend = astronomer.flask_appbuilder.current_user_backend/g' \
+    # The number of seconds to wait before timing out send_task_to_executor or fetch_celery_task_state operations.
+    -e 's/^operation_timeout =.*/operation_timeout = 10.0/g' \
     /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/config_templates/default_airflow.cfg
 
 # Create logs directory, so we can own it when we mount volumes
@@ -185,6 +192,9 @@ RUN groupadd gosuers \
 
 # Create man directory to solve issues installing JRE
 RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
+
+# Environment Variables for Partner Programs
+ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
 
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
