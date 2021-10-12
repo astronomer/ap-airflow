@@ -21,7 +21,7 @@ IMAGE_MAP = collections.OrderedDict([
     ("2.1.1-4", ["buster"]),
     ("2.1.3-2", ["buster"]),
     ("2.1.4-2", ["buster"]),
-    ("2.2.0-2", ["buster"]),
+    ("2.2.0-2", ["bullseye"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
@@ -107,7 +107,7 @@ def replace_version_info():
 
                 # Replace Moving Constraints Version to a tag for "non-dev" version (e.g constraints-2.1.0)
                 # For Dev versions we use a moving constraints branch (e.g constraints-2-1)
-                # We only do this for all buster images
+                # We only do this for all debian images
                 # If it is the first post-fix version in AC / Airflow series use constraints-branch, if not
                 # use the constraints from Airflow Version tag.
                 if dev_version and "-1.dev" in ac_version_raw:

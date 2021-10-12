@@ -1455,51 +1455,51 @@ workflows:
                 - master
 
       - build:
-          name: build-2.2.0-buster
+          name: build-2.2.0-bullseye
           airflow_version: 2.2.0
-          distribution_name: buster
+          distribution_name: bullseye
           dev_build: false
           requires:
             - Need-Approval-2.2.0
             - static-checks
       - scan-trivy:
-          name: scan-trivy-2.2.0-buster-onbuild
+          name: scan-trivy-2.2.0-bullseye-onbuild
           airflow_version: 2.2.0
-          distribution: buster
-          distribution_name: buster-onbuild
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
           requires:
-            - build-2.2.0-buster
+            - build-2.2.0-bullseye
       - test:
-          name: test-2.2.0-buster-images
-          tag: "2.2.0-buster"
+          name: test-2.2.0-bullseye-images
+          tag: "2.2.0-bullseye"
           requires:
-            - build-2.2.0-buster
+            - build-2.2.0-bullseye
       - push:
-          name: push-2.2.0-buster
-          tag: "2.2.0-buster"
+          name: push-2.2.0-bullseye
+          tag: "2.2.0-bullseye"
           dev_build: false
-          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM},2.2.0-2-buster"
+          extra_tags: "2.2.0-bullseye-${CIRCLE_BUILD_NUM},2.2.0-2-bullseye"
           context:
             - quay.io
             - docker.io
           requires:
-            - scan-trivy-2.2.0-buster-onbuild
-            - test-2.2.0-buster-images
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
           filters:
             branches:
               only:
                 - master
       - push:
-          name: push-2.2.0-buster-onbuild
-          tag: "2.2.0-buster-onbuild"
+          name: push-2.2.0-bullseye-onbuild
+          tag: "2.2.0-bullseye-onbuild"
           dev_build: false
-          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-2-buster-onbuild"
+          extra_tags: "2.2.0-bullseye-onbuild-${CIRCLE_BUILD_NUM},2.2.0-2-bullseye-onbuild"
           context:
             - quay.io
             - docker.io
           requires:
-            - scan-trivy-2.2.0-buster-onbuild
-            - test-2.2.0-buster-images
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
           filters:
             branches:
               only:
