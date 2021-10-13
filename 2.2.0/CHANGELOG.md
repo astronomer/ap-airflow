@@ -1,5 +1,14 @@
 # Changelog
 
+Astronomer Certified 2.2.0-2, TBD
+---------------------------------
+
+User-facing CHANGELOG for AC 2.2.0+astro.2 from Airflow 2.2.0:
+
+### Bugfixes
+
+- Try to move "dangling" rows in upgradedb ([commit](https://github.com/astronomer/airflow/commit/32d665c21fcf3e34aa7e9272cce8caa03b878819))
+
 Astronomer Certified 2.2.0-1, 2021-10-11
 ----------------------------------------
 
