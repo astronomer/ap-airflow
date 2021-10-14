@@ -1,13 +1,14 @@
 # Changelog
 
-Astronomer Certified 2.2.0-2, TBD
+Astronomer Certified 2.2.0-2, 2021-10-14
 ---------------------------------
 
 User-facing CHANGELOG for AC 2.2.0+astro.2 from Airflow 2.2.0:
 
 ### Bugfixes
 
-- Try to move "dangling" rows in upgradedb ([commit](https://github.com/astronomer/airflow/commit/32d665c21fcf3e34aa7e9272cce8caa03b878819))
+- Fix null exec date on insert to task_fail ([commit](https://github.com/astronomer/airflow/commit/c4a5eaa65))
+- Try to move "dangling" rows in upgradedb ([commit](https://github.com/astronomer/airflow/commit/56bdc223a))
 
 Astronomer Certified 2.2.0-1, 2021-10-11
 ----------------------------------------
