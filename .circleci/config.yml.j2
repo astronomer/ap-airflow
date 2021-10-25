@@ -103,14 +103,23 @@ workflows:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
+          {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          tag: "{{ airflow_version }}-{{ distribution }}"
           dev_build: {{ dev_build }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM},{{ ac_version }}"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -123,9 +132,14 @@ workflows:
                 - master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           dev_build: {{ dev_build }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -173,9 +187,14 @@ workflows:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          tag: "{{ airflow_version }}-{{ distribution }}"
           dev_build: true
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}"
+          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
+          {%- else %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -188,9 +207,14 @@ workflows:
                 - master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           dev_build: true
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
