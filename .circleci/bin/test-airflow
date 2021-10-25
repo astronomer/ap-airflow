@@ -75,16 +75,16 @@ WATCH_PID=$!
 
 kubectl create namespace $NAMESPACE
 helm install --namespace $NAMESPACE \
-  --set defaultAirflowRepository=$REPOSITORY \
-  --set defaultAirflowTag=$TEST_TAG \
-  --set images.airflow.repository=$REPOSITORY \
-  --set images.airflow.tag=$TEST_TAG \
-  --set images.airflow.pullPolicy=Never \
-  --set images.flower.pullPolicy=Never \
-  --set executor=KubernetesExecutor \
-  --set airflowVersion=$AIRFLOW_VERSION \
-  --set uid=$IMAGE_UID \
-  --set gid=$IMAGE_GID \
+  --set airflow.defaultAirflowRepository=$REPOSITORY \
+  --set airflow.defaultAirflowTag=$TEST_TAG \
+  --set airflow.images.airflow.repository=$REPOSITORY \
+  --set airflow.images.airflow.tag=$TEST_TAG \
+  --set airflow.images.airflow.pullPolicy=Never \
+  --set airflow.images.flower.pullPolicy=Never \
+  --set airflow.executor=KubernetesExecutor \
+  --set airflow.airflowVersion=$AIRFLOW_VERSION \
+  --set airflow.uid=$IMAGE_UID \
+  --set airflow.gid=$IMAGE_GID \
   --version=$CHART_VERSION \
   $RELEASE_NAME astronomer/airflow
 
