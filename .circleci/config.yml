@@ -1649,6 +1649,7 @@ workflows:
           distribution_name: bullseye
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          image_name: "ap-airflow:2.2.0"
       - scan-trivy:
           name: scan-trivy-2.2.0-bullseye-onbuild
           airflow_version: 2.2.0
@@ -1697,6 +1698,7 @@ workflows:
           distribution_name: bullseye
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          image_name: "ap-airflow:2.2.1"
       - scan-trivy:
           name: scan-trivy-2.2.1-bullseye-onbuild
           airflow_version: 2.2.1
@@ -1769,11 +1771,15 @@ jobs:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - docker-build-base-and-onbuild:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
+          image_name: "<< parameters.image_name >>"
   test:
     executor: machine-executor
     description: Test Airflow images
@@ -1884,19 +1890,22 @@ commands:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "<< parameters.image_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          image_name: "<< parameters.image_name >>-onbuild"
           path: "common/"
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
-          extra_args: "--build-arg baseimage=ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=<< parameters.image_name >>"
       - persist_to_workspace:
           root: .
           paths:
