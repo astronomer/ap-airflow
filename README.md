@@ -50,6 +50,7 @@ All changes applied to available point releases will be documented in the `CHANG
 - [2.1.3 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.3/CHANGELOG.md)
 - [2.1.4 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.4/CHANGELOG.md)
 - [2.2.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.0/CHANGELOG.md)
+- [2.2.1 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.1/CHANGELOG.md)
 <!-- CHANGELOG END -->
 
 ## Testing
