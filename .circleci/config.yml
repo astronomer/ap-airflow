@@ -96,6 +96,7 @@ workflows:
           airflow_version: 1.10.10
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
+          image_name: "ap-airflow:1.10.10-alpine3.10"
           requires:
             - build-1.10.10-alpine3.10
       - test:
@@ -148,6 +149,7 @@ workflows:
           airflow_version: 1.10.10
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.10-buster"
           requires:
             - build-1.10.10-buster
       - test:
@@ -276,6 +278,7 @@ workflows:
           airflow_version: 1.10.12
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
+          image_name: "ap-airflow:1.10.12-alpine3.10"
           requires:
             - build-1.10.12-alpine3.10
       - test:
@@ -328,6 +331,7 @@ workflows:
           airflow_version: 1.10.12
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.12-buster"
           requires:
             - build-1.10.12-buster
       - test:
@@ -456,6 +460,7 @@ workflows:
           airflow_version: 1.10.14
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.14-buster"
           requires:
             - build-1.10.14-buster
       - test:
@@ -584,6 +589,7 @@ workflows:
           airflow_version: 1.10.15
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.15-buster"
           requires:
             - build-1.10.15-buster
       - test:
@@ -712,6 +718,7 @@ workflows:
           airflow_version: 2.0.0
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.0.0-buster"
           requires:
             - build-2.0.0-buster
       - test:
@@ -840,6 +847,7 @@ workflows:
           airflow_version: 2.0.2
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.0.2-buster"
           requires:
             - build-2.0.2-buster
       - test:
@@ -968,6 +976,7 @@ workflows:
           airflow_version: 2.1.0
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.0-buster"
           requires:
             - build-2.1.0-buster
       - test:
@@ -1096,6 +1105,7 @@ workflows:
           airflow_version: 2.1.1
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.1-buster"
           requires:
             - build-2.1.1-buster
       - test:
@@ -1224,6 +1234,7 @@ workflows:
           airflow_version: 2.1.3
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.3-buster"
           requires:
             - build-2.1.3-buster
       - test:
@@ -1352,6 +1363,7 @@ workflows:
           airflow_version: 2.1.4
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.4-buster"
           requires:
             - build-2.1.4-buster
       - test:
@@ -1481,6 +1493,7 @@ workflows:
           airflow_version: 2.2.0
           distribution: bullseye
           distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.0"
           requires:
             - build-2.2.0-bullseye
       - test:
@@ -1610,6 +1623,7 @@ workflows:
           airflow_version: 2.2.1
           distribution: bullseye
           distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.1"
           requires:
             - build-2.2.1-bullseye
       - test:
@@ -1669,6 +1683,7 @@ workflows:
           airflow_version: 2.2.0
           distribution: bullseye
           distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.0"
           requires:
             - build-2.2.0-bullseye
       - test:
@@ -1718,6 +1733,7 @@ workflows:
           airflow_version: 2.2.1
           distribution: bullseye
           distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.1"
           requires:
             - build-2.2.1-bullseye
       - test:
@@ -1817,6 +1833,9 @@ jobs:
       distribution:
         description: "The distribution without onbuild"
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker
@@ -1824,7 +1843,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>-onbuild.tar
       - run:
           name: Install trivy
           command: |
@@ -1841,7 +1860,7 @@ jobs:
               --cache-dir /tmp/workspace/trivy-cache \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
-              --no-progress "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+              --no-progress "<< parameters.image_name >>-onbuild"
       - save_cache:
           key: trivy-cache
           paths:
