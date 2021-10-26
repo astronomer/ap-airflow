@@ -384,8 +384,13 @@ commands:
       - docker-build:
           image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
           path: "common/"
+          {%- if distribution in ["alpine3.10", "buster"] %}
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
           extra_args: "--build-arg baseimage=ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          {%- else %}
+          dockerfile: "Dockerfile.onbuild"
+          extra_args: "--build-arg baseimage=ap-airflow:<< parameters.airflow_version >>"
+          {%- endif %}
       - persist_to_workspace:
           root: .
           paths:
