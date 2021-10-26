@@ -87,6 +87,7 @@ workflows:
           airflow_version: 1.10.10
           distribution_name: alpine3.10
           dev_build: false
+          image_name: "ap-airflow:1.10.10-alpine3.10"
           requires:
             - Need-Approval-1.10.10
             - static-checks
@@ -138,6 +139,7 @@ workflows:
           airflow_version: 1.10.10
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.10-buster"
           requires:
             - Need-Approval-1.10.10
             - static-checks
@@ -265,6 +267,7 @@ workflows:
           airflow_version: 1.10.12
           distribution_name: alpine3.10
           dev_build: false
+          image_name: "ap-airflow:1.10.12-alpine3.10"
           requires:
             - Need-Approval-1.10.12
             - static-checks
@@ -316,6 +319,7 @@ workflows:
           airflow_version: 1.10.12
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.12-buster"
           requires:
             - Need-Approval-1.10.12
             - static-checks
@@ -443,6 +447,7 @@ workflows:
           airflow_version: 1.10.14
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.14-buster"
           requires:
             - Need-Approval-1.10.14
             - static-checks
@@ -570,6 +575,7 @@ workflows:
           airflow_version: 1.10.15
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.15-buster"
           requires:
             - Need-Approval-1.10.15
             - static-checks
@@ -697,6 +703,7 @@ workflows:
           airflow_version: 2.0.0
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.0.0-buster"
           requires:
             - Need-Approval-2.0.0
             - static-checks
@@ -824,6 +831,7 @@ workflows:
           airflow_version: 2.0.2
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.0.2-buster"
           requires:
             - Need-Approval-2.0.2
             - static-checks
@@ -951,6 +959,7 @@ workflows:
           airflow_version: 2.1.0
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.0-buster"
           requires:
             - Need-Approval-2.1.0
             - static-checks
@@ -1078,6 +1087,7 @@ workflows:
           airflow_version: 2.1.1
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.1-buster"
           requires:
             - Need-Approval-2.1.1
             - static-checks
@@ -1205,6 +1215,7 @@ workflows:
           airflow_version: 2.1.3
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.3-buster"
           requires:
             - Need-Approval-2.1.3
             - static-checks
@@ -1332,6 +1343,7 @@ workflows:
           airflow_version: 2.1.4
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.4-buster"
           requires:
             - Need-Approval-2.1.4
             - static-checks
@@ -1460,6 +1472,7 @@ workflows:
           distribution_name: bullseye
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          image_name: "ap-airflow:2.2.0"
           requires:
             - Need-Approval-2.2.0
             - static-checks
@@ -1588,6 +1601,7 @@ workflows:
           distribution_name: bullseye
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          image_name: "ap-airflow:2.2.1"
           requires:
             - Need-Approval-2.2.1
             - static-checks
