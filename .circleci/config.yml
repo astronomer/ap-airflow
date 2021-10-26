@@ -3,11 +3,11 @@
 version: 2.1
 
 workflows:
-  regression-2.2.0-buster:
+  regression-2.2.1-buster:
     jobs:
       - waiter:
-          name: waiter-2.2.0-buster
-          airflow_version: 2.2.0
+          name: waiter-2.2.1-buster
+          airflow_version: 2.2.1
           context:
             - qa
           filters:
@@ -16,129 +16,129 @@ workflows:
                 - master
                 - waiter_for_each_airflowv
       - qa-ui:
-          name: qa-ui-regression-celery-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-ui-regression-celery-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "celery"
           test_type: "testim"
           requires:
-            - waiter-2.2.0-buster
+            - waiter-2.2.1-buster
           context:
             - qa
       - qa-ui:
-          name: qa-ui-regression-k8s-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-ui-regression-k8s-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "kubernetes"
           test_type: "testim"
           requires:
-            - qa-ui-regression-celery-2.2.0-buster
+            - qa-ui-regression-celery-2.2.1-buster
           context:
             - qa
       - qa-ui:
-          name: qa-ui-regression-local-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-ui-regression-local-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "local"
           test_type: "testim"
           requires:
-            - qa-ui-regression-k8s-2.2.0-buster
+            - qa-ui-regression-k8s-2.2.1-buster
           context:
             - qa
       - qa-core:
-          name: qa-core-celery-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-core-celery-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "celery"
           test_type: "core"
           requires:
-            - waiter-2.2.0-buster
+            - waiter-2.2.1-buster
           context:
             - qa
       - qa-k8s:
-          name: qa-k8s-celery-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-k8s-celery-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "celery"
           test_type: "k8s"
           requires:
-            - qa-core-celery-2.2.0-buster
+            - qa-core-celery-2.2.1-buster
           context:
             - qa
       - qa-params:
-          name: qa-params-celery-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-params-celery-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "celery"
           test_type: "dagparams"
           requires:
-            - qa-core-celery-2.2.0-buster
+            - qa-core-celery-2.2.1-buster
           context:
             - qa
       - qa-restapi:
-          name: qa-restapi-celery-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-restapi-celery-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "celery"
           test_type: "rest"
           requires:
-            - waiter-2.2.0-buster
+            - waiter-2.2.1-buster
           context:
             - qa
       - qa-restapi:
-          name: qa-restapi-local-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-restapi-local-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "local"
           test_type: "rest"
           requires:
-            - qa-restapi-celery-2.2.0-buster
+            - qa-restapi-celery-2.2.1-buster
           context:
             - qa
       - qa-restapi:
-          name: qa-restapi-k8s-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-restapi-k8s-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "kubernetes"
           test_type: "rest"
           requires:
-            - qa-restapi-local-2.2.0-buster
+            - qa-restapi-local-2.2.1-buster
           context:
             - qa
       - qa-core:
-          name: qa-core-k8s-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-core-k8s-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "kubernetes"
           test_type: "core"
           requires:
-            - waiter-2.2.0-buster
+            - waiter-2.2.1-buster
           context:
             - qa
       - qa-k8s:
-          name: qa-k8s-k8s-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-k8s-k8s-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "kubernetes"
           test_type: "k8"
           requires:
-            - qa-core-k8s-2.2.0-buster
+            - qa-core-k8s-2.2.1-buster
           context:
             - qa
       - qa-params:
-          name: qa-params-k8s-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-params-k8s-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "kubernetes"
           test_type: "dagparams"
           requires:
-            - qa-k8s-k8s-2.2.0-buster
+            - qa-k8s-k8s-2.2.1-buster
           context:
             - qa
       - qa-negative:
-          name: qa-negative-k8s-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-negative-k8s-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "kubernetes"
           test_type: "negative"
           requires:
-            - qa-params-k8s-2.2.0-buster
+            - qa-params-k8s-2.2.1-buster
           context:
             - qa
       - qa-core:
-          name: qa-core-local-2.2.0-buster
-          airflow_version: 2.2.0
+          name: qa-core-local-2.2.1-buster
+          airflow_version: 2.2.1
           executor_type: "local"
           test_type: "core"
           requires:
-            - waiter-2.2.0-buster
+            - waiter-2.2.1-buster
           context:
             - qa
   certified-airflow:
@@ -1713,7 +1713,8 @@ workflows:
       - push:
           name: push-2.2.0-buster-onbuild
           tag: "2.2.0-buster-onbuild"
-          dev_build: false
+          #dev_build: false
+          dev_build: true
           extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-2-buster-onbuild"
           context:
             - quay.io
@@ -1739,7 +1740,7 @@ workflows:
                     "type": "header",
                     "text": {
                       "type": "plain_text",
-                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
                       "emoji": true
                     }
                   },
@@ -1795,6 +1796,7 @@ workflows:
             branches:
               only:
                 - master
+                - waiter_for_each_airflowv
       - pause_workflow:
           name: Need-Approval-2.2.1
           requires:
@@ -1804,6 +1806,7 @@ workflows:
             branches:
               only:
                 - master
+                - waiter_for_each_airflowv
 
       - build:
           name: build-2.2.1-buster
@@ -1834,6 +1837,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.1-buster-onbuild
             - test-2.2.1-buster-images
@@ -1844,11 +1848,13 @@ workflows:
       - push:
           name: push-2.2.1-buster-onbuild
           tag: "2.2.1-buster-onbuild"
+          #dev_build: true
           dev_build: true
           extra_tags: "2.2.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster-onbuild"
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.1-buster-onbuild
             - test-2.2.1-buster-images
@@ -1856,6 +1862,8 @@ workflows:
             branches:
               only:
                 - master
+                - testim_workflows
+                - waiter_for_each_airflowv
                 - slack-build-approvals
   nightly:
     triggers:
