@@ -452,6 +452,7 @@ commands:
               --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
               << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
+            docker inspect << parameters.image_name >>
   airflow-image-test:
     description: Test an Airflow image
     parameters:
