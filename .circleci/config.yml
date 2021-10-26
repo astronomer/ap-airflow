@@ -1664,8 +1664,8 @@ workflows:
       - push:
           name: push-2.2.0-bullseye
           dev_build: true
-          tag: "2.2.0-bullseye"
-          extra_tags: "2.2.0-bullseye-${CIRCLE_BUILD_NUM}"
+          tag: "2.2.0"
+          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM}"
           context:
             - quay.io
             - docker.io
@@ -1712,8 +1712,8 @@ workflows:
       - push:
           name: push-2.2.1-bullseye
           dev_build: true
-          tag: "2.2.1-bullseye"
-          extra_tags: "2.2.1-bullseye-${CIRCLE_BUILD_NUM}"
+          tag: "2.2.1"
+          extra_tags: "2.2.1-${CIRCLE_BUILD_NUM}"
           context:
             - quay.io
             - docker.io

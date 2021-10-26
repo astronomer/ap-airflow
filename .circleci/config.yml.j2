@@ -189,11 +189,11 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
-          tag: "{{ airflow_version }}"
-          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
-          {%- else %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
           {%- endif %}
           context:
             - quay.io
