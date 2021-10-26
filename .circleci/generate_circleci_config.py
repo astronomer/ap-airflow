@@ -21,10 +21,7 @@ IMAGE_MAP = collections.OrderedDict([
     ("2.1.1-4", ["buster"]),
     ("2.1.3-2", ["buster"]),
     ("2.1.4-2", ["buster"]),
-    # 2.2.0 is a special case where we have "buster" listed as a distro, however it has bullseye
-    # installed. It is only there for ease of migration for customers.
-    # the 2.2.0/buster dir is just a symlink to 2.2.0/bullseye dir
-    ("2.2.0-3.dev", ["buster", "bullseye"]),
+    ("2.2.0-3.dev", ["bullseye"]),
     ("2.2.1-1.dev", ["bullseye"]),
 ])
 
