@@ -1532,6 +1532,60 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
+      - build:
+          name: build-2.2.0-buster
+          airflow_version: 2.2.0
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          image_name: "ap-airflow:2.2.0-buster"
+          requires:
+            - Need-Approval-2.2.0
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.0-buster-onbuild
+          airflow_version: 2.2.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.2.0-buster"
+          requires:
+            - build-2.2.0-buster
+      - test:
+          name: test-2.2.0-buster-images
+          tag: "2.2.0-buster"
+          requires:
+            - build-2.2.0-buster
+      - push:
+          name: push-2.2.0-buster
+          dev_build: true
+          tag: "2.2.0-buster"
+          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM},2.2.0-3.dev-buster"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.0-buster-onbuild
+            - test-2.2.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.0-buster-onbuild
+          dev_build: true
+          tag: "2.2.0-buster-onbuild"
+          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.0-buster-onbuild
+            - test-2.2.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - slack-build-approvals
       - slack/on-hold:
           name: Slack_Notification-2.2.1
           context: slack_ap-airflow
@@ -1662,6 +1716,60 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
+      - build:
+          name: build-2.2.1-buster
+          airflow_version: 2.2.1
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          image_name: "ap-airflow:2.2.1-buster"
+          requires:
+            - Need-Approval-2.2.1
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.1-buster-onbuild
+          airflow_version: 2.2.1
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.2.1-buster"
+          requires:
+            - build-2.2.1-buster
+      - test:
+          name: test-2.2.1-buster-images
+          tag: "2.2.1-buster"
+          requires:
+            - build-2.2.1-buster
+      - push:
+          name: push-2.2.1-buster
+          dev_build: true
+          tag: "2.2.1-buster"
+          extra_tags: "2.2.1-buster-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.1-buster-onbuild
+            - test-2.2.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.1-buster-onbuild
+          dev_build: true
+          tag: "2.2.1-buster-onbuild"
+          extra_tags: "2.2.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.1-buster-onbuild
+            - test-2.2.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - slack-build-approvals
   nightly:
     triggers:
       - schedule:
@@ -1722,6 +1830,56 @@ workflows:
               only:
                 - master
       - build:
+          name: build-2.2.0-buster
+          airflow_version: 2.2.0
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          image_name: "ap-airflow:2.2.0-buster"
+      - scan-trivy:
+          name: scan-trivy-2.2.0-buster-onbuild
+          airflow_version: 2.2.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.2.0-buster"
+          requires:
+            - build-2.2.0-buster
+      - test:
+          name: test-2.2.0-buster-images
+          tag: "2.2.0-buster"
+          requires:
+            - build-2.2.0-buster
+      - push:
+          name: push-2.2.0-buster
+          dev_build: true
+          tag: "2.2.0-buster"
+          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.0-buster-onbuild
+            - test-2.2.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.0-buster-onbuild
+          dev_build: true
+          tag: "2.2.0-buster-onbuild"
+          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.0-buster-onbuild
+            - test-2.2.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - build:
           name: build-2.2.1-bullseye
           airflow_version: 2.2.1
           distribution_name: bullseye
@@ -1767,6 +1925,56 @@ workflows:
           requires:
             - scan-trivy-2.2.1-bullseye-onbuild
             - test-2.2.1-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - build:
+          name: build-2.2.1-buster
+          airflow_version: 2.2.1
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          image_name: "ap-airflow:2.2.1-buster"
+      - scan-trivy:
+          name: scan-trivy-2.2.1-buster-onbuild
+          airflow_version: 2.2.1
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.2.1-buster"
+          requires:
+            - build-2.2.1-buster
+      - test:
+          name: test-2.2.1-buster-images
+          tag: "2.2.1-buster"
+          requires:
+            - build-2.2.1-buster
+      - push:
+          name: push-2.2.1-buster
+          dev_build: true
+          tag: "2.2.1-buster"
+          extra_tags: "2.2.1-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.1-buster-onbuild
+            - test-2.2.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.1-buster-onbuild
+          dev_build: true
+          tag: "2.2.1-buster-onbuild"
+          extra_tags: "2.2.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.1-buster-onbuild
+            - test-2.2.1-buster-images
           filters:
             branches:
               only:
