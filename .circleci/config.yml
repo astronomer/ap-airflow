@@ -1688,7 +1688,7 @@ workflows:
             - build-2.2.0-bullseye
       - test:
           name: test-2.2.0-bullseye-images
-          tag: "2.2.0-bullseye"
+          tag: "2.2.0"
           requires:
             - build-2.2.0-bullseye
       - push:
@@ -1738,7 +1738,7 @@ workflows:
             - build-2.2.1-bullseye
       - test:
           name: test-2.2.1-bullseye-images
-          tag: "2.2.1-bullseye"
+          tag: "2.2.1"
           requires:
             - build-2.2.1-bullseye
       - push:
