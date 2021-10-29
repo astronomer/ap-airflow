@@ -202,7 +202,11 @@ workflows:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
+          {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
