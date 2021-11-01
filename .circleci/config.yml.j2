@@ -242,6 +242,11 @@ workflows:
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
           {%- endif %}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
           requires:
             - Need-Approval-{{ airflow_version }}
             - static-checks
@@ -250,18 +255,32 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
+          {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          tag: "{{ airflow_version }}-{{ distribution }}"
           dev_build: {{ dev_build }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM},{{ ac_version }}"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -275,10 +294,14 @@ workflows:
                 - master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
+          dev_build: {{ dev_build }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          #dev_build: {{ dev_build }}
-          dev_build: true
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -315,11 +338,21 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
@@ -329,9 +362,14 @@ workflows:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
-          tag: "{{ airflow_version }}-{{ distribution }}"
           dev_build: true
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -345,9 +383,14 @@ workflows:
                 - master
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           dev_build: true
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -844,11 +887,15 @@ jobs:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - docker-build-base-and-onbuild:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
+          image_name: "<< parameters.image_name >>"
   test:
     executor: machine-executor
     description: Test Airflow images
@@ -872,6 +919,9 @@ jobs:
       distribution:
         description: "The distribution without onbuild"
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker
@@ -879,7 +929,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>-onbuild.tar
       - run:
           name: Install trivy
           command: |
@@ -896,7 +946,7 @@ jobs:
               --cache-dir /tmp/workspace/trivy-cache \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
-              --no-progress "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+              --no-progress "<< parameters.image_name >>-onbuild"
       - save_cache:
           key: trivy-cache
           paths:
@@ -958,19 +1008,22 @@ commands:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "<< parameters.image_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          image_name: "<< parameters.image_name >>-onbuild"
           path: "common/"
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
-          extra_args: "--build-arg baseimage=ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=<< parameters.image_name >>"
       - persist_to_workspace:
           root: .
           paths:
@@ -1007,6 +1060,7 @@ commands:
               --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
               << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
+            docker inspect << parameters.image_name >>
   airflow-image-test:
     description: Test an Airflow image
     parameters:

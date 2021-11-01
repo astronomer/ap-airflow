@@ -11,8 +11,16 @@ Docker images for deploying and running Astronomer Core are currently available 
 
 We publish 2 variants for each AC Version (example: `1.10.10-3`):
 
+**For AC<2.2.0**:
 1. `quay.io/astronomer/ap-airflow:1.10.10-3-buster`
 2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild`
+
+**For AC>=2.2.0**:
+
+We dropped the distribution name from the image tag so the 2 variants are as follows:
+
+1. `quay.io/astronomer/ap-airflow:2.2.1-1`
+2. `quay.io/astronomer/ap-airflow:2.2.1-1-onbuild`
 
 The only difference between them is that the `-onbuild` images uses Docker `ONBUILD` commands to
 copy `packages.txt`, `requirements.txt` and the entire project directory (including `dags`,
@@ -20,9 +28,17 @@ copy `packages.txt`, `requirements.txt` and the entire project directory (includ
 
 For each of our `-onbuild` images we publish two flavors of tag:
 
+**For AC<2.2.0**:
 1. `quay.io/astronomer/ap-airflow:1.10.10-buster-onbuild` which is our latest release of the `1.10.10` series,
 including latest security patches. This tag is "floating" or movable.
 2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
+
+**For AC>=2.2.0**:
+
+1. `quay.io/astronomer/ap-airflow:2.2.0-onbuild` which is our latest release of the `2.2.0` series,
+including latest security patches. This tag is "floating" or movable.
+2. `quay.io/astronomer/ap-airflow:2.2.0-3-onbuild` once this tag is pushed it will never change again.
+
 
 ## Contents of this repo
 

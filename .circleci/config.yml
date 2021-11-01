@@ -227,6 +227,7 @@ workflows:
           airflow_version: 1.10.10
           distribution_name: alpine3.10
           dev_build: false
+          image_name: "ap-airflow:1.10.10-alpine3.10"
           requires:
             - Need-Approval-1.10.10
             - static-checks
@@ -235,6 +236,7 @@ workflows:
           airflow_version: 1.10.10
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
+          image_name: "ap-airflow:1.10.10-alpine3.10"
           requires:
             - build-1.10.10-alpine3.10
       - test:
@@ -244,8 +246,8 @@ workflows:
             - build-1.10.10-alpine3.10
       - push:
           name: push-1.10.10-alpine3.10
-          tag: "1.10.10-alpine3.10"
           dev_build: false
+          tag: "1.10.10-alpine3.10"
           extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-10-alpine3.10"
           context:
             - quay.io
@@ -260,9 +262,8 @@ workflows:
                 - master
       - push:
           name: push-1.10.10-alpine3.10-onbuild
+          dev_build: false
           tag: "1.10.10-alpine3.10-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-10-alpine3.10-onbuild"
           context:
             - quay.io
@@ -283,6 +284,7 @@ workflows:
           airflow_version: 1.10.10
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.10-buster"
           requires:
             - Need-Approval-1.10.10
             - static-checks
@@ -291,6 +293,7 @@ workflows:
           airflow_version: 1.10.10
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.10-buster"
           requires:
             - build-1.10.10-buster
       - test:
@@ -300,8 +303,8 @@ workflows:
             - build-1.10.10-buster
       - push:
           name: push-1.10.10-buster
-          tag: "1.10.10-buster"
           dev_build: false
+          tag: "1.10.10-buster"
           extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-10-buster"
           context:
             - quay.io
@@ -316,9 +319,8 @@ workflows:
                 - master
       - push:
           name: push-1.10.10-buster-onbuild
+          dev_build: false
           tag: "1.10.10-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-10-buster-onbuild"
           context:
             - quay.io
@@ -417,6 +419,7 @@ workflows:
           airflow_version: 1.10.12
           distribution_name: alpine3.10
           dev_build: false
+          image_name: "ap-airflow:1.10.12-alpine3.10"
           requires:
             - Need-Approval-1.10.12
             - static-checks
@@ -425,6 +428,7 @@ workflows:
           airflow_version: 1.10.12
           distribution: alpine3.10
           distribution_name: alpine3.10-onbuild
+          image_name: "ap-airflow:1.10.12-alpine3.10"
           requires:
             - build-1.10.12-alpine3.10
       - test:
@@ -434,8 +438,8 @@ workflows:
             - build-1.10.12-alpine3.10
       - push:
           name: push-1.10.12-alpine3.10
-          tag: "1.10.12-alpine3.10"
           dev_build: false
+          tag: "1.10.12-alpine3.10"
           extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-6-alpine3.10"
           context:
             - quay.io
@@ -450,9 +454,8 @@ workflows:
                 - master
       - push:
           name: push-1.10.12-alpine3.10-onbuild
+          dev_build: false
           tag: "1.10.12-alpine3.10-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-6-alpine3.10-onbuild"
           context:
             - quay.io
@@ -473,6 +476,7 @@ workflows:
           airflow_version: 1.10.12
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.12-buster"
           requires:
             - Need-Approval-1.10.12
             - static-checks
@@ -481,6 +485,7 @@ workflows:
           airflow_version: 1.10.12
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.12-buster"
           requires:
             - build-1.10.12-buster
       - test:
@@ -490,8 +495,8 @@ workflows:
             - build-1.10.12-buster
       - push:
           name: push-1.10.12-buster
-          tag: "1.10.12-buster"
           dev_build: false
+          tag: "1.10.12-buster"
           extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-6-buster"
           context:
             - quay.io
@@ -506,9 +511,8 @@ workflows:
                 - master
       - push:
           name: push-1.10.12-buster-onbuild
+          dev_build: false
           tag: "1.10.12-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-6-buster-onbuild"
           context:
             - quay.io
@@ -607,6 +611,7 @@ workflows:
           airflow_version: 1.10.14
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.14-buster"
           requires:
             - Need-Approval-1.10.14
             - static-checks
@@ -615,6 +620,7 @@ workflows:
           airflow_version: 1.10.14
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.14-buster"
           requires:
             - build-1.10.14-buster
       - test:
@@ -624,8 +630,8 @@ workflows:
             - build-1.10.14-buster
       - push:
           name: push-1.10.14-buster
-          tag: "1.10.14-buster"
           dev_build: false
+          tag: "1.10.14-buster"
           extra_tags: "1.10.14-buster-${CIRCLE_BUILD_NUM},1.10.14-5-buster"
           context:
             - quay.io
@@ -640,9 +646,8 @@ workflows:
                 - master
       - push:
           name: push-1.10.14-buster-onbuild
+          dev_build: false
           tag: "1.10.14-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "1.10.14-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.14-5-buster-onbuild"
           context:
             - quay.io
@@ -741,6 +746,7 @@ workflows:
           airflow_version: 1.10.15
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:1.10.15-buster"
           requires:
             - Need-Approval-1.10.15
             - static-checks
@@ -749,6 +755,7 @@ workflows:
           airflow_version: 1.10.15
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.15-buster"
           requires:
             - build-1.10.15-buster
       - test:
@@ -758,8 +765,8 @@ workflows:
             - build-1.10.15-buster
       - push:
           name: push-1.10.15-buster
-          tag: "1.10.15-buster"
           dev_build: false
+          tag: "1.10.15-buster"
           extra_tags: "1.10.15-buster-${CIRCLE_BUILD_NUM},1.10.15-4-buster"
           context:
             - quay.io
@@ -774,9 +781,8 @@ workflows:
                 - master
       - push:
           name: push-1.10.15-buster-onbuild
+          dev_build: false
           tag: "1.10.15-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "1.10.15-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.15-4-buster-onbuild"
           context:
             - quay.io
@@ -875,6 +881,7 @@ workflows:
           airflow_version: 2.0.0
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.0.0-buster"
           requires:
             - Need-Approval-2.0.0
             - static-checks
@@ -883,6 +890,7 @@ workflows:
           airflow_version: 2.0.0
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.0.0-buster"
           requires:
             - build-2.0.0-buster
       - test:
@@ -892,8 +900,8 @@ workflows:
             - build-2.0.0-buster
       - push:
           name: push-2.0.0-buster
-          tag: "2.0.0-buster"
           dev_build: false
+          tag: "2.0.0-buster"
           extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-10-buster"
           context:
             - quay.io
@@ -908,9 +916,8 @@ workflows:
                 - master
       - push:
           name: push-2.0.0-buster-onbuild
+          dev_build: false
           tag: "2.0.0-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-10-buster-onbuild"
           context:
             - quay.io
@@ -1009,6 +1016,7 @@ workflows:
           airflow_version: 2.0.2
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.0.2-buster"
           requires:
             - Need-Approval-2.0.2
             - static-checks
@@ -1017,6 +1025,7 @@ workflows:
           airflow_version: 2.0.2
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.0.2-buster"
           requires:
             - build-2.0.2-buster
       - test:
@@ -1026,8 +1035,8 @@ workflows:
             - build-2.0.2-buster
       - push:
           name: push-2.0.2-buster
-          tag: "2.0.2-buster"
           dev_build: false
+          tag: "2.0.2-buster"
           extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM},2.0.2-6-buster"
           context:
             - quay.io
@@ -1042,9 +1051,8 @@ workflows:
                 - master
       - push:
           name: push-2.0.2-buster-onbuild
+          dev_build: false
           tag: "2.0.2-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-6-buster-onbuild"
           context:
             - quay.io
@@ -1143,6 +1151,7 @@ workflows:
           airflow_version: 2.1.0
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.0-buster"
           requires:
             - Need-Approval-2.1.0
             - static-checks
@@ -1151,6 +1160,7 @@ workflows:
           airflow_version: 2.1.0
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.0-buster"
           requires:
             - build-2.1.0-buster
       - test:
@@ -1160,8 +1170,8 @@ workflows:
             - build-2.1.0-buster
       - push:
           name: push-2.1.0-buster
-          tag: "2.1.0-buster"
           dev_build: false
+          tag: "2.1.0-buster"
           extra_tags: "2.1.0-buster-${CIRCLE_BUILD_NUM},2.1.0-5-buster"
           context:
             - quay.io
@@ -1176,9 +1186,8 @@ workflows:
                 - master
       - push:
           name: push-2.1.0-buster-onbuild
+          dev_build: false
           tag: "2.1.0-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "2.1.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.0-5-buster-onbuild"
           context:
             - quay.io
@@ -1277,6 +1286,7 @@ workflows:
           airflow_version: 2.1.1
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.1-buster"
           requires:
             - Need-Approval-2.1.1
             - static-checks
@@ -1285,6 +1295,7 @@ workflows:
           airflow_version: 2.1.1
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.1-buster"
           requires:
             - build-2.1.1-buster
       - test:
@@ -1294,8 +1305,8 @@ workflows:
             - build-2.1.1-buster
       - push:
           name: push-2.1.1-buster
-          tag: "2.1.1-buster"
           dev_build: false
+          tag: "2.1.1-buster"
           extra_tags: "2.1.1-buster-${CIRCLE_BUILD_NUM},2.1.1-4-buster"
           context:
             - quay.io
@@ -1310,9 +1321,8 @@ workflows:
                 - master
       - push:
           name: push-2.1.1-buster-onbuild
+          dev_build: false
           tag: "2.1.1-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-4-buster-onbuild"
           context:
             - quay.io
@@ -1411,6 +1421,7 @@ workflows:
           airflow_version: 2.1.3
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.3-buster"
           requires:
             - Need-Approval-2.1.3
             - static-checks
@@ -1419,6 +1430,7 @@ workflows:
           airflow_version: 2.1.3
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.3-buster"
           requires:
             - build-2.1.3-buster
       - test:
@@ -1428,8 +1440,8 @@ workflows:
             - build-2.1.3-buster
       - push:
           name: push-2.1.3-buster
-          tag: "2.1.3-buster"
           dev_build: false
+          tag: "2.1.3-buster"
           extra_tags: "2.1.3-buster-${CIRCLE_BUILD_NUM},2.1.3-2-buster"
           context:
             - quay.io
@@ -1444,9 +1456,8 @@ workflows:
                 - master
       - push:
           name: push-2.1.3-buster-onbuild
+          dev_build: false
           tag: "2.1.3-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "2.1.3-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.3-2-buster-onbuild"
           context:
             - quay.io
@@ -1545,6 +1556,7 @@ workflows:
           airflow_version: 2.1.4
           distribution_name: buster
           dev_build: false
+          image_name: "ap-airflow:2.1.4-buster"
           requires:
             - Need-Approval-2.1.4
             - static-checks
@@ -1553,6 +1565,7 @@ workflows:
           airflow_version: 2.1.4
           distribution: buster
           distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.4-buster"
           requires:
             - build-2.1.4-buster
       - test:
@@ -1562,8 +1575,8 @@ workflows:
             - build-2.1.4-buster
       - push:
           name: push-2.1.4-buster
-          tag: "2.1.4-buster"
           dev_build: false
+          tag: "2.1.4-buster"
           extra_tags: "2.1.4-buster-${CIRCLE_BUILD_NUM},2.1.4-2-buster"
           context:
             - quay.io
@@ -1578,9 +1591,8 @@ workflows:
                 - master
       - push:
           name: push-2.1.4-buster-onbuild
+          dev_build: false
           tag: "2.1.4-buster-onbuild"
-          #dev_build: false
-          dev_build: true
           extra_tags: "2.1.4-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.4-2-buster-onbuild"
           context:
             - quay.io
@@ -1675,54 +1687,56 @@ workflows:
                 - waiter_for_each_airflowv
 
       - build:
-          name: build-2.2.0-buster
+          name: build-2.2.0-bullseye
           airflow_version: 2.2.0
-          distribution_name: buster
-          dev_build: false
+          distribution_name: bullseye
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          image_name: "ap-airflow:2.2.0"
           requires:
             - Need-Approval-2.2.0
             - static-checks
       - scan-trivy:
-          name: scan-trivy-2.2.0-buster-onbuild
+          name: scan-trivy-2.2.0-bullseye-onbuild
           airflow_version: 2.2.0
-          distribution: buster
-          distribution_name: buster-onbuild
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.0"
           requires:
-            - build-2.2.0-buster
+            - build-2.2.0-bullseye
       - test:
-          name: test-2.2.0-buster-images
-          tag: "2.2.0-buster"
+          name: test-2.2.0-bullseye-images
+          tag: "2.2.0"
           requires:
-            - build-2.2.0-buster
+            - build-2.2.0-bullseye
       - push:
-          name: push-2.2.0-buster
-          tag: "2.2.0-buster"
-          dev_build: false
-          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM},2.2.0-2-buster"
+          name: push-2.2.0-bullseye
+          dev_build: true
+          tag: "2.2.0"
+          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM},2.2.0-3.dev"
           context:
             - quay.io
             - docker.io
             - qa
           requires:
-            - scan-trivy-2.2.0-buster-onbuild
-            - test-2.2.0-buster-images
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
           filters:
             branches:
               only:
                 - master
       - push:
-          name: push-2.2.0-buster-onbuild
-          tag: "2.2.0-buster-onbuild"
-          #dev_build: false
+          name: push-2.2.0-bullseye-onbuild
           dev_build: true
-          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-2-buster-onbuild"
+          tag: "2.2.0-onbuild"
+          extra_tags: "2.2.0-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-onbuild"
           context:
             - quay.io
             - docker.io
             - qa
           requires:
-            - scan-trivy-2.2.0-buster-onbuild
-            - test-2.2.0-buster-images
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
           filters:
             branches:
               only:
@@ -1809,55 +1823,56 @@ workflows:
                 - waiter_for_each_airflowv
 
       - build:
-          name: build-2.2.1-buster
+          name: build-2.2.1-bullseye
           airflow_version: 2.2.1
-          distribution_name: buster
+          distribution_name: bullseye
           dev_build: true
           extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          image_name: "ap-airflow:2.2.1"
           requires:
             - Need-Approval-2.2.1
             - static-checks
       - scan-trivy:
-          name: scan-trivy-2.2.1-buster-onbuild
+          name: scan-trivy-2.2.1-bullseye-onbuild
           airflow_version: 2.2.1
-          distribution: buster
-          distribution_name: buster-onbuild
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.1"
           requires:
-            - build-2.2.1-buster
+            - build-2.2.1-bullseye
       - test:
-          name: test-2.2.1-buster-images
-          tag: "2.2.1-buster"
+          name: test-2.2.1-bullseye-images
+          tag: "2.2.1"
           requires:
-            - build-2.2.1-buster
+            - build-2.2.1-bullseye
       - push:
-          name: push-2.2.1-buster
-          tag: "2.2.1-buster"
+          name: push-2.2.1-bullseye
           dev_build: true
-          extra_tags: "2.2.1-buster-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster"
+          tag: "2.2.1"
+          extra_tags: "2.2.1-${CIRCLE_BUILD_NUM},2.2.1-1.dev"
           context:
             - quay.io
             - docker.io
             - qa
           requires:
-            - scan-trivy-2.2.1-buster-onbuild
-            - test-2.2.1-buster-images
+            - scan-trivy-2.2.1-bullseye-onbuild
+            - test-2.2.1-bullseye-images
           filters:
             branches:
               only:
                 - master
       - push:
-          name: push-2.2.1-buster-onbuild
-          tag: "2.2.1-buster-onbuild"
-          #dev_build: true
+          name: push-2.2.1-bullseye-onbuild
           dev_build: true
-          extra_tags: "2.2.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster-onbuild"
+          tag: "2.2.1-onbuild"
+          extra_tags: "2.2.1-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-onbuild"
           context:
             - quay.io
             - docker.io
             - qa
           requires:
-            - scan-trivy-2.2.1-buster-onbuild
-            - test-2.2.1-buster-images
+            - scan-trivy-2.2.1-bullseye-onbuild
+            - test-2.2.1-bullseye-images
           filters:
             branches:
               only:
@@ -1875,51 +1890,103 @@ workflows:
                 - master
     jobs:
       - build:
-          name: build-2.2.1-buster
-          airflow_version: 2.2.1
-          distribution_name: buster
+          name: build-2.2.0-bullseye
+          airflow_version: 2.2.0
+          distribution_name: bullseye
           dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          image_name: "ap-airflow:2.2.0"
       - scan-trivy:
-          name: scan-trivy-2.2.1-buster-onbuild
-          airflow_version: 2.2.1
-          distribution: buster
-          distribution_name: buster-onbuild
+          name: scan-trivy-2.2.0-bullseye-onbuild
+          airflow_version: 2.2.0
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.0"
           requires:
-            - build-2.2.1-buster
+            - build-2.2.0-bullseye
       - test:
-          name: test-2.2.1-buster-images
-          tag: "2.2.1-buster"
+          name: test-2.2.0-bullseye-images
+          tag: "2.2.0-bullseye"
           requires:
-            - build-2.2.1-buster
+            - build-2.2.0-bullseye
       - push:
-          name: push-2.2.1-buster
-          tag: "2.2.1-buster"
+          name: push-2.2.0-bullseye
           dev_build: true
-          extra_tags: "2.2.1-buster-${CIRCLE_BUILD_NUM}"
+          tag: "2.2.0"
+          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM}"
           context:
             - quay.io
             - docker.io
-            - qa
           requires:
-            - scan-trivy-2.2.1-buster-onbuild
-            - test-2.2.1-buster-images
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
           filters:
             branches:
               only:
                 - master
       - push:
-          name: push-2.2.1-buster-onbuild
-          tag: "2.2.1-buster-onbuild"
+          name: push-2.2.0-bullseye-onbuild
           dev_build: true
-          extra_tags: "2.2.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-buster-onbuild"
+          tag: "2.2.0-onbuild"
+          extra_tags: "2.2.0-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-onbuild"
+          context:
+            - quay.io
+            - docker.io
+          requires:
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - build:
+          name: build-2.2.1-bullseye
+          airflow_version: 2.2.1
+          distribution_name: bullseye
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.1.build)"
+          image_name: "ap-airflow:2.2.1"
+      - scan-trivy:
+          name: scan-trivy-2.2.1-bullseye-onbuild
+          airflow_version: 2.2.1
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.1"
+          requires:
+            - build-2.2.1-bullseye
+      - test:
+          name: test-2.2.1-bullseye-images
+          tag: "2.2.1-bullseye"
+          requires:
+            - build-2.2.1-bullseye
+      - push:
+          name: push-2.2.1-bullseye
+          dev_build: true
+          tag: "2.2.1"
+          extra_tags: "2.2.1-${CIRCLE_BUILD_NUM}"
           context:
             - quay.io
             - docker.io
             - qa
           requires:
-            - scan-trivy-2.2.1-buster-onbuild
-            - test-2.2.1-buster-images
+            - scan-trivy-2.2.1-bullseye-onbuild
+            - test-2.2.1-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.1-bullseye-onbuild
+          dev_build: true
+          tag: "2.2.1-onbuild"
+          extra_tags: "2.2.1-onbuild-${CIRCLE_BUILD_NUM},2.2.1-1.dev-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.1-bullseye-onbuild
+            - test-2.2.1-bullseye-images
           filters:
             branches:
               only:
@@ -2406,11 +2473,15 @@ jobs:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - docker-build-base-and-onbuild:
           airflow_version: "<< parameters.airflow_version >>"
           distribution_name: "<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
+          image_name: "<< parameters.image_name >>"
   test:
     executor: machine-executor
     description: Test Airflow images
@@ -2434,6 +2505,9 @@ jobs:
       distribution:
         description: "The distribution without onbuild"
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker
@@ -2441,7 +2515,7 @@ jobs:
           at: /tmp/workspace
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>.tar
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>-onbuild.tar
       - run:
           name: Install trivy
           command: |
@@ -2458,7 +2532,7 @@ jobs:
               --cache-dir /tmp/workspace/trivy-cache \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
-              --no-progress "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+              --no-progress "<< parameters.image_name >>-onbuild"
       - save_cache:
           key: trivy-cache
           paths:
@@ -2520,19 +2594,22 @@ commands:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
         type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          image_name: "<< parameters.image_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
       - docker-build:
-          image_name: "ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>-onbuild"
+          image_name: "<< parameters.image_name >>-onbuild"
           path: "common/"
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
-          extra_args: "--build-arg baseimage=ap-airflow:<< parameters.airflow_version >>-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=<< parameters.image_name >>"
       - persist_to_workspace:
           root: .
           paths:
@@ -2569,6 +2646,7 @@ commands:
               --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
               << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
+            docker inspect << parameters.image_name >>
   airflow-image-test:
     description: Test an Airflow image
     parameters:
