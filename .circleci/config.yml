@@ -112,6 +112,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
@@ -127,6 +128,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.10-alpine3.10-onbuild
             - test-1.10.10-alpine3.10-images
@@ -165,6 +167,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
@@ -180,6 +183,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.10-buster-onbuild
             - test-1.10.10-buster-images
@@ -294,6 +298,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
@@ -309,6 +314,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.12-alpine3.10-onbuild
             - test-1.10.12-alpine3.10-images
@@ -347,6 +353,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
@@ -362,6 +369,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.12-buster-onbuild
             - test-1.10.12-buster-images
@@ -476,6 +484,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
@@ -491,6 +500,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.14-buster-onbuild
             - test-1.10.14-buster-images
@@ -605,6 +615,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
@@ -620,6 +631,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-1.10.15-buster-onbuild
             - test-1.10.15-buster-images
@@ -734,6 +746,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
@@ -749,6 +762,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.0.0-buster-onbuild
             - test-2.0.0-buster-images
@@ -863,6 +877,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
@@ -878,6 +893,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.0.2-buster-onbuild
             - test-2.0.2-buster-images
@@ -992,6 +1008,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.0-buster-onbuild
             - test-2.1.0-buster-images
@@ -1007,6 +1024,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.0-buster-onbuild
             - test-2.1.0-buster-images
@@ -1121,6 +1139,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.1-buster-onbuild
             - test-2.1.1-buster-images
@@ -1136,6 +1155,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.1-buster-onbuild
             - test-2.1.1-buster-images
@@ -1250,6 +1270,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.3-buster-onbuild
             - test-2.1.3-buster-images
@@ -1265,6 +1286,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.3-buster-onbuild
             - test-2.1.3-buster-images
@@ -1379,6 +1401,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.4-buster-onbuild
             - test-2.1.4-buster-images
@@ -1394,6 +1417,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.1.4-buster-onbuild
             - test-2.1.4-buster-images
@@ -1509,6 +1533,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.0-bullseye-onbuild
             - test-2.2.0-bullseye-images
@@ -1524,6 +1549,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.0-bullseye-onbuild
             - test-2.2.0-bullseye-images
@@ -1639,6 +1665,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.1-bullseye-onbuild
             - test-2.2.1-bullseye-images
@@ -1654,6 +1681,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.1-bullseye-onbuild
             - test-2.2.1-bullseye-images
@@ -1699,6 +1727,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.0-bullseye-onbuild
             - test-2.2.0-bullseye-images
@@ -1714,6 +1743,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.0-bullseye-onbuild
             - test-2.2.0-bullseye-images
@@ -1749,6 +1779,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.1-bullseye-onbuild
             - test-2.2.1-bullseye-images
@@ -1764,6 +1795,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-2.2.1-bullseye-onbuild
             - test-2.2.1-bullseye-images
@@ -2052,6 +2084,32 @@ commands:
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                echo "Build TAG artifact using environment variables and into DB"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  release="$( cut -d '-' -f 1 \<<< "$tag" )"
+                  sudo apt-get install postgresql postgresql-contrib
+                  echo "Insert into the DB with the latest TAG"
+                  export PORT=5432
+                  del_sql="DELETE FROM tag_version where version_1='${release}'"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$del_sql"
+
+                  insert_sql="INSERT INTO tag_version values('${release}','${tag}')"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$insert_sql"
+                fi
 
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
