@@ -5,16 +5,16 @@ version: 2.1
 workflows:
   regression-2.2.0-bullseye:
     jobs:
-      - waiter:
-          name: waiter-2.2.0-bullseye
-          airflow_version: 2.2.0
-          context:
-            - qa
-          filters:
-            branches:
-              only:
-                - master
-                - waiter_for_each_airflowv
+      # - waiter:
+      #     name: waiter-2.2.0-bullseye
+      #     airflow_version: 2.2.0
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
       - qa-ui:
           name: qa-ui-regression-celery-2.2.0-bullseye
           airflow_version: 2.2.0
@@ -143,16 +143,16 @@ workflows:
             - qa
   regression-2.2.1-bullseye:
     jobs:
-      - waiter:
-          name: waiter-2.2.1-bullseye
-          airflow_version: 2.2.1
-          context:
-            - qa
-          filters:
-            branches:
-              only:
-                - master
-                - waiter_for_each_airflowv
+      # - waiter:
+      #     name: waiter-2.2.1-bullseye
+      #     airflow_version: 2.2.1
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
       - qa-ui:
           name: qa-ui-regression-celery-2.2.1-bullseye
           airflow_version: 2.2.1

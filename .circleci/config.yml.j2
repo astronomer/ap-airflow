@@ -10,16 +10,16 @@ workflows:
     {%- if dev_build == "true" %}
   regression-{{ airflow_version }}-{{ distribution }}:
     jobs:
-      - waiter:
-          name: waiter-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
-          context:
-            - qa
-          filters:
-            branches:
-              only:
-                - master
-                - waiter_for_each_airflowv
+      # - waiter:
+      #     name: waiter-{{ airflow_version }}-{{ distribution }}
+      #     airflow_version: {{ airflow_version }}
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
       - qa-ui:
           name: qa-ui-regression-celery-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
