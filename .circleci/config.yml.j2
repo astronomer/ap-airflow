@@ -25,8 +25,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "celery"
           test_type: "testim"
-          requires:
-            - waiter-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - waiter-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-ui:
@@ -52,8 +52,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "celery"
           test_type: "core"
-          requires:
-            - waiter-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - waiter-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-k8s:
@@ -61,8 +61,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "celery"
           test_type: "k8s"
-          requires:
-            - qa-core-celery-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - qa-core-celery-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-params:
@@ -79,8 +79,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "celery"
           test_type: "rest"
-          requires:
-            - waiter-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - waiter-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-restapi:
@@ -106,8 +106,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "kubernetes"
           test_type: "core"
-          requires:
-            - waiter-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - waiter-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-k8s:
@@ -124,8 +124,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "kubernetes"
           test_type: "dagparams"
-          requires:
-            - qa-k8s-k8s-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - qa-k8s-k8s-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-negative:
@@ -133,8 +133,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "kubernetes"
           test_type: "negative"
-          requires:
-            - qa-params-k8s-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - qa-params-k8s-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
       - qa-core:
@@ -142,8 +142,8 @@ workflows:
           airflow_version: {{ airflow_version }}
           executor_type: "local"
           test_type: "core"
-          requires:
-            - waiter-{{ airflow_version }}-{{ distribution }}
+          # requires:
+          #   - waiter-{{ airflow_version }}-{{ distribution }}
           context:
             - qa
         {%- endif %}
