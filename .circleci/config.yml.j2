@@ -1310,7 +1310,7 @@ commands:
                 can_i_run="false"
                 # Set the Job Name. This job needs to be checked before running the regression
                 airflow_version="<< parameters.airflow-version >>"
-                current_job_name="push-"$airflow_version"-buster-onbuild"
+                current_job_name="push-"$airflow_version"-onbuild"
 
                 mkdir -p /tmp/swissknife
 
