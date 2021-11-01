@@ -5,6 +5,7 @@ Astronomer Certified 2.2.0-3, TBD
 
 ### Bugfixes
 
+- Bugfix: Check next run exists before reading data interval (#19307) ([commit](https://github.com/astronomer/airflow/commit/c6dea7c7bb911c6863fee1a3a6fe21c9f5106eb2))
 - [astro] Reconcile orphan holding table handling ([commit](https://github.com/astronomer/airflow/commit/3b6b0da59983bbdd68686f7dd172ee951b0d66e5))
 - Try to move "dangling" rows in upgradedb (#18953) ([commit](https://github.com/astronomer/airflow/commit/e0584063d2cd4a8a93e7d83df620f4c6b6dc1adc))
 - Revert "Handle DagRuns with no execution_date or dag_id." ([commit](https://github.com/astronomer/airflow/commit/2b0bc063f03b2378d7db52aa8717ab0bbe06e89c))
