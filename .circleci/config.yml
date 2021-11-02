@@ -1482,8 +1482,7 @@ workflows:
           name: build-2.2.0-bullseye
           airflow_version: 2.2.0
           distribution_name: bullseye
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          dev_build: false
           image_name: "ap-airflow:2.2.0"
           requires:
             - Need-Approval-2.2.0
@@ -1503,9 +1502,9 @@ workflows:
             - build-2.2.0-bullseye
       - push:
           name: push-2.2.0-bullseye
-          dev_build: true
+          dev_build: false
           tag: "2.2.0"
-          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM},2.2.0-3.dev"
+          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM},2.2.0-3"
           context:
             - quay.io
             - docker.io
@@ -1518,9 +1517,9 @@ workflows:
                 - master
       - push:
           name: push-2.2.0-bullseye-onbuild
-          dev_build: true
+          dev_build: false
           tag: "2.2.0-onbuild"
-          extra_tags: "2.2.0-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-onbuild"
+          extra_tags: "2.2.0-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3-onbuild"
           context:
             - quay.io
             - docker.io
@@ -1536,8 +1535,7 @@ workflows:
           name: build-2.2.0-buster
           airflow_version: 2.2.0
           distribution_name: buster
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
+          dev_build: false
           image_name: "ap-airflow:2.2.0-buster"
           requires:
             - Need-Approval-2.2.0
@@ -1557,9 +1555,9 @@ workflows:
             - build-2.2.0-buster
       - push:
           name: push-2.2.0-buster
-          dev_build: true
+          dev_build: false
           tag: "2.2.0-buster"
-          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM},2.2.0-3.dev-buster"
+          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM},2.2.0-3-buster"
           context:
             - quay.io
             - docker.io
@@ -1572,9 +1570,9 @@ workflows:
                 - master
       - push:
           name: push-2.2.0-buster-onbuild
-          dev_build: true
+          dev_build: false
           tag: "2.2.0-buster-onbuild"
-          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-buster-onbuild"
+          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3-buster-onbuild"
           context:
             - quay.io
             - docker.io
@@ -1768,116 +1766,6 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - build:
-          name: build-2.2.0-bullseye
-          airflow_version: 2.2.0
-          distribution_name: bullseye
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
-          image_name: "ap-airflow:2.2.0"
-      - scan-trivy:
-          name: scan-trivy-2.2.0-bullseye-onbuild
-          airflow_version: 2.2.0
-          distribution: bullseye
-          distribution_name: bullseye-onbuild
-          image_name: "ap-airflow:2.2.0"
-          requires:
-            - build-2.2.0-bullseye
-      - test:
-          name: test-2.2.0-bullseye-images
-          tag: "2.2.0"
-          requires:
-            - build-2.2.0-bullseye
-      - push:
-          name: push-2.2.0-bullseye
-          dev_build: true
-          tag: "2.2.0"
-          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM}"
-          context:
-            - quay.io
-            - docker.io
-          requires:
-            - scan-trivy-2.2.0-bullseye-onbuild
-            - test-2.2.0-bullseye-images
-          filters:
-            branches:
-              only:
-                - master
-      - push:
-          name: push-2.2.0-bullseye-onbuild
-          dev_build: true
-          tag: "2.2.0-onbuild"
-          extra_tags: "2.2.0-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-onbuild"
-          context:
-            - quay.io
-            - docker.io
-          requires:
-            - scan-trivy-2.2.0-bullseye-onbuild
-            - test-2.2.0-bullseye-images
-          filters:
-            branches:
-              only:
-                - master
-      - build:
-          name: build-2.2.0-buster
-          airflow_version: 2.2.0
-          distribution_name: buster
-          dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.0.build)"
-          image_name: "ap-airflow:2.2.0-buster"
-      - scan-trivy:
-          name: scan-trivy-2.2.0-buster-onbuild
-          airflow_version: 2.2.0
-          distribution: buster
-          distribution_name: buster-onbuild
-          image_name: "ap-airflow:2.2.0-buster"
-          requires:
-            - build-2.2.0-buster
-      - test:
-          name: test-2.2.0-buster-images
-          tag: "2.2.0-buster"
-          requires:
-            - build-2.2.0-buster
-      - push:
-          name: push-2.2.0-buster
-          dev_build: true
-          tag: "2.2.0-buster"
-          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM}"
-          context:
-            - quay.io
-            - docker.io
-          requires:
-            - scan-trivy-2.2.0-buster-onbuild
-            - test-2.2.0-buster-images
-          filters:
-            branches:
-              only:
-                - master
-      - push:
-          name: push-2.2.0-buster-onbuild
-          dev_build: true
-          tag: "2.2.0-buster-onbuild"
-          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-3.dev-buster-onbuild"
-          context:
-            - quay.io
-            - docker.io
-          requires:
-            - scan-trivy-2.2.0-buster-onbuild
-            - test-2.2.0-buster-images
-          filters:
-            branches:
-              only:
-                - master
-
 jobs:
   static-checks:
     executor: machine-executor
