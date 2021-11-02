@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.2.0-3, TBD
+Astronomer Certified 2.2.0-3, 2021-11-02
 ----------------------------------------
 
 ### Bugfixes
