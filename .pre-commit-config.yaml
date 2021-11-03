@@ -26,8 +26,10 @@ repos:
         language: python
         files: "(common|update_dockerfiles).py$|Dockerfile$"
         entry: python3 .circleci/update_dockerfiles.py
+        require_serial: true
       - id: verify-changelog-entries
         name: Verifies individual CHANGELOG files for each release and adds links to README.md
         language: python
         files: "(common|verify_changelog_entries).py$|README.md$|CHANGELOG.md$"
         entry: python3 .circleci/verify_changelog_entries.py
+        require_serial: true
