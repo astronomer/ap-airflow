@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.2.1-2, TBD
+----------------------------------------
+
+### Bugfixes
+
+- Only mark SchedulerJobs as failed, not any jobs (#19375) ([commit](https://github.com/astronomer/airflow/commit/fa0b99891f56b71466299aa4729c7193e609b263))
+
 Astronomer Certified 2.2.1-1, 2021-11-02
 ----------------------------------------
 
