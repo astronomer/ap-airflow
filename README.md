@@ -98,7 +98,7 @@ including latest security patches. This tag is "floating" or movable.
 <details>
 <summary>Click to expand Step-By-Step instructions</summary>
 
-1. Update the sub-micro version of the relevant version in `IMAGE_MAP` in `.circleci/common.py`.
+1. Update the postfix version of the relevant version in `IMAGE_MAP` in `.circleci/common.py`.
 
    Example:
    The latest AC version is `2.2.0-1` and we want to release `2.2.0-2`.
@@ -277,7 +277,7 @@ including latest security patches. This tag is "floating" or movable.
    pre-commit run verify-changelog-entries
    ```
 
-   The pre-commit hook should add a link to the  change some lines in the new `Dockerfile`.
+   The pre-commit hook should add a link to the changelog in `README.md`.
    ```diff
 4. Stage the changes to the Dockerfile and commit (the pre-commit hooks should all succeed).
 
