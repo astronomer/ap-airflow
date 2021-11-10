@@ -11,7 +11,16 @@ workflows:
   setup:
     jobs:
       - generate-config
-
+  nightly:
+    triggers:
+      - schedule:
+          cron: "* * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - generate-config
 executors:
   docker-executor:
     docker:
