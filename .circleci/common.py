@@ -4,11 +4,17 @@ Common utility functions for CircleCI configurator scripts
 
 import collections
 import os
-
+import re
 
 circle_directory = os.path.dirname(os.path.realpath(__file__))
 project_directory = os.path.join(circle_directory, "..")
 
+def checkair2(airflow_version):
+    airflow2_version_found= re.search(r'^2',airflow_version)
+    if airflow2_version_found is None:
+        return False
+    else:
+        return True
 
 def dev_releases(all_releases):
     """Find dev releases from a list of releases"""

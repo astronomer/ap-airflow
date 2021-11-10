@@ -1,35 +1,3972 @@
+# Warning: automatically generated file
 # Please edit config.yml.j2, and use the script generate_circleci_config.py
-# to generate a dynamic CircleCI configuration
 version: 2.1
 
-setup: true
-
-orbs:
-  continuation: circleci/continuation@0.2.0
-
 workflows:
-  setup:
+  regression-2.1.0-buster:
     jobs:
-      - generate-config
+      # - waiter:
+      #     name: waiter-2.1.0-buster
+      #     airflow_version: 2.1.0
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
+      - qa-ui:
+          name: qa-ui-regression-celery-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "celery"
+          test_type: "testim"
+          # requires:
+          #   - waiter-2.1.0-buster
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-k8s-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-celery-2.1.0-buster
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-local-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "local"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-k8s-2.1.0-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-celery-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "celery"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.0-buster
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-celery-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "celery"
+          test_type: "k8s"
+          # requires:
+          #   - qa-core-celery-2.1.0-buster
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-celery-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "celery"
+          test_type: "dagparams"
+          requires:
+            - qa-core-celery-2.1.0-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-celery-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "celery"
+          test_type: "rest"
+          # requires:
+          #   - waiter-2.1.0-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-local-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-2.1.0-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-k8s-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-2.1.0-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-k8s-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "kubernetes"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.0-buster
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-k8s-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "kubernetes"
+          test_type: "k8"
+          requires:
+            - qa-core-k8s-2.1.0-buster
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-k8s-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "kubernetes"
+          test_type: "dagparams"
+          # requires:
+          #   - qa-k8s-k8s-2.1.0-buster
+          context:
+            - qa
+      - qa-negative:
+          name: qa-negative-k8s-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "kubernetes"
+          test_type: "negative"
+          # requires:
+          #   - qa-params-k8s-2.1.0-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-local-2.1.0-buster
+          airflow_version: 2.1.0
+          executor_type: "local"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.0-buster
+          context:
+            - qa
+  regression-2.1.1-buster:
+    jobs:
+      # - waiter:
+      #     name: waiter-2.1.1-buster
+      #     airflow_version: 2.1.1
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
+      - qa-ui:
+          name: qa-ui-regression-celery-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "celery"
+          test_type: "testim"
+          # requires:
+          #   - waiter-2.1.1-buster
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-k8s-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-celery-2.1.1-buster
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-local-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "local"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-k8s-2.1.1-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-celery-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "celery"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.1-buster
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-celery-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "celery"
+          test_type: "k8s"
+          # requires:
+          #   - qa-core-celery-2.1.1-buster
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-celery-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "celery"
+          test_type: "dagparams"
+          requires:
+            - qa-core-celery-2.1.1-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-celery-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "celery"
+          test_type: "rest"
+          # requires:
+          #   - waiter-2.1.1-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-local-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-2.1.1-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-k8s-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-2.1.1-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-k8s-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "kubernetes"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.1-buster
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-k8s-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "kubernetes"
+          test_type: "k8"
+          requires:
+            - qa-core-k8s-2.1.1-buster
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-k8s-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "kubernetes"
+          test_type: "dagparams"
+          # requires:
+          #   - qa-k8s-k8s-2.1.1-buster
+          context:
+            - qa
+      - qa-negative:
+          name: qa-negative-k8s-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "kubernetes"
+          test_type: "negative"
+          # requires:
+          #   - qa-params-k8s-2.1.1-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-local-2.1.1-buster
+          airflow_version: 2.1.1
+          executor_type: "local"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.1-buster
+          context:
+            - qa
+  regression-2.1.3-buster:
+    jobs:
+      # - waiter:
+      #     name: waiter-2.1.3-buster
+      #     airflow_version: 2.1.3
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
+      - qa-ui:
+          name: qa-ui-regression-celery-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "celery"
+          test_type: "testim"
+          # requires:
+          #   - waiter-2.1.3-buster
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-k8s-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-celery-2.1.3-buster
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-local-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "local"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-k8s-2.1.3-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-celery-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "celery"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.3-buster
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-celery-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "celery"
+          test_type: "k8s"
+          # requires:
+          #   - qa-core-celery-2.1.3-buster
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-celery-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "celery"
+          test_type: "dagparams"
+          requires:
+            - qa-core-celery-2.1.3-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-celery-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "celery"
+          test_type: "rest"
+          # requires:
+          #   - waiter-2.1.3-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-local-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-2.1.3-buster
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-k8s-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-2.1.3-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-k8s-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "kubernetes"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.3-buster
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-k8s-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "kubernetes"
+          test_type: "k8"
+          requires:
+            - qa-core-k8s-2.1.3-buster
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-k8s-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "kubernetes"
+          test_type: "dagparams"
+          # requires:
+          #   - qa-k8s-k8s-2.1.3-buster
+          context:
+            - qa
+      - qa-negative:
+          name: qa-negative-k8s-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "kubernetes"
+          test_type: "negative"
+          # requires:
+          #   - qa-params-k8s-2.1.3-buster
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-local-2.1.3-buster
+          airflow_version: 2.1.3
+          executor_type: "local"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.1.3-buster
+          context:
+            - qa
+  regression-2.2.2-bullseye:
+    jobs:
+      # - waiter:
+      #     name: waiter-2.2.2-bullseye
+      #     airflow_version: 2.2.2
+      #     context:
+      #       - qa
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      #           - waiter_for_each_airflowv
+      - qa-ui:
+          name: qa-ui-regression-celery-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "celery"
+          test_type: "testim"
+          # requires:
+          #   - waiter-2.2.2-bullseye
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-k8s-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "kubernetes"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-celery-2.2.2-bullseye
+          context:
+            - qa
+      - qa-ui:
+          name: qa-ui-regression-local-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "local"
+          test_type: "testim"
+          requires:
+            - qa-ui-regression-k8s-2.2.2-bullseye
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-celery-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "celery"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.2.2-bullseye
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-celery-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "celery"
+          test_type: "k8s"
+          # requires:
+          #   - qa-core-celery-2.2.2-bullseye
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-celery-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "celery"
+          test_type: "dagparams"
+          requires:
+            - qa-core-celery-2.2.2-bullseye
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-celery-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "celery"
+          test_type: "rest"
+          # requires:
+          #   - waiter-2.2.2-bullseye
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-local-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "local"
+          test_type: "rest"
+          requires:
+            - qa-restapi-celery-2.2.2-bullseye
+          context:
+            - qa
+      - qa-restapi:
+          name: qa-restapi-k8s-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "kubernetes"
+          test_type: "rest"
+          requires:
+            - qa-restapi-local-2.2.2-bullseye
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-k8s-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "kubernetes"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.2.2-bullseye
+          context:
+            - qa
+      - qa-k8s:
+          name: qa-k8s-k8s-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "kubernetes"
+          test_type: "k8"
+          requires:
+            - qa-core-k8s-2.2.2-bullseye
+          context:
+            - qa
+      - qa-params:
+          name: qa-params-k8s-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "kubernetes"
+          test_type: "dagparams"
+          # requires:
+          #   - qa-k8s-k8s-2.2.2-bullseye
+          context:
+            - qa
+      - qa-negative:
+          name: qa-negative-k8s-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "kubernetes"
+          test_type: "negative"
+          # requires:
+          #   - qa-params-k8s-2.2.2-bullseye
+          context:
+            - qa
+      - qa-core:
+          name: qa-core-local-2.2.2-bullseye
+          airflow_version: 2.2.2
+          executor_type: "local"
+          test_type: "core"
+          # requires:
+          #   - waiter-2.2.2-bullseye
+          context:
+            - qa
+  certified-airflow:
+    jobs:
+      - static-checks
+      - slack/on-hold:
+          name: Slack_Notification-1.10.10
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
 
-executors:
-  docker-executor:
-    docker:
-      - image: circleci/python:3.9
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-1.10.10
+          requires:
+            - Slack_Notification-1.10.10
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-1.10.10-alpine3.10
+          airflow_version: 1.10.10
+          distribution_name: alpine3.10
+          dev_build: false
+          image_name: "ap-airflow:1.10.10-alpine3.10"
+          requires:
+            - Need-Approval-1.10.10
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-1.10.10-alpine3.10-onbuild
+          airflow_version: 1.10.10
+          distribution: alpine3.10
+          distribution_name: alpine3.10-onbuild
+          image_name: "ap-airflow:1.10.10-alpine3.10"
+          requires:
+            - build-1.10.10-alpine3.10
+      - test:
+          name: test-1.10.10-alpine3.10-images
+          tag: "1.10.10-alpine3.10"
+          requires:
+            - build-1.10.10-alpine3.10
+      - push:
+          name: push-1.10.10-alpine3.10
+          dev_build: false
+          tag: "1.10.10-alpine3.10"
+          extra_tags: "1.10.10-alpine3.10-${CIRCLE_BUILD_NUM},1.10.10-10-alpine3.10"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.10-alpine3.10-onbuild
+            - test-1.10.10-alpine3.10-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-1.10.10-alpine3.10-onbuild
+          dev_build: false
+          tag: "1.10.10-alpine3.10-onbuild"
+          extra_tags: "1.10.10-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.10-10-alpine3.10-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.10-alpine3.10-onbuild
+            - test-1.10.10-alpine3.10-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - build:
+          name: build-1.10.10-buster
+          airflow_version: 1.10.10
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:1.10.10-buster"
+          requires:
+            - Need-Approval-1.10.10
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-1.10.10-buster-onbuild
+          airflow_version: 1.10.10
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.10-buster"
+          requires:
+            - build-1.10.10-buster
+      - test:
+          name: test-1.10.10-buster-images
+          tag: "1.10.10-buster"
+          requires:
+            - build-1.10.10-buster
+      - push:
+          name: push-1.10.10-buster
+          dev_build: false
+          tag: "1.10.10-buster"
+          extra_tags: "1.10.10-buster-${CIRCLE_BUILD_NUM},1.10.10-10-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.10-buster-onbuild
+            - test-1.10.10-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-1.10.10-buster-onbuild
+          dev_build: false
+          tag: "1.10.10-buster-onbuild"
+          extra_tags: "1.10.10-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.10-10-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.10-buster-onbuild
+            - test-1.10.10-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.12
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-1.10.12
+          requires:
+            - Slack_Notification-1.10.12
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-1.10.12-alpine3.10
+          airflow_version: 1.10.12
+          distribution_name: alpine3.10
+          dev_build: false
+          image_name: "ap-airflow:1.10.12-alpine3.10"
+          requires:
+            - Need-Approval-1.10.12
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-1.10.12-alpine3.10-onbuild
+          airflow_version: 1.10.12
+          distribution: alpine3.10
+          distribution_name: alpine3.10-onbuild
+          image_name: "ap-airflow:1.10.12-alpine3.10"
+          requires:
+            - build-1.10.12-alpine3.10
+      - test:
+          name: test-1.10.12-alpine3.10-images
+          tag: "1.10.12-alpine3.10"
+          requires:
+            - build-1.10.12-alpine3.10
+      - push:
+          name: push-1.10.12-alpine3.10
+          dev_build: false
+          tag: "1.10.12-alpine3.10"
+          extra_tags: "1.10.12-alpine3.10-${CIRCLE_BUILD_NUM},1.10.12-6-alpine3.10"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.12-alpine3.10-onbuild
+            - test-1.10.12-alpine3.10-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-1.10.12-alpine3.10-onbuild
+          dev_build: false
+          tag: "1.10.12-alpine3.10-onbuild"
+          extra_tags: "1.10.12-alpine3.10-onbuild-${CIRCLE_BUILD_NUM},1.10.12-6-alpine3.10-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.12-alpine3.10-onbuild
+            - test-1.10.12-alpine3.10-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - build:
+          name: build-1.10.12-buster
+          airflow_version: 1.10.12
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:1.10.12-buster"
+          requires:
+            - Need-Approval-1.10.12
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-1.10.12-buster-onbuild
+          airflow_version: 1.10.12
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.12-buster"
+          requires:
+            - build-1.10.12-buster
+      - test:
+          name: test-1.10.12-buster-images
+          tag: "1.10.12-buster"
+          requires:
+            - build-1.10.12-buster
+      - push:
+          name: push-1.10.12-buster
+          dev_build: false
+          tag: "1.10.12-buster"
+          extra_tags: "1.10.12-buster-${CIRCLE_BUILD_NUM},1.10.12-6-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.12-buster-onbuild
+            - test-1.10.12-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-1.10.12-buster-onbuild
+          dev_build: false
+          tag: "1.10.12-buster-onbuild"
+          extra_tags: "1.10.12-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.12-6-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.12-buster-onbuild
+            - test-1.10.12-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.14
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-1.10.14
+          requires:
+            - Slack_Notification-1.10.14
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-1.10.14-buster
+          airflow_version: 1.10.14
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:1.10.14-buster"
+          requires:
+            - Need-Approval-1.10.14
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-1.10.14-buster-onbuild
+          airflow_version: 1.10.14
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.14-buster"
+          requires:
+            - build-1.10.14-buster
+      - test:
+          name: test-1.10.14-buster-images
+          tag: "1.10.14-buster"
+          requires:
+            - build-1.10.14-buster
+      - push:
+          name: push-1.10.14-buster
+          dev_build: false
+          tag: "1.10.14-buster"
+          extra_tags: "1.10.14-buster-${CIRCLE_BUILD_NUM},1.10.14-5-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.14-buster-onbuild
+            - test-1.10.14-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-1.10.14-buster-onbuild
+          dev_build: false
+          tag: "1.10.14-buster-onbuild"
+          extra_tags: "1.10.14-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.14-5-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.14-buster-onbuild
+            - test-1.10.14-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-1.10.15
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-1.10.15
+          requires:
+            - Slack_Notification-1.10.15
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-1.10.15-buster
+          airflow_version: 1.10.15
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:1.10.15-buster"
+          requires:
+            - Need-Approval-1.10.15
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-1.10.15-buster-onbuild
+          airflow_version: 1.10.15
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:1.10.15-buster"
+          requires:
+            - build-1.10.15-buster
+      - test:
+          name: test-1.10.15-buster-images
+          tag: "1.10.15-buster"
+          requires:
+            - build-1.10.15-buster
+      - push:
+          name: push-1.10.15-buster
+          dev_build: false
+          tag: "1.10.15-buster"
+          extra_tags: "1.10.15-buster-${CIRCLE_BUILD_NUM},1.10.15-4-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.15-buster-onbuild
+            - test-1.10.15-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-1.10.15-buster-onbuild
+          dev_build: false
+          tag: "1.10.15-buster-onbuild"
+          extra_tags: "1.10.15-buster-onbuild-${CIRCLE_BUILD_NUM},1.10.15-4-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-1.10.15-buster-onbuild
+            - test-1.10.15-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.0.0
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.0.0
+          requires:
+            - Slack_Notification-2.0.0
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.0.0-buster
+          airflow_version: 2.0.0
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:2.0.0-buster"
+          requires:
+            - Need-Approval-2.0.0
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.0.0-buster-onbuild
+          airflow_version: 2.0.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.0.0-buster"
+          requires:
+            - build-2.0.0-buster
+      - test:
+          name: test-2.0.0-buster-images
+          tag: "2.0.0-buster"
+          requires:
+            - build-2.0.0-buster
+      - push:
+          name: push-2.0.0-buster
+          dev_build: false
+          tag: "2.0.0-buster"
+          extra_tags: "2.0.0-buster-${CIRCLE_BUILD_NUM},2.0.0-10-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.0.0-buster-onbuild
+            - test-2.0.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.0.0-buster-onbuild
+          dev_build: false
+          tag: "2.0.0-buster-onbuild"
+          extra_tags: "2.0.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.0-10-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.0.0-buster-onbuild
+            - test-2.0.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.0.2
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.0.2
+          requires:
+            - Slack_Notification-2.0.2
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.0.2-buster
+          airflow_version: 2.0.2
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:2.0.2-buster"
+          requires:
+            - Need-Approval-2.0.2
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.0.2-buster-onbuild
+          airflow_version: 2.0.2
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.0.2-buster"
+          requires:
+            - build-2.0.2-buster
+      - test:
+          name: test-2.0.2-buster-images
+          tag: "2.0.2-buster"
+          requires:
+            - build-2.0.2-buster
+      - push:
+          name: push-2.0.2-buster
+          dev_build: false
+          tag: "2.0.2-buster"
+          extra_tags: "2.0.2-buster-${CIRCLE_BUILD_NUM},2.0.2-6-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.0.2-buster-onbuild
+          dev_build: false
+          tag: "2.0.2-buster-onbuild"
+          extra_tags: "2.0.2-buster-onbuild-${CIRCLE_BUILD_NUM},2.0.2-6-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.0.2-buster-onbuild
+            - test-2.0.2-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.1.0
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.1.0
+          requires:
+            - Slack_Notification-2.1.0
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.1.0-buster
+          airflow_version: 2.1.0
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.1.0.build)"
+          image_name: "ap-airflow:2.1.0-buster"
+          requires:
+            - Need-Approval-2.1.0
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.1.0-buster-onbuild
+          airflow_version: 2.1.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.0-buster"
+          requires:
+            - build-2.1.0-buster
+      - test:
+          name: test-2.1.0-buster-images
+          tag: "2.1.0-buster"
+          requires:
+            - build-2.1.0-buster
+      - push:
+          name: push-2.1.0-buster
+          dev_build: true
+          tag: "2.1.0-buster"
+          extra_tags: "2.1.0-buster-${CIRCLE_BUILD_NUM},2.1.0-6.dev-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.0-buster-onbuild
+            - test-2.1.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.0-buster-onbuild
+          dev_build: true
+          tag: "2.1.0-buster-onbuild"
+          extra_tags: "2.1.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.0-6.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.0-buster-onbuild
+            - test-2.1.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.1.1
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.1.1
+          requires:
+            - Slack_Notification-2.1.1
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.1.1-buster
+          airflow_version: 2.1.1
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.1.1.build)"
+          image_name: "ap-airflow:2.1.1-buster"
+          requires:
+            - Need-Approval-2.1.1
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.1.1-buster-onbuild
+          airflow_version: 2.1.1
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.1-buster"
+          requires:
+            - build-2.1.1-buster
+      - test:
+          name: test-2.1.1-buster-images
+          tag: "2.1.1-buster"
+          requires:
+            - build-2.1.1-buster
+      - push:
+          name: push-2.1.1-buster
+          dev_build: true
+          tag: "2.1.1-buster"
+          extra_tags: "2.1.1-buster-${CIRCLE_BUILD_NUM},2.1.1-5.dev-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.1-buster-onbuild
+            - test-2.1.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.1-buster-onbuild
+          dev_build: true
+          tag: "2.1.1-buster-onbuild"
+          extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-5.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.1-buster-onbuild
+            - test-2.1.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.1.3
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.1.3
+          requires:
+            - Slack_Notification-2.1.3
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.1.3-buster
+          airflow_version: 2.1.3
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.1.3.build)"
+          image_name: "ap-airflow:2.1.3-buster"
+          requires:
+            - Need-Approval-2.1.3
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.1.3-buster-onbuild
+          airflow_version: 2.1.3
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.3-buster"
+          requires:
+            - build-2.1.3-buster
+      - test:
+          name: test-2.1.3-buster-images
+          tag: "2.1.3-buster"
+          requires:
+            - build-2.1.3-buster
+      - push:
+          name: push-2.1.3-buster
+          dev_build: true
+          tag: "2.1.3-buster"
+          extra_tags: "2.1.3-buster-${CIRCLE_BUILD_NUM},2.1.3-3.dev-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.3-buster-onbuild
+            - test-2.1.3-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.3-buster-onbuild
+          dev_build: true
+          tag: "2.1.3-buster-onbuild"
+          extra_tags: "2.1.3-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.3-3.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.3-buster-onbuild
+            - test-2.1.3-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.1.4
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.1.4
+          requires:
+            - Slack_Notification-2.1.4
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.1.4-buster
+          airflow_version: 2.1.4
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:2.1.4-buster"
+          requires:
+            - Need-Approval-2.1.4
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.1.4-buster-onbuild
+          airflow_version: 2.1.4
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.4-buster"
+          requires:
+            - build-2.1.4-buster
+      - test:
+          name: test-2.1.4-buster-images
+          tag: "2.1.4-buster"
+          requires:
+            - build-2.1.4-buster
+      - push:
+          name: push-2.1.4-buster
+          dev_build: false
+          tag: "2.1.4-buster"
+          extra_tags: "2.1.4-buster-${CIRCLE_BUILD_NUM},2.1.4-3-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.4-buster-onbuild
+            - test-2.1.4-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.4-buster-onbuild
+          dev_build: false
+          tag: "2.1.4-buster-onbuild"
+          extra_tags: "2.1.4-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.4-3-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.4-buster-onbuild
+            - test-2.1.4-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.2.0
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.2.0
+          requires:
+            - Slack_Notification-2.2.0
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.2.0-bullseye
+          airflow_version: 2.2.0
+          distribution_name: bullseye
+          dev_build: false
+          image_name: "ap-airflow:2.2.0"
+          requires:
+            - Need-Approval-2.2.0
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.0-bullseye-onbuild
+          airflow_version: 2.2.0
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.0"
+          requires:
+            - build-2.2.0-bullseye
+      - test:
+          name: test-2.2.0-bullseye-images
+          tag: "2.2.0"
+          requires:
+            - build-2.2.0-bullseye
+      - push:
+          name: push-2.2.0-bullseye
+          dev_build: false
+          tag: "2.2.0"
+          extra_tags: "2.2.0-${CIRCLE_BUILD_NUM},2.2.0-4"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.0-bullseye-onbuild
+          dev_build: false
+          tag: "2.2.0-onbuild"
+          extra_tags: "2.2.0-onbuild-${CIRCLE_BUILD_NUM},2.2.0-4-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.0-bullseye-onbuild
+            - test-2.2.0-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - build:
+          name: build-2.2.0-buster
+          airflow_version: 2.2.0
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:2.2.0-buster"
+          requires:
+            - Need-Approval-2.2.0
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.0-buster-onbuild
+          airflow_version: 2.2.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.2.0-buster"
+          requires:
+            - build-2.2.0-buster
+      - test:
+          name: test-2.2.0-buster-images
+          tag: "2.2.0-buster"
+          requires:
+            - build-2.2.0-buster
+      - push:
+          name: push-2.2.0-buster
+          dev_build: false
+          tag: "2.2.0-buster"
+          extra_tags: "2.2.0-buster-${CIRCLE_BUILD_NUM},2.2.0-4-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.0-buster-onbuild
+            - test-2.2.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.0-buster-onbuild
+          dev_build: false
+          tag: "2.2.0-buster-onbuild"
+          extra_tags: "2.2.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.0-4-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.0-buster-onbuild
+            - test-2.2.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.2.1
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.2.1
+          requires:
+            - Slack_Notification-2.2.1
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.2.1-bullseye
+          airflow_version: 2.2.1
+          distribution_name: bullseye
+          dev_build: false
+          image_name: "ap-airflow:2.2.1"
+          requires:
+            - Need-Approval-2.2.1
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.1-bullseye-onbuild
+          airflow_version: 2.2.1
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.1"
+          requires:
+            - build-2.2.1-bullseye
+      - test:
+          name: test-2.2.1-bullseye-images
+          tag: "2.2.1"
+          requires:
+            - build-2.2.1-bullseye
+      - push:
+          name: push-2.2.1-bullseye
+          dev_build: false
+          tag: "2.2.1"
+          extra_tags: "2.2.1-${CIRCLE_BUILD_NUM},2.2.1-2"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.1-bullseye-onbuild
+            - test-2.2.1-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.1-bullseye-onbuild
+          dev_build: false
+          tag: "2.2.1-onbuild"
+          extra_tags: "2.2.1-onbuild-${CIRCLE_BUILD_NUM},2.2.1-2-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.1-bullseye-onbuild
+            - test-2.2.1-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - build:
+          name: build-2.2.1-buster
+          airflow_version: 2.2.1
+          distribution_name: buster
+          dev_build: false
+          image_name: "ap-airflow:2.2.1-buster"
+          requires:
+            - Need-Approval-2.2.1
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.1-buster-onbuild
+          airflow_version: 2.2.1
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.2.1-buster"
+          requires:
+            - build-2.2.1-buster
+      - test:
+          name: test-2.2.1-buster-images
+          tag: "2.2.1-buster"
+          requires:
+            - build-2.2.1-buster
+      - push:
+          name: push-2.2.1-buster
+          dev_build: false
+          tag: "2.2.1-buster"
+          extra_tags: "2.2.1-buster-${CIRCLE_BUILD_NUM},2.2.1-2-buster"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.1-buster-onbuild
+            - test-2.2.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.1-buster-onbuild
+          dev_build: false
+          tag: "2.2.1-buster-onbuild"
+          extra_tags: "2.2.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.2.1-2-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.1-buster-onbuild
+            - test-2.2.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+      - slack/on-hold:
+          name: Slack_Notification-2.2.2
+          context: slack_ap-airflow
+          custom: |
+            {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "$CIRCLE_JOB On Hold - Awaiting Approval :raised_hand:",
+                      "emoji": true
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Branch*:$CIRCLE_BRANCH"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Author*:$CIRCLE_USERNAME"
+                      },
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
+                      }
+
+                    ]
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "actions",
+                    "elements": [
+                      {
+                        "type": "button",
+                        "text": {
+                          "type": "plain_text",
+                          "text": "View Workflow"
+                        },
+                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                      }
+                    ]
+                  }
+                ]
+              }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+      - pause_workflow:
+          name: Need-Approval-2.2.2
+          requires:
+            - Slack_Notification-2.2.2
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+                - waiter_for_each_airflowv
+
+      - build:
+          name: build-2.2.2-bullseye
+          airflow_version: 2.2.2
+          distribution_name: bullseye
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.2.build)"
+          image_name: "ap-airflow:2.2.2"
+          requires:
+            - Need-Approval-2.2.2
+            - static-checks
+      - scan-trivy:
+          name: scan-trivy-2.2.2-bullseye-onbuild
+          airflow_version: 2.2.2
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.2"
+          requires:
+            - build-2.2.2-bullseye
+      - test:
+          name: test-2.2.2-bullseye-images
+          tag: "2.2.2"
+          requires:
+            - build-2.2.2-bullseye
+      - push:
+          name: push-2.2.2-bullseye
+          dev_build: true
+          tag: "2.2.2"
+          extra_tags: "2.2.2-${CIRCLE_BUILD_NUM},2.2.2-1.dev"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.2-bullseye-onbuild
+            - test-2.2.2-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.2-bullseye-onbuild
+          dev_build: true
+          tag: "2.2.2-onbuild"
+          extra_tags: "2.2.2-onbuild-${CIRCLE_BUILD_NUM},2.2.2-1.dev-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.2-bullseye-onbuild
+            - test-2.2.2-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+                - waiter_for_each_airflowv
+                - slack-build-approvals
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build:
+          name: build-2.1.0-buster
+          airflow_version: 2.1.0
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.1.0.build)"
+          image_name: "ap-airflow:2.1.0-buster"
+      - scan-trivy:
+          name: scan-trivy-2.1.0-buster-onbuild
+          airflow_version: 2.1.0
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.0-buster"
+          requires:
+            - build-2.1.0-buster
+      - test:
+          name: test-2.1.0-buster-images
+          tag: "2.1.0-buster"
+          requires:
+            - build-2.1.0-buster
+      - push:
+          name: push-2.1.0-buster
+          dev_build: true
+          tag: "2.1.0-buster"
+          extra_tags: "2.1.0-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.0-buster-onbuild
+            - test-2.1.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.0-buster-onbuild
+          dev_build: true
+          tag: "2.1.0-buster-onbuild"
+          extra_tags: "2.1.0-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.0-6.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.0-buster-onbuild
+            - test-2.1.0-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+      - build:
+          name: build-2.1.1-buster
+          airflow_version: 2.1.1
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.1.1.build)"
+          image_name: "ap-airflow:2.1.1-buster"
+      - scan-trivy:
+          name: scan-trivy-2.1.1-buster-onbuild
+          airflow_version: 2.1.1
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.1-buster"
+          requires:
+            - build-2.1.1-buster
+      - test:
+          name: test-2.1.1-buster-images
+          tag: "2.1.1-buster"
+          requires:
+            - build-2.1.1-buster
+      - push:
+          name: push-2.1.1-buster
+          dev_build: true
+          tag: "2.1.1-buster"
+          extra_tags: "2.1.1-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.1-buster-onbuild
+            - test-2.1.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.1-buster-onbuild
+          dev_build: true
+          tag: "2.1.1-buster-onbuild"
+          extra_tags: "2.1.1-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.1-5.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.1-buster-onbuild
+            - test-2.1.1-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+      - build:
+          name: build-2.1.3-buster
+          airflow_version: 2.1.3
+          distribution_name: buster
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.1.3.build)"
+          image_name: "ap-airflow:2.1.3-buster"
+      - scan-trivy:
+          name: scan-trivy-2.1.3-buster-onbuild
+          airflow_version: 2.1.3
+          distribution: buster
+          distribution_name: buster-onbuild
+          image_name: "ap-airflow:2.1.3-buster"
+          requires:
+            - build-2.1.3-buster
+      - test:
+          name: test-2.1.3-buster-images
+          tag: "2.1.3-buster"
+          requires:
+            - build-2.1.3-buster
+      - push:
+          name: push-2.1.3-buster
+          dev_build: true
+          tag: "2.1.3-buster"
+          extra_tags: "2.1.3-buster-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.3-buster-onbuild
+            - test-2.1.3-buster-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.1.3-buster-onbuild
+          dev_build: true
+          tag: "2.1.3-buster-onbuild"
+          extra_tags: "2.1.3-buster-onbuild-${CIRCLE_BUILD_NUM},2.1.3-3.dev-buster-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.1.3-buster-onbuild
+            - test-2.1.3-buster-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
+      - build:
+          name: build-2.2.2-bullseye
+          airflow_version: 2.2.2
+          distribution_name: bullseye
+          dev_build: true
+          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-2.2.2.build)"
+          image_name: "ap-airflow:2.2.2"
+      - scan-trivy:
+          name: scan-trivy-2.2.2-bullseye-onbuild
+          airflow_version: 2.2.2
+          distribution: bullseye
+          distribution_name: bullseye-onbuild
+          image_name: "ap-airflow:2.2.2"
+          requires:
+            - build-2.2.2-bullseye
+      - test:
+          name: test-2.2.2-bullseye-images
+          tag: "2.2.2"
+          requires:
+            - build-2.2.2-bullseye
+      - push:
+          name: push-2.2.2-bullseye
+          dev_build: true
+          tag: "2.2.2"
+          extra_tags: "2.2.2-${CIRCLE_BUILD_NUM}"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.2-bullseye-onbuild
+            - test-2.2.2-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+      - push:
+          name: push-2.2.2-bullseye-onbuild
+          dev_build: true
+          tag: "2.2.2-onbuild"
+          extra_tags: "2.2.2-onbuild-${CIRCLE_BUILD_NUM},2.2.2-1.dev-onbuild"
+          context:
+            - quay.io
+            - docker.io
+            - qa
+          requires:
+            - scan-trivy-2.2.2-bullseye-onbuild
+            - test-2.2.2-bullseye-images
+          filters:
+            branches:
+              only:
+                - master
+                - testim_workflows
 
 jobs:
-  # Runs dynamic workflow generator and continues from it
-  generate-config:
+  waiter:
     executor: docker-executor
+    resource_class: small
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+    steps:
+      #- run: sleep 120
+      - wait_workflow_orb:
+          workflow-name: certified-airflow
+          max-wait-time: '100000'
+          sleep-time-between-checks: '60'
+          branch-to-consider: ${CIRCLE_BRANCH}
+          airflow-version: << parameters.airflow_version >>
+  qa-ui:
+    description: "Run UI Regression Tests using Testim"
+    environment:
+      CIRCLE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on here "
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/testim/
+      - run:
+          name: Run the Testim Tests
+          no_output_timeout: 30m
+          command:   |
+            npm i -g @testim/testim-cli
+            cd /home/circleci/project/qa-regression
+            testim --report-file $CIRCLE_TEST_REPORTS/testim/results.xml -c airflowui_testim_config.js --parallel 5 --retries 3 --result-label << parameters.airflow_version >>
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+  qa-core:
+    description: "Run the Core DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: "core"
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/core/
+      - run:
+          name: Run the DAGS
+          no_output_timeout: 30m
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circleci/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t core
+            echo "Sleeping"
+            sleep 420
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > /tmp/test-results/results_core_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_core_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_core_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project
+  qa-restapi:
+    description: "Run the REST APIS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: "restapi"
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/restapi/
+      - run:
+          name: Run the RESTAPI
+          no_output_timeout: 30m
+          command:   |
+            cd /home/circleci/project/qa-regression/postman_rest
+            chmod 744 restapi_executor_ci.sh
+            bash ./restapi_executor_ci.sh
+            curl -X POST -H "Content-Type: text/xml" -H "Authorization: Bearer $RESTAPI_TESULTS_TOKEN" -d /home/circleci/project/qa-regression/results.xml https://www.tesults.com/results
+            cp result.out /tmp/test-results/restapi/
+            FOUND_404=0
+            FOUND_500=0
+            ASSERTION_ERRORS=0
+            grep -q "404 Not Found" result.out && FOUND_404=1
+            grep -q "500 INTERNAL SERVER ERROR" result.out && FOUND_500=1
+            grep -q "AssertionError" result.out && ASSERTION_ERRORS=1
+            if [[ "$FOUND_404" -eq 1 ]]; then echo "404 Errors Found";exit 1; fi
+            #if [[ "$FOUND_500" -eq 1 ]]; then echo "500 Errors Found";exit 1; fi
+            #if [[ "$ASSERTION_ERRORS" -eq 1 ]]; then echo "Assertion Errors Found";exit 1; fi
+            cd /home/circleci/project/qa-regression
+            #chmod 744 delete_deployment.sh
+            #bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+  qa-k8s:
+    description: "Run the k8s DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/k8s/
+      - run:
+          name: Run the Pre-Reqs for running K8s
+          command:   |
+            cd /home/circleci/project/qa-regression
+            chmod 744 pre-req-kubernetes.sh
+            bash ./pre-req-kubernetes.sh
+      - run:
+          name: Run the DAGS
+          no_output_timeout: 30m
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circleci/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t k8
+            sleep 420
+            echo "Sleeping for 420s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_k8s_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  qa-negative:
+    description: "Run the Negative DAGS"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/negative/
+      - run:
+          name: Run the DAGS
+          no_output_timeout: 30m
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circleci/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
+            dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t negative
+            sleep 500
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/k8s/results_k8s_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_k8s_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_k8s_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  qa-params:
+    description: "Run the DAG Parameters"
+    environment:
+      CORE_TEST_REPORTS: /tmp/test-results
+    machine: # executor type
+      image: ubuntu-2004:202010-01
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      executor_type:
+        description: "The type of executor to run on"
+        default: "celery"
+        type: string
+      test_type:
+        description: "The type of framework to run"
+        default: ""
+        type: string
+    steps:
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
+      - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run: npm -v
+      - run: node -v
+      - run:
+          name: Avoid hosts unknown for github
+          command:   |
+            [ ! -d ~/.ssh ] && mkdir ~/.ssh/
+            echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git clone git@github.com:astronomer/qa-regression.git
+      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Run Shell Script for creating deployments
+          command:  |
+            cd qa-regression
+            ls
+            chmod 744 *.sh
+            echo "Run Deployment Script"
+            bash ./create_deployment.sh << parameters.airflow_version >>  << parameters.executor_type >>  << parameters.test_type >>
+            cd ..
+      - run: mkdir -p $CORE_TEST_REPORTS/dag-params
+      - run:
+          name: Run the DAGS
+          no_output_timeout: 30m
+          command:   |
+            cd /home/circleci/project/qa-scenario-dags/scripts/dagstest
+            pip3 install -e .
+            python3 -m venv env
+            . env/bin/activate
+            fileurl="/home/circleci/project/env_current_api_url"
+            export AIRFLOW_API_URL=$(cat "$fileurl")
+            export DAGSTEST_DB_HOST=suleiman.db.elephantsql.com
+            export DAGSTEST_DB_PORT=5432
+            export DAGSTEST_DB_NAME=axsrggsp
+            export DAGSTEST_DB_USER=axsrggsp
+            export DAGSTEST_DB_PASSWORD=$DAGSTEST_DB_PASSWORD
+            #dags connections --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" -f /home/circleci/project/qa-scenario-dags/airflow_settings.yaml
+            EXEC_TIME=$(date +%FT%TZ)
+            dags trigger --headers "Authorization":"$QA_CLUSTER_SERVICEACCOUNT" -e $EXEC_TIME -t dagparams
+            sleep 500
+            echo "Sleeping for 240s"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT"
+            dags results -e $EXEC_TIME --headers "Authorization":"Bearer $QA_CLUSTER_SERVICEACCOUNT" > $CORE_TEST_REPORTS/dag-params/results_dag-params_dags.out
+            # FOUND_FAILURES=0
+            # grep -q "failed" /tmp/test-results/results_dag-params_dags.out && FOUND_FAILURES=1
+            # cat /tmp/test-results/results_dag-params_dags.out
+            # if [[ "$FOUND_FAILURES" -eq 1 ]]; then echo "DAG Failures Found1";exit 1; fi
+            # cd /home/circleci/project/qa-regression
+            # chmod 744 delete_deployment.sh
+            # bash ./delete_deployment.sh
+      - store_artifacts:
+          path: /tmp/test-results
+      - store_test_results:
+          path: /tmp/test-results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - project
+  static-checks:
+    executor: machine-executor
+    description: Static Checks
     steps:
       - checkout
       - run:
-          name: Install generation dependencies
-          command: pip install jinja2
-      - run:
-          name: Generate config
+          name: Load archived Docker image
           command: |
-            python3 .circleci/generate_circleci_config.py > generated_config.yml
-            cat generated_config.yml
-      - continuation/continue:
-          configuration_path: generated_config.yml
+            pyenv global 3.8.5
+            pip install -r .circleci/test-requirements.txt
+            pre-commit run --all-files || { git --no-pager diff && false ; }
+  build:
+    executor: docker-executor
+    description: Build Airflow images
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        type: string
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      extra_args:
+        description: "Extra args to pass to pass to Docker build command"
+        default: ""
+        type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
+    steps:
+      - docker-build-base-and-onbuild:
+          airflow_version: "<< parameters.airflow_version >>"
+          distribution_name: "<< parameters.distribution_name >>"
+          extra_args: "<< parameters.extra_args >>"
+          image_name: "<< parameters.image_name >>"
+  test:
+    executor: machine-executor
+    description: Test Airflow images
+    parameters:
+      tag:
+        type: string
+    steps:
+      - airflow-image-test:
+          tag: "<< parameters.tag >>"
+  scan-trivy:
+    docker:
+      - image: docker:18.09-git
+    description: "Trivy: Vulnerability scanner a Docker image"
+    parameters:
+      airflow_version:
+        description: "The Airflow version, for example '1.10.5'"
+        type: string
+      distribution_name:
+        description: "The base distribution of the container"
+        type: string
+      distribution:
+        description: "The distribution without onbuild"
+        type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>-onbuild.tar
+      - run:
+          name: Install trivy
+          command: |
+            apk add --update-cache --upgrade curl rpm
+            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/master/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - restore_cache:
+          keys:
+            - trivy-cache
+      - run:
+          name: Scan the local image with trivy
+          command: |
+            trivy \
+              --ignorefile "./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore" \
+              --cache-dir /tmp/workspace/trivy-cache \
+              --ignore-unfixed -s HIGH,CRITICAL \
+              --exit-code 1 \
+              --no-progress "<< parameters.image_name >>-onbuild"
+      - save_cache:
+          key: trivy-cache
+          paths:
+            - /tmp/workspace/trivy-cache
+  push:
+    executor: docker-executor
+    description: Push Airflow images
+    parameters:
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      tag:
+        type: string
+      extra_tags:
+        type: string
+        default: ""
+      prod_docker_repo_docker_hub:
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
+        default: "astronomerinc/ap-airflow"
+        type: string
+      prod_docker_repo_quay_io:
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
+        default: "quay.io/astronomer/ap-airflow"
+        type: string
+      dev_docker_repo_quay_io:
+        description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
+        default: "quay.io/astronomer/ap-airflow-dev"
+        type: string
+    steps:
+      - push:
+          dev_release: "<< parameters.dev_build >>"
+          extra_tags: "<< parameters.extra_tags >>"
+          tag: "<< parameters.tag >>"
+          prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
+          prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
+          dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
+orbs:
+  slack: circleci/slack@4.2.0
+  clair-scanner: ovotech/clair-scanner@1.6.0
+executors:
+  docker-executor:
+    docker:
+      - image: circleci/python:3
+  machine-executor:
+    machine:
+      image: ubuntu-2004:202010-01
+
+commands:
+  docker-build-base-and-onbuild:
+    description: "Build Airflow images to use with the Astronomer platform"
+    parameters:
+      airflow_version:
+        type: string
+        default: "1.10.5"
+      distribution_name:
+        type: string
+        default: alpine
+      extra_args:
+        description: "Extra args to pass to pass to Docker build command"
+        default: ""
+        type: string
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - docker-build:
+          image_name: "<< parameters.image_name >>"
+          path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
+          extra_args: "<< parameters.extra_args >>"
+      - docker-build:
+          image_name: "<< parameters.image_name >>-onbuild"
+          path: "common/"
+          dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
+          extra_args: "--build-arg baseimage=<< parameters.image_name >>"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - saved-images/
+  docker-build:
+    description: "Build a Docker image"
+    parameters:
+      dockerfile:
+        type: string
+        default: Dockerfile
+      path:
+        type: string
+        default: "."
+      image_name:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+      extra_args:
+        type: string
+        default: ""
+    steps:
+      - run:
+          name: Build the Docker image
+          command: |
+            set -xe
+            mkdir -p saved-images/"$(dirname '<< parameters.image_name >>')"
+            docker build \
+              --tag '<< parameters.image_name >>' \
+              --label io.astronomer.docker.build_time="$(date +%s)" \
+              --label io.astronomer.repo.commit_sha="${CIRCLE_SHA1}" \
+              --label io.astronomer.repo.url="${CIRCLE_REPOSITORY_URL}" \
+              --label io.astronomer.ci.build_url="${CIRCLE_BUILD_URL}" \
+              --file '<< parameters.path>>/<< parameters.dockerfile >>' \
+              --build-arg "BUILD_NUMBER=${CIRCLE_BUILD_NUM}" \
+              --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
+              << parameters.extra_args >> '<< parameters.path >>'
+            docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
+            docker inspect << parameters.image_name >>
+  airflow-image-test:
+    description: Test an Airflow image
+    parameters:
+      tag:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Airflow Docker image
+          command: |
+            docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar
+            docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+      - run:
+          name: Test Airflow Docker images (Base + Onbuild)
+          command: |
+            set -e
+            pyenv global 3.8.5
+            pip install -r .circleci/test-requirements.txt
+            .circleci/bin/test-airflow 'ap-airflow' '<< parameters.tag >>'
+      - store_test_results:
+          path: /tmp/test-reports
+  clean:
+    description: "Clean up"
+    steps:
+      - run:
+          name: Clean Up Environment Variables
+          command: |
+            curl --request DELETE \
+                  --url https://circleci.com/api/v2/project/gh/astronomer/ap-airflow/envvar/v2_0_0 \
+                  --header "Circle-Token: $CIRCLE_API_USER_TOKEN"
+            curl --request POST \
+                  --url https://circleci.com/api/v2/project/gh/astronomer/ap-airflow/envvar/v2_0_1 \
+                  --header "Circle-Token: $CIRCLE_API_USER_TOKEN"
+  push:
+    description: "Push a Docker image to DockerHub"
+    parameters:
+      dev_release:
+        description: "Indicate if this is a dev release"
+        default: true
+        type: boolean
+      extra_tags:
+        type: string
+        default: ""
+      tag:
+        type: string
+      image_name:
+        default: ap-airflow
+        type: string
+      prod_docker_repo_docker_hub:
+        default: astronomerinc/ap-airflow
+        type: string
+      prod_docker_repo_quay_io:
+        default: quay.io/astronomer/ap-airflow
+        type: string
+      dev_docker_repo_quay_io:
+        default: "quay.io/astronomer/ap-airflow-dev"
+        type: string
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: Load archived Docker image
+          command: docker load -i '/tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar'
+      - run:
+          name: Login to DockerHub
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin docker.io
+      - run:
+          name: Login to Quay.io
+          command: echo "$QUAY_PASSWORD" | docker login --username "$QUAY_USERNAME" --password-stdin quay.io
+      - run:
+          name: Push Docker image(s)
+          command: |
+            set -e
+            image="ap-airflow:<< parameters.tag >>"
+            set -x
+            export NEW_POINT_RELEASE=true
+            for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
+            do
+              if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
+                echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
+                export NEW_POINT_RELEASE=false
+              elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || <<parameters.dev_release >> ; then
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                echo "Build TAG artifact using environment variables and into DB"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  release="$( cut -d '-' -f 1 \<<< "$tag" )"
+                  #release_new=v${release//./_}
+                  curl --request POST \
+                  --url https://circleci.com/api/v2/project/gh/astronomer/ap-airflow/envvar \
+                  --header "Circle-Token: $CIRCLE_API_USER_TOKEN" \
+                  --header 'content-type: application/json' \
+                  --data "{\"name\":\"${release_new}\", \"value\":\"${tag}\"}"
+                  sudo apt-get install postgresql postgresql-contrib
+                  echo "Insert into the DB with the latest TAG"
+                  export PORT=5432
+                  del_sql="DELETE FROM tag_version where version_1='${release}'"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$del_sql"
+
+                  insert_sql="INSERT INTO tag_version values('${release}','${tag}')"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$insert_sql"
+
+                fi
+
+              else
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.prod_docker_repo_quay_io >>:${tag}"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
+                docker push "<< parameters.prod_docker_repo_docker_hub >>:${tag}"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+                docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+              fi
+            done
+
+            # The following code block publishes Moving Master builds (e.g. 1.10.13-buster-onbuild)
+            # as compared to above code-blocks that publish images with build-number & immutable tag
+            # e.g (e.g. 1.10.13-1-buster-onbuild and 1.10.13-buster-onbuild-24119)
+            if $NEW_POINT_RELEASE ; then
+              if ! <<parameters.dev_release >> ; then
+                # If it is not a Dev Release publish the image to Prod Repos
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_docker_repo_quay_io >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:<< parameters.tag >>"
+                docker push "<< parameters.prod_docker_repo_quay_io >>:<< parameters.tag >>"
+
+                echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_docker_repo_docker_hub >>"
+                docker tag "$image" "<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
+                docker push "<< parameters.prod_docker_repo_docker_hub >>:<< parameters.tag >>"
+              fi
+
+              echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.dev_docker_repo_quay_io >>"
+              docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:<< parameters.tag >>"
+              docker push "<< parameters.dev_docker_repo_quay_io >>:<< parameters.tag >>"
+            else
+              echo "Image with Tag ($image) not pushed as it is not a new point release"
+            fi
+            set +x
+      - store_artifacts:
+          path: /tmp/build
+  clair-scan:
+    description: "Vulnerability scan a Docker image"
+    parameters:
+      image_name:
+        type: string
+        default: $CIRCLE_PROJECT_REPONAME
+      allowlist:
+        type: string
+        default: cve-allowlist.yaml
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: Load archived Docker image
+          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>.tar
+      - modified-orb:
+          allowlist: "<< parameters.allowlist >>"
+          image: "<< parameters.image_name >>"
+  wait_workflow_orb:
+    description: |
+        This command waits for running workflows of a kind on a given branch to complete. Adding This
+        as the first step in a job will make the job wait till it is the only running workflow.
+        This requires a Circle CI token be set as $CIRCLE_API_USER_TOKEN
+    parameters:
+        branch-to-consider:
+            default: master
+            description: The branch on which we will wait for workflows. If set to "all" this will wait across all branches
+            type: string
+        kill-gracefully:
+            default: "true"
+            description: If true and time exceeds max wait time, dies without failing the job
+            type: string
+        max-wait-time:
+            default: "1800"
+            description: |
+                The max wait time in seconds a job should wait for before killing itself.
+            type: string
+        run-on-branch:
+            default: '*'
+            description: |
+                The branches to actually wait on. By default this waits on all branches. If set to anything but
+                '*' the wait will run only on the specified branch
+            type: string
+        sleep-time-between-checks:
+            default: "30"
+            description: How long to sleep between checks.
+            type: string
+        vcs-type:
+            default: github
+            description: What is the VCS for this project
+            type: string
+        workflow-name:
+            default: '*'
+            description: The type of workflows to wait for. This can be a regex
+            type: string
+        airflow-version:
+            default: '2.0.0'
+            description: Airflow version to be followeds
+            type: string
+    steps:
+        - run:
+            command: |
+                if [ -z "$BASH" ]; then
+                  echo Bash not installed.
+                  exit 1
+                fi
+                hash jq 2>/dev/null || { echo >&2 "jq is not installed.  Aborting."; exit 1; }
+                if [[ "$CIRCLE_API_USER_TOKEN" == "" ]]; then
+                  echo "CIRCLE_API_USER_TOKEN not set. Set a token to access the circle API in the env var CIRCLE_API_USER_TOKEN";
+                  exit 1;
+                fi
+
+                if [[ "<< parameters.run-on-branch >>" != "*" && "<< parameters.run-on-branch >>" != "$CIRCLE_BRANCH" ]]; then
+                  echo "Chosen to run only on << parameters.run-on-branch >> and currently we are on $CIRCLE_BRANCH, exiting";
+                  exit 0;
+                fi
+
+                slug="<< parameters.vcs-type >>/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+                branch_to_consider="<< parameters.branch-to-consider >>"
+
+                # Assume there is one workflow running.
+                total_workflows_running="1"
+                can_i_run="false"
+                # Set the Job Name. This job needs to be checked before running the regression
+                airflow_version="<< parameters.airflow-version >>"
+                current_job_name="push-"$airflow_version"-onbuild"
+
+                mkdir -p /tmp/swissknife
+
+                # This is a global variable used to get return value for get_workflow_start_time
+                workflow_start_time=""
+
+                get_workflow_start_time() {
+                  wf_url="https://circleci.com/api/v2/workflow/%7B$1%7D?circle-token=${CIRCLE_API_USER_TOKEN}"
+                  echo $wf_url
+                  curl -f -s $wf_url > /tmp/swissknife/wf_$1.json
+                  workflow_start_time=$(jq '.created_at' /tmp/swissknife/wf_$1.json)
+                  echo "Reached"
+                }
+
+                get_current_workflowid(){
+                    # Step1: Look at running the jobs - Prepare the URL
+                    running_job_prefix="https://circleci.com/api/v1.1/project/$slug";
+                    if [[ "$branch_to_consider" != "all" ]]; then
+                      running_jobs_branch="/tree/$branch_to_consider";
+                    fi
+                    running_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}&filter=running&shallow=true";
+                    running_jobs_url="${running_job_prefix}${running_jobs_branch}${running_jobs_suffix}"
+
+                    current_threshold_time=0
+
+                    while true; do
+                        # Run the URL to get the details of the all the jobs and workflows
+                        curl -f -s $running_jobs_url > /tmp/swissknife/running_workflow.json
+
+                        # Step2: JQ -> Get the workflowid which will later be used for checking the status
+                        # Added -r in jq to remove double qoutes which cannot be used in the other API
+                        workflow_id=$(jq -r '.[] | select(.workflows.workflow_name|test("certified-airflow")) | .workflows.workflow_id' /tmp/swissknife/running_workflow.json)
+                        if [ "$workflow_id" == "" ]; then
+                            echo "Debug:Workflow is yet to start"
+                        else
+                            echo "Debug:The current workflow id:"$workflow_id
+                            return 0
+                        fi
+                        sleep 30
+                        current_wait_time=$(( current_wait_time + 30 ))
+                        if (( $current_threshold_time > << parameters.max-wait-time >> )); then
+                          if [[ "<< parameters.kill-gracefully >>" == "true" ]]; then
+                            echo "Killing workflow since could not get the workflowID by cancelling.WorkflowID:"$workflow_id;
+                            kill_workflow
+                          else
+                            echo "Killing workflow by exiting forcefully since could not get the workflowID:"$workflow_id;
+                            exit 1;
+                          fi
+                        fi
+
+                    done
+
+                }
+
+                get_num_running_workflows() {
+
+                    # Step1: Look at all the jobs - Prepare the URL
+                    all_job_prefix="https://circleci.com/api/v1.1/project/$slug";
+                    if [[ "$branch_to_consider" != "all" ]]; then
+                      all_jobs_branch="/tree/$branch_to_consider";
+                    fi
+                    all_jobs_suffix="?circle-token=${CIRCLE_API_USER_TOKEN}";
+                    #all_jobs_url="https://circleci.com/api/v1.1/project/github/astronomer/ap-airflow/tree/waiter_for_each_airflowv?circle-token=fdfcf6d10bc404b50195da9bace517f8ab59365f&limit=100"
+                    all_jobs_url="${all_job_prefix}${all_jobs_branch}${all_jobs_suffix}"
+
+                    # Run the URL to get the details of the all the jobs and workflows
+                    curl -f -s $all_jobs_url > /tmp/swissknife/all_jobs.json
+
+                    # Step2: JQ -> Check push for onbuild job
+                    echo "Debug:Checking the status of the job-"$current_job_name
+
+                    status_check=$(jq --arg job "$current_job_name" '.[] | select(.workflows.workflow_name|test("certified-airflow")) | select(.workflows.job_name|test($job)) | .status' /tmp/swissknife/all_jobs.json)
+                    if [ "$status_check" == "" ]; then
+                        echo "Debug:Job is yet to start"
+                    else
+                        echo "Debug:The current status of the job "$current_job_name":"$status_check
+                    fi
+                    should_continue=0
+                    if [ "$status_check" == "\"failed\"" ] || [ "$status_check" == "\"cancelled\"" ]; then
+                        echo "INFO:Job has either failed or cancelled"
+                        kill_workflow
+                    else
+                        should_continue=1
+                        return 0
+                    fi
+                }
+
+                get_job_status_workflows() {
+
+                    # Run the URL to get the details of the all the jobs and workflows
+                    workflow_jobs_url="https://circleci.com/api/v2/workflow/$workflow_id/job?shallow=true"
+
+                    echo "Debug:"$workflow_jobs_url
+
+                    curl --request GET --url $workflow_jobs_url --header 'authorization: Basic ${CIRCLE_API_USER_TOKEN}' > /tmp/swissknife/job_status.json
+
+                    cat /tmp/swissknife/job_status.json
+
+                    # Step2: JQ -> Check status for onbuild job
+                    echo "Debug:Checking the status of the job:"$current_job_name
+                    status_check=$(jq --arg job "$current_job_name" '.items[] | select(.name|test($job)) | .status' /tmp/swissknife/job_status.json)
+                    echo "Debug:Status:"$status_check
+                    if [ "$status_check" == "" ]; then
+                        echo "Debug:Job is yet to start"
+                    else
+                        echo "Debug:The current status of the job "$current_job_name":"$status_check
+                    fi
+                    should_continue=0
+                    if [ "$status_check" == "\"failed\"" ] || [ "$status_check" == "\"cancelled\"" ]; then
+                        echo "INFO:Job has either failed or cancelled"
+                        kill_workflow
+                    elif [ "$status_check" == "\"success\"" ]
+                    then
+                        should_continue=0
+                        return 0
+                    else
+                        should_continue=1
+                        return 0
+                    fi
+                }
+
+                kill_workflow(){
+                  echo "Cancelling workflow for build ${CIRCLE_BUILD_NUM}"
+                  cancel_workflow_url="https://circleci.com/api/v1.1/project/$slug/${CIRCLE_BUILD_NUM}/cancel?circle-token=${CIRCLE_API_USER_TOKEN}"
+                  curl -s -X POST $cancel_workflow_url > /dev/null
+                  # Give Circle CI enough time to kill this workflow
+                  sleep 30
+                  # If the job wasnt canceled in 30 seconds fail.
+                  exit 1;
+                }
+
+                current_wait_time=0
+
+                ##### MAIN CODE BLOCK #########
+
+                #Get the workflow ID of the latest running
+                get_current_workflowid
+                #WAIT FOR 30 secs
+                sleep 30
+                while true; do
+                  echo "Debug:Iterting through until the job is completed..\n"
+                  get_job_status_workflows
+                  if [[ "$should_continue" == 0 || "$can_i_run" == "true" ]]; then
+                    echo "INFO: Its finally my turn. exiting"
+                    exit 0
+                  else
+                    echo "INFO:Looks like $current_job_name is still running or yet to start. and can_i_run:$can_i_run"
+                    echo "DEBUG:Going to sleep for << parameters.sleep-time-between-checks >>"
+                    sleep << parameters.sleep-time-between-checks >>
+                    current_wait_time=$(( current_wait_time + << parameters.sleep-time-between-checks >> ))
+                  fi
+
+                  if (( $current_wait_time > << parameters.max-wait-time >> )); then
+                    if [[ "<< parameters.kill-gracefully >>" == "true" ]]; then
+                      echo "Killing workflow by cancelling";
+                      kill_workflow
+                    else
+                      echo "Killing workflow by exiting forcefully";
+                      exit 1;
+                    fi
+                  fi
+                done
+            name: Swissknife - Wait for workflows - ER
+  # TODO: move to an Astronomer orbs repo, publish orb.
+  # This is to work around an issue in the provided orb https://github.com/ovotech/circleci-orbs/issues/89.
+  modified-orb:
+    description: "Scan an image for vulnerabilities"
+    parameters:
+      image:
+        type: "string"
+        description: "Name of the image to scan"
+        default: ""
+      image_file:
+        type: "string"
+        description: "Path to a file of images to scan"
+        default: ""
+      allowlist:
+        type: "string"
+        description: "Path to a CVE allowlist"
+        default: ""
+      severity_threshold:
+        type: "string"
+        description: "The threshold (equal and above) at which discovered vulnerabilities are reported. May be 'Defcon1', 'Critical', 'High', 'Medium', 'Low', 'Negligible' or 'Unknown'"
+        default: "High"
+      fail_on_discovered_vulnerabilities:
+        type: "boolean"
+        description: "Fail command when vulnerabilities at severity equal to or above the threshold are discovered"
+        default: true
+      fail_on_unsupported_images:
+        type: "boolean"
+        description: "Fail command when image cannot be scanned for vulnerabilities"
+        default: true
+      disable_verbose_console_output:
+        type: "boolean"
+        description: "Disable verbose console output"
+        default: false
+      docker_tar_dir:
+        type: "string"
+        description: "Path of directory that Docker tarballs are stored"
+        default: "/docker-tars"
+    steps:
+      - run:
+          name: "Vulnerability scan"
+          command: |
+            #!/usr/bin/env bash
+
+            set -xe
+
+            DOCKER_TAR_DIR="<< parameters.docker_tar_dir >>"
+
+            if [ -z "<< parameters.image_file >><< parameters.image >>" ] && [ -z "$(ls -A "$DOCKER_TAR_DIR" 2>/dev/null)" ]; then
+                echo "image_file or image parameters or docker tarballs must be present"
+                exit 255
+            fi
+
+            REPORT_DIR=/clair-reports
+            mkdir $REPORT_DIR
+
+            DB=$(docker run -p 5432:5432 -d arminc/clair-db:latest)
+            CLAIR=$(docker run -p 6060:6060 --link "$DB":postgres -d arminc/clair-local-scan:latest)
+            CLAIR_SCANNER=$(docker run -v /var/run/docker.sock:/var/run/docker.sock -d ovotech/clair-scanner@sha256:8a4f920b4e7e40dbcec4a6168263d45d3385f2970ee33e5135dd0e3b75d39c75 tail -f /dev/null)
+
+            clair_ip=$(docker exec -it "$CLAIR" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+            scanner_ip=$(docker exec -it "$CLAIR_SCANNER" hostname -i | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+
+            if [ -n "<< parameters.allowlist >>" ]; then
+                cat "<< parameters.allowlist >>"
+                docker cp "<< parameters.allowlist >>" "$CLAIR_SCANNER:/allowlist.yml"
+
+                allowlist="-w /allowlist.yml"
+            fi
+
+            function scan() {
+                local image=$1
+                # replace forward-slashes and colons with underscores
+                munged_image=$(echo "$image" | sed 's/\//_/g' | sed 's/:/_/g')
+                sanitised_image_filename="${munged_image}.json"
+                local ret=0
+                local docker_cmd=(docker exec -it "$CLAIR_SCANNER" clair-scanner \
+                    --ip "$scanner_ip" \
+                    --clair=http://"$clair_ip":6060 \
+                    -t "<< parameters.severity_threshold >>" \
+                    --report "/$sanitised_image_filename" \
+                    --log "/log.json" \
+                    --whitelist /allowlist.yml \
+                    --reportAll=true \
+                    --exit-when-no-features=false \
+                    "$image")
+
+                # if verbose output is disabled, analyse status code for more fine-grained output
+                if [ "<< parameters.disable_verbose_console_output >>" == "true" ];then
+                    "${docker_cmd[@]}" > /dev/null 2>&1 || ret=$?
+                else
+                    "${docker_cmd[@]}" 2>&1 || ret=$?
+                fi
+                if [ "$ret" -eq 0 ]; then
+                    echo "No unapproved vulnerabilities"
+                elif [ "$ret" -eq 1 ]; then
+                    echo "Unapproved vulnerabilities found"
+                    if [ "<< parameters.fail_on_discovered_vulnerabilities >>" == "true" ];then
+                        EXIT_STATUS=1
+                    fi
+                elif [ "$ret" -eq 5 ]; then
+                    echo "Image was not scanned, not supported."
+                    if [ "<< parameters.fail_on_unsupported_images >>" == "true" ];then
+                        EXIT_STATUS=1
+                    fi
+                else
+                    echo "Unknown clair-scanner return code $ret."
+                    EXIT_STATUS=1
+                fi
+
+                docker cp "$CLAIR_SCANNER:/$sanitised_image_filename" "$REPORT_DIR/$sanitised_image_filename" || true
+            }
+
+            EXIT_STATUS=0
+
+            for entry in "$DOCKER_TAR_DIR"/*.tar; do
+                [ -e "$entry" ] || continue
+                images=$(docker load -i "$entry" | sed -e 's/Loaded image: //g')
+                for image in $images; do
+                    scan "$image"
+                done
+            done
+
+            if [ -n "<< parameters.image_file >>" ]; then
+                images=$(cat "<< parameters.image_file >>")
+                for image in $images; do
+                    scan "$image"
+                done
+            fi
+            if [ -n "<< parameters.image >>" ]; then
+                image="<< parameters.image >>"
+                scan "$image"
+            fi
+
+            exit $EXIT_STATUS
+      - store_artifacts:
+          path: /clair-reports
