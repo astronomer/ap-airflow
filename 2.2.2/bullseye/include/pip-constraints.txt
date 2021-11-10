@@ -1,0 +1,4 @@
+# Constraint the version pip will install, if it ever needs to install a module
+
+# https://github.com/astronomer/issues/issues/3347#issuecomment-901370036
+elasticsearch<7.14

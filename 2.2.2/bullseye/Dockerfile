@@ -110,10 +110,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.2.1-2"
+ARG VERSION="2.2.2-1.*"
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
-ARG AIRFLOW_VERSION="2.2.1"
+ARG AIRFLOW_VERSION="2.2.2"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -145,8 +145,8 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.2.1-2"
-ARG AIRFLOW_VERSION="2.2.1"
+ARG VERSION="2.2.2-1.*"
+ARG AIRFLOW_VERSION="2.2.2"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 
