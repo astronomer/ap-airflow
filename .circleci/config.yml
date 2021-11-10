@@ -10,7 +10,8 @@ orbs:
 workflows:
   setup:
     jobs:
-      - generate-config
+      # - generate-config
+      - rebase-astro-main
 
 executors:
   docker-executor:
@@ -33,3 +34,23 @@ jobs:
             cat generated_config.yml
       - continuation/continue:
           configuration_path: generated_config.yml
+  rebase-astro-main:
+    machine:
+      image: ubuntu-2004:202107-02
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "11:0b:15:6b:f2:77:3e:93:c5:83:0e:8a:0a:93:2e:7e"
+      - run:
+          name: Rebase astronomer/airflow:astro-main onto main
+          command: |
+            git clone git@github.com:astronomer/airflow.git
+            cd airflow
+            git branch --verbose
+            git fetch --all
+            git checkout astro-main
+            git --no-pager log --max-count 4
+            git rebase main
+            git --no-pager log --max-count 4
+            git push origin astro-main
+            git --no-pager remote --verbose
