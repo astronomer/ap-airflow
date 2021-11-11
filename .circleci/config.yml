@@ -44,6 +44,7 @@ jobs:
       - run:
           name: Rebase astronomer/airflow:astro-main onto main
           command: |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_110b156bf2773e93c5830e8a0a932e7e"
             git clone git@github.com:astronomer/airflow.git
             cd airflow
             git branch --verbose
