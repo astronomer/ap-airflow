@@ -4,7 +4,7 @@ workflows:
   certified-airflow:
     when:
       not:
-        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - static-checks
 {%- for ac_version, distributions in image_map.items() %}
