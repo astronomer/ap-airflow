@@ -2,6 +2,9 @@ version: 2.1
 
 workflows:
   certified-airflow:
+    when:
+      not:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - static-checks
 {%- for ac_version, distributions in image_map.items() %}
@@ -165,13 +168,10 @@ workflows:
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
-    triggers:
-      - schedule:
-          cron: "0 0 * * *"
-          filters:
-            branches:
-              only:
-                - master
+    when:
+      and:
+        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+        - equal: [ "every-midnight-utc", << pipeline.schedule.name >> ]
     jobs:
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version %}
