@@ -2802,6 +2802,9 @@ jobs:
         default: ""
         type: string
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:86:1f:53:65:b0:f0:46:28:f3:e6:20:25:3f:0d:f9"
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git curl wget nodejs postgresql postgresql-contrib
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -2812,8 +2815,12 @@ jobs:
           command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Clone Repos
+          command:  |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_d7861f5365b0f04628f3e620253f0df9"
+            git clone git@github.com:astronomer/qa-regression.git
+            git clone git@github.com:astronomer/qa-scenario-dags.git
       - run:
           name: Run Shell Script for creating deployments
           command:  |
@@ -2854,6 +2861,9 @@ jobs:
         default: "core"
         type: string
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:86:1f:53:65:b0:f0:46:28:f3:e6:20:25:3f:0d:f9"
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -2864,8 +2874,12 @@ jobs:
           command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Clone Repos
+          command:  |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_d7861f5365b0f04628f3e620253f0df9"
+            git clone git@github.com:astronomer/qa-regression.git
+            git clone git@github.com:astronomer/qa-scenario-dags.git
       - run:
           name: Run Shell Script for creating deployments
           command:  |
@@ -2932,6 +2946,9 @@ jobs:
         default: "restapi"
         type: string
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:86:1f:53:65:b0:f0:46:28:f3:e6:20:25:3f:0d:f9"
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -2942,8 +2959,12 @@ jobs:
           command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Clone Repos
+          command:  |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_d7861f5365b0f04628f3e620253f0df9"
+            git clone git@github.com:astronomer/qa-regression.git
+            git clone git@github.com:astronomer/qa-scenario-dags.git
       - run:
           name: Run Shell Script for creating deployments
           command:  |
@@ -2998,6 +3019,9 @@ jobs:
         default: ""
         type: string
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:86:1f:53:65:b0:f0:46:28:f3:e6:20:25:3f:0d:f9"
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -3008,8 +3032,12 @@ jobs:
           command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Clone Repos
+          command:  |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_d7861f5365b0f04628f3e620253f0df9"
+            git clone git@github.com:astronomer/qa-regression.git
+            git clone git@github.com:astronomer/qa-scenario-dags.git
       - run:
           name: Run Shell Script for creating deployments
           command:  |
@@ -3082,6 +3110,9 @@ jobs:
         default: ""
         type: string
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:86:1f:53:65:b0:f0:46:28:f3:e6:20:25:3f:0d:f9"
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -3092,8 +3123,12 @@ jobs:
           command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Clone Repos
+          command:  |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_d7861f5365b0f04628f3e620253f0df9"
+            git clone git@github.com:astronomer/qa-regression.git
+            git clone git@github.com:astronomer/qa-scenario-dags.git
       - run:
           name: Run Shell Script for creating deployments
           command:  |
@@ -3160,6 +3195,9 @@ jobs:
         default: ""
         type: string
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:86:1f:53:65:b0:f0:46:28:f3:e6:20:25:3f:0d:f9"
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install git curl wget libpq-dev nodejs postgresql postgresql-contrib
       - run: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -3170,8 +3208,12 @@ jobs:
           command:   |
             [ ! -d ~/.ssh ] && mkdir ~/.ssh/
             echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: git clone git@github.com:astronomer/qa-regression.git
-      - run: git clone git@github.com:astronomer/qa-scenario-dags.git
+      - run:
+          name: Clone Repos
+          command:  |
+            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_d7861f5365b0f04628f3e620253f0df9"
+            git clone git@github.com:astronomer/qa-regression.git
+            git clone git@github.com:astronomer/qa-scenario-dags.git
       - run:
           name: Run Shell Script for creating deployments
           command:  |
