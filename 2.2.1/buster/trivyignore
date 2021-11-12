@@ -1,0 +1,22 @@
+# Only used in the dev pipeline, not at runtime
+# lodash
+NSWG-ECO-516
+CVE-2020-8203
+
+# nodejs-set-value
+CVE-2019-10747
+
+# only applies to running psql interactively -- low risk for us
+CVE-2020-25696
+
+# dev sub dependencies(#2708)
+CVE-2021-28092
+CVE-2021-27290
+
+#pollution vulnerability
+CVE-2020-7774
+
+# False Positive - We are using PyYaml version that is not vulnerable
+# and Kubernetes Python client is already using safe_load
+# Details: https://github.com/astronomer/issues-airflow/issues/39
+CVE-2020-1747
