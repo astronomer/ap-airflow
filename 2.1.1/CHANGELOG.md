@@ -5,7 +5,7 @@ Astronomer Certified 2.1.1-5, 2021-11-13
 
 ### Bug Fixes
 
-- Dockerfile: Fix `CVE-2021-33503` in AC 2.1.1 ([commit](https://github.com/astronomer/ap-airflow/commit/b511b30))
+- Dockerfile: Fix `CVE-2021-33503`, `CVE-2021-23214` in AC 2.1.1 ([commit](https://github.com/astronomer/ap-airflow/commit/b511b30))
 - Only mark SchedulerJobs as failed, not any jobs (#19375) ([commit](https://github.com/astronomer/airflow/commit/91f8f6f))
 
 Astronomer Certified 2.1.1-4, 2021-09-24
