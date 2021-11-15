@@ -470,7 +470,7 @@ sphinxcontrib-serializinghtml==1.1.5
 sphinxcontrib-spelling==7.2.1
 spython==0.1.15
 sqlalchemy-drill==1.1.1
-sqlparse==0.4.1
+sqlparse==0.4.2
 sshtunnel==0.1.5
 starkbank-ecdsa==1.1.1
 statsd==3.3.0
