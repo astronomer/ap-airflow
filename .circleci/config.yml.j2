@@ -534,6 +534,46 @@ commands:
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
+                echo "Build TAG artifact using environment variables and into DB"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  release="$( cut -d '-' -f 1 \<<< "$tag" )"
+                  sudo apt-get install postgresql postgresql-contrib
+                  echo "Insert into the DB with the latest TAG"
+                  export PORT=5432
+
+                  sql="select latest_tag from tag_version where version_1='${release}'" 
+
+                  # Connect to the database, run the query, then disconnect
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$sql" > current_tag
+                
+                  PREVIOUS_TAG=$(<current_tag)
+
+                  del_sql="DELETE FROM tag_version where version_1='${release}'"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$del_sql"
+
+                  insert_sql="INSERT INTO tag_version values('${release}','${tag}','${PREVIOUS_TAG}')"
+                  # Connect to the database, run the query, then disconnect DB
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
+                  -h "$QA_RELEASEINFO_HOST" \
+                  -p "$PORT" \
+                  -d "$QA_RELEASEINFO_DATABASE" \
+                  -U "$QA_RELEASEINFO_USERNAME" \
+                  -c "$insert_sql"
+                fi
+
+
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:${tag}"
