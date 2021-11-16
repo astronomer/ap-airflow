@@ -390,7 +390,7 @@ jobs:
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
       - slack/notify:
           branch_pattern: master,push_tags_db
-          channel: qa-team
+          channel: airflow-ac-build-release
           custom: |
             {
               "blocks": [
