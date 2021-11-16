@@ -76,6 +76,7 @@ workflows:
             branches:
               only:
                 - master
+                - push_tags_db
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
@@ -85,6 +86,7 @@ workflows:
             branches:
               only:
                 - master
+                - push_tags_db
 {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
