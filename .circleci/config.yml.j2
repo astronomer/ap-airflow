@@ -389,7 +389,7 @@ jobs:
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
       - slack/notify:
-          branch_pattern: master
+          branch_pattern: master,push_tags_db
           channel: qa-team
           custom: |
             {
