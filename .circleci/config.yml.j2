@@ -142,7 +142,7 @@ workflows:
             - slack_ap-airflow
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-images
+            #- test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only:
@@ -164,7 +164,7 @@ workflows:
             - slack_ap-airflow
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-images
+            #- test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only:
