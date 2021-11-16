@@ -542,7 +542,7 @@ commands:
                   echo "Insert into the DB with the latest TAG"
                   export PORT=5432
 
-                  sql="select latest_tag from tag_version where version_1='${release}'" 
+                  sql="select latest_tag from tag_version where version_1='${release}'"
 
                   # Connect to the database, run the query, then disconnect
                   PGPASSWORD="$QA_RELEASEINFO_PASSWORD" psql -t -A \
@@ -551,7 +551,7 @@ commands:
                   -d "$QA_RELEASEINFO_DATABASE" \
                   -U "$QA_RELEASEINFO_USERNAME" \
                   -c "$sql" > current_tag
-                
+
                   PREVIOUS_TAG=$(<current_tag)
 
                   del_sql="DELETE FROM tag_version where version_1='${release}'"
