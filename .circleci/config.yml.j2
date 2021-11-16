@@ -163,7 +163,8 @@ workflows:
             branches:
               only:
                 - master
-                - slack-build-approvals
+                - push_tags_db
+
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -229,6 +230,7 @@ workflows:
             branches:
               only:
                 - master
+                - push_tags_db
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: true
@@ -249,6 +251,7 @@ workflows:
             branches:
               only:
                 - master
+                - push_tags_db
 {%- endfor %}
 {%- endif %}
 {%- endfor %}
@@ -346,6 +349,7 @@ jobs:
           key: trivy-cache
           paths:
             - /tmp/workspace/trivy-cache
+
   push:
     executor: docker-executor
     description: Push Airflow images
@@ -378,9 +382,26 @@ jobs:
           prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
+      - slack/notify:
+          branch_pattern: master
+          channel: qa-team
+          custom: |
+          {
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "plain_text",
+                  "text": "A new dev=<< parameters.dev_build >> image is generated.<< parameters.extra_tags >>",
+                  "emoji": true
+                }
+              }
+            ]
+          }
+          event: pass
 
 orbs:
-  slack: circleci/slack@4.2.0
+  slack: circleci/slack@4.4.4
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
   docker-executor:
