@@ -386,18 +386,18 @@ jobs:
           branch_pattern: master
           channel: qa-team
           custom: |
-          {
-            "blocks": [
-              {
-                "type": "section",
-                "text": {
-                  "type": "plain_text",
-                  "text": "A new dev=<< parameters.dev_build >> image is generated.<< parameters.extra_tags >>",
-                  "emoji": true
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "A new dev=<< parameters.dev_build >> image is generated.<< parameters.extra_tags >>",
+                    "emoji": true
+                  }
                 }
-              }
-            ]
-          }
+              ]
+            }
           event: pass
 
 orbs:
