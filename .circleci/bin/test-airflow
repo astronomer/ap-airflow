@@ -51,6 +51,9 @@ export RELEASE_NAME=$NAMESPACE
 echo "Installing Airflow into kind as $RELEASE_NAME"
 
 AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.airflow.version" }}' "$REPOSITORY:$TEST_TAG")
+# Make the version "SemVer" compliant.. Example: 2.2.0.dev becomes 2.2.0
+echo "Airflow Version (from labels): $AIRFLOW_VERSION"
+AIRFLOW_VERSION="${AIRFLOW_VERSION%.dev*}"
 export AIRFLOW_VERSION
 echo "Airflow Version: $AIRFLOW_VERSION"
 
