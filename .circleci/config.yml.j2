@@ -136,8 +136,6 @@ workflows:
           context:
             - quay.io
             - docker.io
-            - qa
-            - slack_ap-airflow
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -158,8 +156,6 @@ workflows:
           context:
             - quay.io
             - docker.io
-            - qa
-            - slack_ap-airflow
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -167,7 +163,7 @@ workflows:
             branches:
               only:
                 - master
-            
+
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -226,6 +222,8 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
+            - slack_ap-airflow
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -233,7 +231,6 @@ workflows:
             branches:
               only:
                 - master
-                - push_tags_db
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: true
@@ -250,6 +247,25 @@ workflows:
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
+          filters:
+            branches:
+              only:
+                - master
+      - slack-notification:
+          name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
+          dev_build: true
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          airflow_version: "{{ airflow_version }}"
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
+          context:
+            - slack_ap-airflow
+          requires:
+            - push-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
               only:
@@ -384,48 +400,63 @@ jobs:
           prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
-      - slack/notify:
-          branch_pattern: master,push_tags_db
-          channel: airflow-ac-build-release,airflow-release-engineering
-          custom: |
-            {
-                "blocks": [
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "NEW BUILD ALERT",
-                      "emoji": true
-                    }
-                  },
-                  {
-                    "type": "divider"
-                  },
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "A new docker image is pushed to https://quay.io/repository/astronomer/ap-airflow-dev\nIs this a dev build? << parameters.dev_build >> \nImage Tags:<< parameters.extra_tags >>"
-                    },
-                    "accessory": {
-                      "type": "image",
-                      "image_url": "https://res.cloudinary.com/practicaldev/image/fetch/s--dPhPEZO8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png",
-                      "alt_text": "Docker Image"
-                    }
-                  },
-                  {
-                    "type": "context",
-                    "elements": [
-                      {
+  slack-notification:
+      executor: docker-executor
+      description: Push Airflow images
+      parameters:
+        dev_build:
+          description: "Indicate if this is a dev build"
+          type: boolean
+        airflow_version:
+          type: string
+        tag:
+          type: string
+        extra_tags:
+          type: string
+          default: ""
+      steps:
+        - slack/notify:
+            branch_pattern: master,push_tags_db
+            channel: airflow-ac-build-approvals,airflow-ac-build-tags
+            custom: |
+              {
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
                         "type": "plain_text",
-                        "text": "Release Owners: Airflow Team[Kaxil/Jed]",
+                        "text": "NEW BUILD ALERT- << parameters.airflow_version >>",
                         "emoji": true
                       }
-                    ]
-                  }
-                ]
-              }
-          event: pass
+                    },
+                    {
+                      "type": "divider"
+                    },
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "A new docker image is pushed to https://quay.io/repository/astronomer/ap-airflow-dev\nIs this a dev build? << parameters.dev_build >> \nImage Tags:<< parameters.extra_tags >>"
+                      },
+                      "accessory": {
+                        "type": "image",
+                        "image_url": "https://res.cloudinary.com/practicaldev/image/fetch/s--dPhPEZO8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png",
+                        "alt_text": "Docker Image"
+                      }
+                    },
+                    {
+                      "type": "context",
+                      "elements": [
+                        {
+                          "type": "plain_text",
+                          "text": "Release Owners: Airflow Team[Kaxil/Jed]",
+                          "emoji": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+            event: pass
 
 orbs:
   slack: circleci/slack@4.4.4
