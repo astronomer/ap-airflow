@@ -1,0 +1,4 @@
+# False Positive - We are using PyYaml version that is not vulnerable
+# and Kubernetes Python client is already using safe_load
+# Details: https://github.com/astronomer/issues-airflow/issues/39
+CVE-2020-1747

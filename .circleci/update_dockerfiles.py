@@ -6,7 +6,7 @@ This script is used to update the VERSION in all Dockerfiles with the correspond
 import os
 import re
 
-from common import DEV_ALLOWLIST, get_airflow_version, IMAGE_MAP, project_directory
+from common import DEV_ALLOWLIST, get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
 
 
 def update_dockerfiles():
@@ -14,6 +14,9 @@ def update_dockerfiles():
     Replace the VERSION in all the Dockerfiles with the corresponding VERSION in IMAGE_MAP
     """
     for ac_version, distros in IMAGE_MAP.items():
+        if is_edge_build(ac_version):
+            # We don't have a Changelog for edge builds
+            continue
         dev_version = False
         airflow_version = get_airflow_version(ac_version)
         arg_ac_version = ac_version

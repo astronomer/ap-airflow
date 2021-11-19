@@ -7,7 +7,7 @@ links for all these CHANGELOG.md files in README.md
 import os
 import re
 
-from common import DEV_ALLOWLIST, get_airflow_version, IMAGE_MAP, project_directory
+from common import get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
 
 
 def verify_changelog_entries():
@@ -22,6 +22,9 @@ def verify_changelog_entries():
     )
 
     for ac_version, distros in IMAGE_MAP.items():
+        if is_edge_build(ac_version):
+            # We don't have a Changelog for edge builds
+            continue
         airflow_version = get_airflow_version(ac_version)
 
         if "dev" not in ac_version:
