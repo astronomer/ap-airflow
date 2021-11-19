@@ -27,6 +27,7 @@ class ImageType(Enum):
 
 airflow_version = os.environ.get("AIRFLOW_VERSION")
 airflow_2 = True if airflow_version.startswith("2") else False
+is_edge_build = os.environ.get("EDGE_BUILD") == "true"
 
 
 def test_airflow_in_path(webserver):
@@ -58,6 +59,7 @@ def test_maintainer(webserver, docker_client):
         "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
 
 
+@pytest.mark.skipif(is_edge_build, reason="Not needed for Edge/main builds")
 def test_version(webserver, docker_client):
     """ Ensure the version of Airflow matches the Docker image label
     """

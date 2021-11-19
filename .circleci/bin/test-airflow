@@ -58,6 +58,9 @@ export AIRFLOW_VERSION
 export AIRFLOW_VERSION_SEMVER
 echo "Airflow Version (SemVer): $AIRFLOW_VERSION_SEMVER"
 
+EDGE_BUILD=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.build.edge" }}' "$REPOSITORY:$TEST_TAG")
+export EDGE_BUILD
+
 # Find alpine or debian
 DISTRO=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.distro" }}' "$REPOSITORY:$TEST_TAG")
 # This is handled by Houston for the platform: https://github.com/astronomer/houston-api/pull/581

@@ -145,6 +145,7 @@ ARG VERSION
 ARG AIRFLOW_VERSION=${VERSION}
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
+LABEL io.astronomer.docker.build.edge="true"
 
 # Copy all installed python modules. This gets us the compiled without needing dev installed
 COPY --from=devel /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages
