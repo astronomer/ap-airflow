@@ -14,11 +14,11 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - static-checks
-{%- for ac_version, distributions in image_map.items() %}
-{%- set airflow_version = ac_version | get_airflow_version -%}
-{%- set dev_build = "true" if "dev" in ac_version else "false" %}
-{%- set edge_build = ac_version | is_edge_build -%}
-{%- if not edge_build %}
+      {%- for ac_version, distributions in image_map.items() %}
+      {%- set airflow_version = ac_version | get_airflow_version -%}
+      {%- set dev_build = "true" if "dev" in ac_version else "false" %}
+      {%- set edge_build = ac_version | is_edge_build -%}
+      {%- if not edge_build %}
       - slack/on-hold:
           name: Slack_Notification-{{ airflow_version }}
           context: slack_ap-airflow
@@ -94,7 +94,7 @@ workflows:
             branches:
               only:
                 - master
-{% for distribution in distributions %}
+      {% for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -174,21 +174,21 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
-{%- endfor %}
-{%- endif %}
-{%- endfor %}
-{%- if image_map.keys() | dev_releases | length > 0 %}
+      {%- endfor %}
+      {%- endif %}
+      {%- endfor %}
+  {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
     when:
       and:
         - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
         - equal: [ "every-midnight-utc", << pipeline.schedule.name >> ]
     jobs:
-{%- for ac_version, distributions in image_map.items() %}
-{%- set airflow_version = ac_version | get_airflow_version %}
-{%- set edge_build = ac_version | is_edge_build -%}
-{%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
-{%- for distribution in distributions %}
+      {%- for ac_version, distributions in image_map.items() %}
+      {%- set airflow_version = ac_version | get_airflow_version %}
+      {%- set edge_build = ac_version | is_edge_build -%}
+      {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
+      {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -265,10 +265,10 @@ workflows:
             branches:
               only:
                 - master
-{%- endfor %}
-{%- endif %}
-{%- endfor %}
-{% endif %}
+      {%- endfor %}
+      {%- endif %}
+      {%- endfor %}
+  {% endif %}
 jobs:
   rebase-astro-main:
     machine:
