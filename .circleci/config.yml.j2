@@ -175,9 +175,9 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
-      {%- endfor %}
-      {%- endif %}
-      {%- endfor %}
+      {%- endfor %}{# distribution in distributions #}
+      {%- endif %}{# not edge_build #}
+      {%- endfor %}{# ac_version, distributions in image_map.items() #}
   {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
     when:
@@ -266,10 +266,10 @@ workflows:
             branches:
               only:
                 - master
-      {%- endfor %}
-      {%- endif %}
-      {%- endfor %}
-  {%- endif %}
+      {%- endfor %}{# distribution in distributions #}
+      {%- endif %}{# if "dev" in ac_version and airflow_version not in dev_allowlist #}
+      {%- endfor %}{# ac_version, distributions in image_map.items() #}
+  {%- endif %}{# image_map.keys() | dev_releases | length > 0 #}
 
 jobs:
   rebase-astro-main:
