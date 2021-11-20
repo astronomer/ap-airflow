@@ -189,17 +189,29 @@ workflows:
       {%- set airflow_version = ac_version | get_airflow_version %}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
+
+      {%- if edge_build %}
+      - download-file:
+          name: download-latest-{{ airflow_version | replace('.dev', '') }}-build
+          url: https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build
+          file: latest-{{ airflow_version | replace('.dev', '') }}.build
+      {%- endif %}
+
       {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
+          {%- if edge_build %}
+          requires:
+            - download-latest-{{ airflow_version | replace('.dev', '') }}-build
+          {%- endif %}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
             {%- if edge_build %}
-            --tag $(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)
+            --tag $(cat latest-{{ airflow_version | replace('.dev', '') }}.build)
             {%- endif %}
-            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)
+            --build-arg VERSION=$(cat latest-{{ airflow_version | replace('.dev', '') }}.build)
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
@@ -304,6 +316,21 @@ jobs:
             pyenv global 3.8.5
             pip install -r .circleci/test-requirements.txt
             pre-commit run --all-files || { git --no-pager diff && false ; }
+  download-file:
+    executor: machine-executor
+    description: Download a file to disk
+    parameters:
+      url:
+        description: The full URL to download from
+        type: string
+      file:
+        description: The output file to write to (existing files will be overwritten)
+        type: string
+    steps:
+      - run:
+          name: Downloading file with curl
+          command: |
+            curl << parameters.url >> > << parameters.file >>
   build:
     executor: docker-executor
     description: Build Airflow images
