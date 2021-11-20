@@ -17,6 +17,8 @@ workflows:
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version -%}
 {%- set dev_build = "true" if "dev" in ac_version else "false" %}
+{%- set edge_build = ac_version | is_edge_build -%}
+{%- if not edge_build %}
       - slack/on-hold:
           name: Slack_Notification-{{ airflow_version }}
           context: slack_ap-airflow
@@ -172,6 +174,7 @@ workflows:
                 - master
                 - slack-build-approvals
 {%- endfor %}
+{%- endif %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
