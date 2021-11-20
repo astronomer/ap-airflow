@@ -19,6 +19,7 @@ workflows:
       {%- set dev_build = "true" if "dev" in ac_version else "false" %}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- if not edge_build %}
+
       - slack/on-hold:
           name: Slack_Notification-{{ airflow_version }}
           context: slack_ap-airflow
@@ -94,7 +95,7 @@ workflows:
             branches:
               only:
                 - master
-      {% for distribution in distributions %}
+      {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -268,7 +269,8 @@ workflows:
       {%- endfor %}
       {%- endif %}
       {%- endfor %}
-  {% endif %}
+  {%- endif %}
+
 jobs:
   rebase-astro-main:
     machine:
