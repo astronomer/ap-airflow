@@ -185,6 +185,7 @@ workflows:
     jobs:
 {%- for ac_version, distributions in image_map.items() %}
 {%- set airflow_version = ac_version | get_airflow_version %}
+{%- set edge_build = ac_version | is_edge_build -%}
 {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
 {%- for distribution in distributions %}
       - build:
@@ -192,7 +193,11 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           dev_build: true
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
+          extra_args:
+            {%- if edge_build %}
+            --tag $(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)
+            {%- endif %}
+            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
