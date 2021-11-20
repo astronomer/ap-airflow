@@ -101,7 +101,8 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: {{ dev_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
-          extra_args: "--build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)"
+          extra_args:
+            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)
           {%- endif %}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
