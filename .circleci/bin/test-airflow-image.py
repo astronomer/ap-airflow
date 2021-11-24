@@ -316,6 +316,46 @@ def test_labels_for_onbuild_image(docker_client):
         "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
 
 
+@pytest.mark.skipif(not is_edge_build, reason="Not needed for non-Edge/main builds")
+def test_labels_for_edge_builds(docker_client):
+    # Note that this list does not include
+    # org.apache.airflow.git.branch or org.apache.airflow.git.tag
+    # because those aren't guarateed to tbe in the labels.
+    # They are checked seprately down below.
+    labels_to_check = [
+        'org.apache.airflow.ci.build.date',
+        'org.apache.airflow.ci.build.url',
+        'org.apache.airflow.ci.build.version',
+        'org.apache.airflow.ci.js.node.version_string',
+        'org.apache.airflow.ci.js.npm.version_string',
+        'org.apache.airflow.ci.js.yarn.version_string',
+        'org.apache.airflow.ci.python.version_string',
+        'org.apache.airflow.git.commit_sha',
+        'io.astronomer.astronomer_certified.build.version',
+    ]
+
+    image_labels = get_labels(docker_client)
+    for label in labels_to_check:
+        assert (
+            label in image_labels
+        ), f"'{label}' should be in image labels for edge build (image labels: {','.join(image_labels.keys())})"
+        label_value = image_labels[label]
+        assert label_value != ""
+
+    # Assert that either
+    # org.apache.airflow.git.branch
+    # or
+    # org.apache.airflow.git.tag
+    # are in the image labels, and make sure their value is not empty
+    assert (
+        "org.apache.airflow.git.branch" in image_labels
+        and image_labels["org.apache.airflow.git.branch"] != ""
+    ) or (
+        "org.apache.airflow.git.tag" in image_labels
+        and image_labels["org.apache.airflow.git.tag"] != ""
+    )
+
+
 def test_apache_airflow_in_requirements(tmp_path):
     """
     Add test to check that docker build errors when apache-airflow is specified
