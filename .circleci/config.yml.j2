@@ -16,6 +16,7 @@ workflows:
       - static-checks
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
+      {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
       {%- set dev_build = "true" if "dev" in ac_version else "false" %}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- if not edge_build %}
@@ -103,7 +104,7 @@ workflows:
           dev_build: {{ dev_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
           extra_args:
-            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build.json | jq -r '.output.astronomer_certified.package.version')
+            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build.json | jq -r '.output.astronomer_certified.package.version')
           {%- endif %}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
@@ -187,20 +188,22 @@ workflows:
     jobs:
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version %}
+      {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
       {%- set edge_build = ac_version | is_edge_build -%}
+      {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
 
       {%- if edge_build %}
       - download-file:
-          name: download-latest-{{ airflow_version | replace('.dev', '') }}-build-info
-          url: https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build.json
-          file: latest-{{ airflow_version | replace('.dev', '') }}.build.json
+          name: download-latest-{{ airflow_version_wout_dev }}-build-info
+          url: https://pip.astronomer.io/simple/astronomer-certified/{{ ext_build_filename }}
+          file: {{ ext_build_filename }}
       - write-version-to-tag-file:
-          name: write-version-to-tag-file-{{ airflow_version | replace('.dev', '') }}
-          input_json_file: latest-{{ airflow_version | replace('.dev', '') }}.build.json
-          output_file: extra-tags-{{ airflow_version | replace('.dev', '') }}.txt
+          name: write-version-to-tag-file-{{ airflow_version_wout_dev }}
+          input_json_file: {{ ext_build_filename }}
+          output_file: extra-tags-{{ airflow_version_wout_dev }}.txt
           requires:
-            - download-latest-{{ airflow_version | replace('.dev', '') }}-build-info
+            - download-latest-{{ airflow_version_wout_dev }}-build-info
       {%- endif %}{# edge_build #}
 
       {%- for distribution in distributions %}
@@ -210,18 +213,18 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
-            --build-arg VERSION=$(jq -r '.output.airflow.package.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --build-arg VERSION=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename }})
             {%- if edge_build %}
-            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.ci.python.version_string=$(jq -r '.python.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.git.commit_sha=$(jq -r '.git.commit' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label org.apache.airflow.git.$(jq -r '.git.ref.type' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)=$(jq -r '.git.ref.name' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
-            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.python.version_string=$(jq -r '.python.version' <{{ ext_build_filename }})
+            --label org.apache.airflow.git.commit_sha=$(jq -r '.git.commit' <{{ ext_build_filename }})
+            --label org.apache.airflow.git.$(jq -r '.git.ref.type' <{{ ext_build_filename }})=$(jq -r '.git.ref.name' <{{ ext_build_filename }})
+            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename }})
             {%- endif %}{# edge_build #}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
@@ -264,7 +267,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
           {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
           {%- if edge_build %}
-          extra_tags_file: extra-tags-{{ airflow_version | replace('.dev', '') }}.txt
+          extra_tags_file: extra-tags-{{ airflow_version_wout_dev }}.txt
           {%- endif %}{# edge_build #}
           context:
             - quay.io
@@ -273,7 +276,7 @@ workflows:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
             {%- if edge_build %}
-            - write-version-to-tag-file-{{ airflow_version | replace('.dev', '') }}
+            - write-version-to-tag-file-{{ airflow_version_wout_dev }}
             {%- endif %}
           filters:
             branches:
