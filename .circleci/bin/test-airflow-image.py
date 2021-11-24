@@ -336,22 +336,24 @@ def test_labels_for_edge_builds(docker_client):
 
     image_labels = get_labels(docker_client)
     for label in labels_to_check:
-        assert label in image_labels,
-            (f"'{label}' should be in image labels for edge build (image labels: "
-             f"{','.join(image_labels.keys())})")
+        assert (
+            label in image_labels
+        ), f"'{label}' should be in image labels for edge build (image labels: {','.join(image_labels.keys())})"
         label_value = image_labels[label]
-        assert label_value != ''
+        assert label_value != ""
 
     # Assert that either
     # org.apache.airflow.git.branch
     # or
     # org.apache.airflow.git.tag
     # are in the image labels, and make sure their value is not empty
-    assert (('org.apache.airflow.git.branch' in image_labels and
-             image_labels['org.apache.airflow.git.branch'] != '')
-            or
-            ('org.apache.airflow.git.tag' in image_labels and
-             image_labels['org.apache.airflow.git.tag'] != ''))
+    assert (
+        "org.apache.airflow.git.branch" in image_labels
+        and image_labels["org.apache.airflow.git.branch"] != ""
+    ) or (
+        "org.apache.airflow.git.tag" in image_labels
+        and image_labels["org.apache.airflow.git.tag"] != ""
+    )
 
 
 def test_apache_airflow_in_requirements(tmp_path):
