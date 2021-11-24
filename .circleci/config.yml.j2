@@ -103,7 +103,7 @@ workflows:
           dev_build: {{ dev_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
           extra_args:
-            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build)
+            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build.json | jq -r '.output.astronomer_certified.package.version')
           {%- endif %}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
@@ -192,31 +192,46 @@ workflows:
 
       {%- if edge_build %}
       - download-file:
-          name: download-latest-{{ airflow_version | replace('.dev', '') }}-build
-          url: https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build
-          file: latest-{{ airflow_version | replace('.dev', '') }}.build
-      {%- endif %}
+          name: download-latest-{{ airflow_version | replace('.dev', '') }}-build-info
+          url: https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version | replace('.dev', '') }}.build.json
+          file: latest-{{ airflow_version | replace('.dev', '') }}.build.json
+      - write-version-to-tag-file:
+          name: write-version-to-tag-file-{{ airflow_version | replace('.dev', '') }}
+          input_json_file: latest-{{ airflow_version | replace('.dev', '') }}.build.json
+          output_file: extra-tags-{{ airflow_version | replace('.dev', '') }}.txt
+          requires:
+            - download-latest-{{ airflow_version | replace('.dev', '') }}-build-info
+      {%- endif %}{# edge_build #}
 
       {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
-          {%- if edge_build %}
-          requires:
-            - download-latest-{{ airflow_version | replace('.dev', '') }}-build
-          {%- endif %}
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
+            --build-arg VERSION=$(jq -r '.output.airflow.package.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
             {%- if edge_build %}
-            --tag $(cat latest-{{ airflow_version | replace('.dev', '') }}.build)
-            {%- endif %}
-            --build-arg VERSION=$(cat latest-{{ airflow_version | replace('.dev', '') }}.build)
+            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.ci.python.version_string=$(jq -r '.python.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.git.commit_sha=$(jq -r '.git.commit' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label org.apache.airflow.git.$(jq -r '.git.ref.type' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)=$(jq -r '.git.ref.name' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <latest-{{ airflow_version | replace('.dev', '') }}.build.json)
+            {%- endif %}{# edge_build #}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
           image_name: "ap-airflow:{{ airflow_version }}"
           {%- endif %}
+          requires:
+            {%- if edge_build %}
+            - build-{{ airflow_version }}-{{ distribution }}
+            {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -247,13 +262,19 @@ workflows:
           {%- else %}
           tag: "{{ airflow_version }}"
           extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
-          {%- endif %}
+          {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
+          {%- if edge_build %}
+          extra_tags_file: extra-tags-{{ airflow_version | replace('.dev', '') }}.txt
+          {%- endif %}{# edge_build #}
           context:
             - quay.io
             - docker.io
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
+            {%- if edge_build %}
+            - write-version-to-tag-file-{{ airflow_version | replace('.dev', '') }}
+            {%- endif %}
           filters:
             branches:
               only:
@@ -331,6 +352,21 @@ jobs:
           name: Downloading file with curl
           command: |
             curl << parameters.url >> > << parameters.file >>
+  write-version-to-tag-file:
+    executor: machine-executor
+    description: Write a version tag to the output file
+    parameters:
+      input_json_file:
+        description: The input JSON file
+        type: string
+      output_file:
+        description: The file to write
+        type: string
+    steps:
+      - run:
+          name: Writing extra steps file
+          command: |
+            jq '.output.astronomer_certified.package.version' < << parameters.input_json_file >> > << parameters.output_file >>
   build:
     executor: docker-executor
     description: Build Airflow images
@@ -424,6 +460,10 @@ jobs:
       extra_tags:
         type: string
         default: ""
+      extra_tags_file:
+        description: ""
+        type: string
+        default: ""
       prod_docker_repo_docker_hub:
         description: "The docker repo to tag and push to, for example 'quay.io/astronomer/ap-airflow'"
         default: "astronomerinc/ap-airflow"
@@ -440,6 +480,7 @@ jobs:
       - push:
           dev_release: "<< parameters.dev_build >>"
           extra_tags: "<< parameters.extra_tags >>"
+          extra_tags_file: "<< parameters.extra_tags_file >>"
           tag: "<< parameters.tag >>"
           prod_docker_repo_docker_hub: "<< parameters.prod_docker_repo_docker_hub >>"
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
@@ -556,6 +597,10 @@ commands:
       extra_tags:
         type: string
         default: ""
+      extra_tags_file:
+        description: "File containing additional tags, one per line"
+        type: string
+        default: ""
       tag:
         type: string
       image_name:
@@ -590,7 +635,18 @@ commands:
             image="ap-airflow:<< parameters.tag >>"
             set -x
             export NEW_POINT_RELEASE=true
-            for tag in $(echo "<< parameters.extra_tags >>" | sed "s/,/ /g");
+
+            IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.extra_tags >>"
+
+            # Read in more tags from the extra_tags_file, if it exists
+            if [[ -f "<< parameters.extra_tags_file >>" ]]; then
+              while read tag;
+              do
+                DOCKER_TAGS+=($tag)
+              done < "<< parameters.extra_tags_file >>"
+            fi
+
+            for tag in "${DOCKER_TAGS[@]}";
             do
               if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
                 echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
