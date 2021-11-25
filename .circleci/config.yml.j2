@@ -233,7 +233,8 @@ workflows:
           {%- endif %}
           requires:
             {%- if edge_build %}
-            - build-{{ airflow_version }}-{{ distribution }}
+            - download-latest-{{ airflow_version_wout_dev }}-build-info
+            - write-version-to-tag-file-{{ airflow_version_wout_dev }}
             {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
