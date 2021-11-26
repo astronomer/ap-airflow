@@ -191,6 +191,7 @@ workflows:
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
+      {%- set ext_build_filename_workspace = '/tmp/workspace/latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
 
       {%- if edge_build %}
@@ -198,12 +199,7 @@ workflows:
           name: download-latest-{{ airflow_version_wout_dev }}-build-info
           url: https://pip.astronomer.io/simple/astronomer-certified/{{ ext_build_filename }}
           file: {{ ext_build_filename }}
-      - write-version-to-tag-file:
-          name: write-version-to-tag-file-{{ airflow_version_wout_dev }}
-          input_json_file: {{ ext_build_filename }}
           output_file: extra-tags-{{ airflow_version_wout_dev }}.txt
-          requires:
-            - download-latest-{{ airflow_version_wout_dev }}-build-info
       {%- endif %}{# edge_build #}
 
       {%- for distribution in distributions %}
@@ -213,18 +209,18 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
-            --build-arg VERSION=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename }})
+            --build-arg VERSION=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
             {%- if edge_build %}
-            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename }})
-            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename }})
-            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename }})
-            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename }})
-            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename }})
-            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename }})
-            --label org.apache.airflow.ci.python.version_string=$(jq -r '.python.version' <{{ ext_build_filename }})
-            --label org.apache.airflow.git.commit_sha=$(jq -r '.git.commit' <{{ ext_build_filename }})
-            --label org.apache.airflow.git.$(jq -r '.git.ref.type' <{{ ext_build_filename }})=$(jq -r '.git.ref.name' <{{ ext_build_filename }})
-            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename }})
+            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})"
+            --label org.apache.airflow.git.commit_sha=$(jq -r '.git.commit' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.git.$(jq -r '.git.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.ref.name' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
             {%- endif %}{# edge_build #}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
@@ -233,7 +229,7 @@ workflows:
           {%- endif %}
           requires:
             {%- if edge_build %}
-            - write-version-to-tag-file-{{ airflow_version_wout_dev }}
+            - download-latest-{{ airflow_version_wout_dev }}-build-info
             {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -275,9 +271,6 @@ workflows:
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
-            {%- if edge_build %}
-            - write-version-to-tag-file-{{ airflow_version_wout_dev }}
-            {%- endif %}
           filters:
             branches:
               only:
@@ -329,7 +322,7 @@ jobs:
             git --no-pager log --max-count 4
             git rebase main
             git --no-pager log --max-count 4
-            git push origin astro-main
+            git push --force origin astro-main
             git --no-pager remote --verbose
   static-checks:
     executor: machine-executor
@@ -352,26 +345,23 @@ jobs:
       file:
         description: The output file to write to (existing files will be overwritten)
         type: string
-    steps:
-      - run:
-          name: Downloading file with curl
-          command: |
-            curl << parameters.url >> > << parameters.file >>
-  write-version-to-tag-file:
-    executor: machine-executor
-    description: Write a version tag to the output file
-    parameters:
-      input_json_file:
-        description: The input JSON file
-        type: string
       output_file:
         description: The file to write
         type: string
     steps:
       - run:
+          name: Downloading file with curl
+          command: |
+            curl << parameters.url >> > << parameters.file >>
+      - run:
           name: Writing extra steps file
           command: |
-            jq '.output.astronomer_certified.package.version' < << parameters.input_json_file >> > << parameters.output_file >>
+            jq '.output.astronomer_certified.package.version' < << parameters.file >> > << parameters.output_file >>
+      - persist_to_workspace:
+          root: .
+          paths:
+            - << parameters.output_file >>
+            - << parameters.file >>
   build:
     executor: docker-executor
     description: Build Airflow images
@@ -552,6 +542,8 @@ commands:
         type: string
         default: ""
     steps:
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Build the Docker image
           command: |
