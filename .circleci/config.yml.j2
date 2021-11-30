@@ -353,10 +353,21 @@ jobs:
           name: Downloading file with curl
           command: |
             curl << parameters.url >> > << parameters.file >>
+            # Avoid polluting logs with a huge file - <= 100 lines or <= 2048 bytes
+            if [[ "$(wc -l << parameters.file >>)" -le 100 || "$(wc -c)" -le 2048 ]]; then
+              echo "Output file:"
+              cat << parameters.file >>
+            else
+              echo "Emitting output file would pollute logs; skipping"
+            fi
       - run:
           name: Writing extra steps file
           command: |
+            echo "Input JSON file:"
+            cat << parameters.file >>
             jq '.output.astronomer_certified.package.version' < << parameters.file >> > << parameters.output_file >>
+            echo "Output newline-separated file:"
+            cat << parameters.output_file >>
       - persist_to_workspace:
           root: .
           paths:
@@ -635,12 +646,20 @@ commands:
 
             IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.extra_tags >>"
 
+            echo "DOCKER_TAGS: ${DOCKER_TAGS[@]}"
+
             # Read in more tags from the extra_tags_file, if it exists
             if [[ -f "<< parameters.extra_tags_file >>" ]]; then
+              echo "Contents of << parameters.extra_tags_file >>:"
+              cat "<< parameters.extra_tags_file >>"
+
               while read tag;
               do
                 DOCKER_TAGS+=($tag)
               done < "<< parameters.extra_tags_file >>"
+
+              echo "DOCKER_TAGS:"
+              echo "${DOCKER_TAGS[@]}"
             fi
 
             for tag in "${DOCKER_TAGS[@]}";
