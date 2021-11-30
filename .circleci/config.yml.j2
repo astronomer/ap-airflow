@@ -264,7 +264,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
           {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
           {%- if edge_build %}
-          extra_tags_file: extra-tags-{{ airflow_version_wout_dev }}.txt
+          extra_tags_file: {{ workspace_prefix }}/extra-tags-{{ airflow_version_wout_dev }}.txt
           {%- endif %}{# edge_build #}
           context:
             - quay.io
@@ -484,6 +484,8 @@ jobs:
         default: "quay.io/astronomer/ap-airflow-dev"
         type: string
     steps:
+      - attach_workspace:
+          at: {{ workspace_prefix }}
       - push:
           dev_release: "<< parameters.dev_build >>"
           extra_tags: "<< parameters.extra_tags >>"
