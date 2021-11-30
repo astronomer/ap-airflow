@@ -1,3 +1,4 @@
+{%- set workspace_prefix = '/tmp/workspace' -%}
 version: 2.1
 
 workflows:
@@ -191,7 +192,7 @@ workflows:
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
-      {%- set ext_build_filename_workspace = '/tmp/workspace/latest-' + airflow_version_wout_dev + '.build.json' %}
+      {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
 
       {%- if edge_build %}
@@ -263,7 +264,7 @@ workflows:
           extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
           {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
           {%- if edge_build %}
-          extra_tags_file: extra-tags-{{ airflow_version_wout_dev }}.txt
+          extra_tags_file: {{ workspace_prefix }}/extra-tags-{{ airflow_version_wout_dev }}.txt
           {%- endif %}{# edge_build #}
           context:
             - quay.io
@@ -365,7 +366,7 @@ jobs:
           command: |
             echo "Input JSON file:"
             cat << parameters.file >>
-            jq '.output.astronomer_certified.package.version' < << parameters.file >> > << parameters.output_file >>
+            jq --raw-output '.output.astronomer_certified.package.version' < << parameters.file >> > << parameters.output_file >>
             echo "Output newline-separated file:"
             cat << parameters.output_file >>
       - persist_to_workspace:
@@ -429,10 +430,10 @@ jobs:
       - checkout
       - setup_remote_docker
       - attach_workspace:
-          at: /tmp/workspace
+          at: {{ workspace_prefix }}
       - run:
           name: Load archived Docker image
-          command: docker load -i /tmp/workspace/saved-images/<< parameters.image_name >>-onbuild.tar
+          command: docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
       - run:
           name: Install trivy
           command: |
@@ -446,14 +447,14 @@ jobs:
           command: |
             trivy \
               --ignorefile "./<< parameters.airflow_version >>/<< parameters.distribution >>/trivyignore" \
-              --cache-dir /tmp/workspace/trivy-cache \
+              --cache-dir {{ workspace_prefix }}/trivy-cache \
               --ignore-unfixed -s HIGH,CRITICAL \
               --exit-code 1 \
               --no-progress "<< parameters.image_name >>-onbuild"
       - save_cache:
           key: trivy-cache
           paths:
-            - /tmp/workspace/trivy-cache
+            - {{ workspace_prefix }}/trivy-cache
   push:
     executor: docker-executor
     description: Push Airflow images
@@ -483,6 +484,8 @@ jobs:
         default: "quay.io/astronomer/ap-airflow-dev"
         type: string
     steps:
+      - attach_workspace:
+          at: {{ workspace_prefix }}
       - push:
           dev_release: "<< parameters.dev_build >>"
           extra_tags: "<< parameters.extra_tags >>"
@@ -554,7 +557,7 @@ commands:
         default: ""
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: {{ workspace_prefix }}
       - run:
           name: Build the Docker image
           command: |
@@ -580,12 +583,12 @@ commands:
     steps:
       - checkout
       - attach_workspace:
-          at: /tmp/workspace
+          at: {{ workspace_prefix }}
       - run:
           name: Load archived Airflow Docker image
           command: |
-            docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar
-            docker load -i /tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>.tar
+            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
       - run:
           name: Test Airflow Docker images (Base + Onbuild)
           command: |
@@ -625,11 +628,11 @@ commands:
         type: string
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: {{ workspace_prefix }}
       - setup_remote_docker
       - run:
           name: Load archived Docker image
-          command: docker load -i '/tmp/workspace/saved-images/ap-airflow:<< parameters.tag >>.tar'
+          command: docker load -i '{{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>.tar'
       - run:
           name: Login to DockerHub
           command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin docker.io
