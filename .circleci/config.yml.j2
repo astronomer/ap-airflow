@@ -366,7 +366,7 @@ jobs:
           command: |
             echo "Input JSON file:"
             cat << parameters.file >>
-            jq '.output.astronomer_certified.package.version' < << parameters.file >> > << parameters.output_file >>
+            jq --raw-output '.output.astronomer_certified.package.version' < << parameters.file >> > << parameters.output_file >>
             echo "Output newline-separated file:"
             cat << parameters.output_file >>
       - persist_to_workspace:
