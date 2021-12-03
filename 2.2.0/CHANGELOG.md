@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.2.0-5, TBD
+----------------------------------------
+
+### Bugfixes
+
+- Fix labels used to find queued KubeExecutor pods (#19904) ([commit](https://github.com/astronomer/airflow/commit/ce9f4ce3b4209d1df28306c978b27729ece634f2))
+
 Astronomer Certified 2.2.0-4, 2021-11-05
 ----------------------------------------
 
