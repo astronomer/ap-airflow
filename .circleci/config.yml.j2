@@ -228,10 +228,10 @@ workflows:
           {%- else %}
           image_name: "ap-airflow:{{ airflow_version }}"
           {%- endif %}
+          {%- if edge_build %}
           requires:
-            {%- if edge_build %}
             - download-latest-{{ airflow_version_wout_dev }}-build-info
-            {%- endif %}
+          {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
