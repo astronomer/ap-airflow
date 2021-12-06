@@ -163,7 +163,27 @@ workflows:
             branches:
               only:
                 - master
-
+      {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
+      - slack-notification:
+          name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
+          dev_build: {{ dev_build }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          airflow_version: "{{ airflow_version }}"
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
+          context:
+            - slack_ap-airflow
+          requires:
+            - push-{{ airflow_version }}-{{ distribution }}-onbuild
+          filters:
+            branches:
+              only:
+                - master
+      {%- endif %}
 {%- endfor %}
 {%- endfor %}
 {%- if image_map.keys() | dev_releases | length > 0 %}
@@ -276,7 +296,7 @@ workflows:
 {% endif %}
 jobs:
   static-checks:
-    executor: machine-executor
+    executor: docker-executor
     description: Static Checks
     steps:
       - checkout
@@ -417,7 +437,7 @@ jobs:
       steps:
         - slack/notify:
             branch_pattern: master,push_tags_db
-            channel: airflow-ac-build-approvals,airflow-ac-build-tags
+            channel: airflow-ac-build-tags
             custom: |
               {
                   "blocks": [
