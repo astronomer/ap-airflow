@@ -210,7 +210,7 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
-            --build-arg VERSION=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
+            --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)"
             {%- if edge_build %}
             --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }})
             --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }})
