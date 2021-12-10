@@ -7,6 +7,7 @@ import os
 import re
 
 from common import DEV_ALLOWLIST, get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
+from datetime import datetime
 
 
 def update_dockerfiles():
@@ -68,6 +69,14 @@ def update_dockerfiles():
                     new_text,
                     flags=re.MULTILINE
                 )
+
+            # Keep copyright year upto date
+            new_text = re.sub(
+                r'# Copyright (\d{4}) Astronomer Inc.',
+                f'# Copyright {datetime.now().year} Astronomer Inc.',
+                new_text,
+                flags=re.MULTILINE
+            )
 
             with open(file_name, "w") as f:
                 f.write(new_text)
