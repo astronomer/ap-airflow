@@ -15,6 +15,95 @@ workflows:
         equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
     jobs:
       - static-checks
+
+      - slack/on-hold:
+          name: Slack-Notification
+          context: slack_ap-airflow
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":tada:    *New Astronomer Certified Build*    :tada:\n\nRelease(s) Awaiting Approval"
+                  },
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://pbs.twimg.com/profile_images/1138094475211878400/f3rTb0hP_400x400.png",
+                    "alt_text": "Astronomer.io logo"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n    $CIRCLE_PROJECT_REPONAME :circleci:"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n    $CIRCLE_BRANCH"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n    $CIRCLE_USERNAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Pull Request*:\n    <$CIRCLE_PULL_REQUEST|$CIRCLE_PR_REPONAME#$CIRCLE_PR_NUMBER>"
+                    }
+                  ]
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "image",
+                      "image_url": "https://api.slack.com/img/blocks/bkb_template_images/notificationsWarningIcon.png",
+                      "alt_text": "notifications warning icon"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Does not include `edge` builds*"
+                    }
+                  ]
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Approvers: <@UHRPL613K>,<@U018NSS9G2Y>"
+                    }
+                  ],
+                  "accessory": {
+                    "type": "button",
+                    "style": "primary",
+                    "text": {
+                      "emoji": true,
+                      "type": "plain_text",
+                      "text": "Approve on CircleCI :arrow_upper_right:"
+                    },
+                    "url": "https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}",
+                    "action_id": "button-action"
+                  }
+                }
+              ]
+            }
+          requires:
+            - static-checks
+          filters:
+            branches:
+              only:
+                - master
+
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
@@ -22,76 +111,10 @@ workflows:
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- if not edge_build %}
 
-      - slack/on-hold:
-          name: Slack_Notification-{{ airflow_version }}
-          context: slack_ap-airflow
-          custom: |
-            {
-                "blocks": [
-                  {
-                    "type": "header",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "$CIRCLE_JOB On Hold- Awaiting Approval :raised_hand:",
-                      "emoji": true
-                    }
-                  },
-                  {
-                    "type": "section",
-                    "fields": [
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Project*:$CIRCLE_PROJECT_REPONAME"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Branch*:$CIRCLE_BRANCH"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Author*:$CIRCLE_USERNAME"
-                      },
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Pull Request*:$CIRCLE_PULL_REQUEST"
-                      }
-
-                    ]
-                  },
-                  {
-                    "type": "section",
-                    "fields": [
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Mentions*:<@UHRPL613K>,<@U018NSS9G2Y>"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "actions",
-                    "elements": [
-                      {
-                        "type": "button",
-                        "text": {
-                          "type": "plain_text",
-                          "text": "View Workflow"
-                        },
-                        "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
-                      }
-                    ]
-                  }
-                ]
-              }
-          requires:
-            - static-checks
-          filters:
-            branches:
-              only:
-                - master
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
-            - Slack_Notification-{{ airflow_version }}
+            - Slack-Notification
           type: approval
           filters:
             branches:
