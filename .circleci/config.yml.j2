@@ -42,11 +42,11 @@ workflows:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*Project*:\n    $CIRCLE_PROJECT_REPONAME :circleci:"
+                      "text": "*Project*:\n    <https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME?branch=$CIRCLE_BRANCH&filter=all|$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME :circleci:>"
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "*Branch*:\n    $CIRCLE_BRANCH"
+                      "text": "*Branch*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH|`$CIRCLE_BRANCH`>"
                     },
                     {
                       "type": "mrkdwn",
@@ -54,7 +54,7 @@ workflows:
                     },
                     {
                       "type": "mrkdwn",
-                      "text": "*Pull Request*:\n    <$CIRCLE_PULL_REQUEST|$CIRCLE_PR_REPONAME#$CIRCLE_PR_NUMBER>"
+                      "text": "*Git SHA*:\n    https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1|`${CIRCLE_SHA1:0:7}`>"
                     }
                   ]
                 },
