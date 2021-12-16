@@ -319,6 +319,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -339,6 +340,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -537,7 +539,7 @@ jobs:
       - attach_workspace:
           at: {{ workspace_prefix }}
       - push:
-          dev_release: "<< parameters.dev_build >>"
+          dev_release: << parameters.dev_build >>
           extra_tags: "<< parameters.extra_tags >>"
           extra_tags_file: "<< parameters.extra_tags_file >>"
           tag: "<< parameters.tag >>"
@@ -795,15 +797,44 @@ commands:
               echo "${DOCKER_TAGS[@]}"
             fi
 
+            if [[ "<< parameters.tag >>" == *"main"* ]]; then
+              edge_build=true
+            else
+              edge_build=false
+            fi
+
             for tag in "${DOCKER_TAGS[@]}";
             do
               if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
                 echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
                 export NEW_POINT_RELEASE=false
+
               elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || <<parameters.dev_release >> ; then
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                echo "Build TAG artifact using environment variables and into DB"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  release="$( cut -d '-' -f 1 \<<< "$tag" )"
+                  sudo apt-get install postgresql postgresql-contrib
+                  echo "UPSERT into the DB with the latest dev TAG"
+
+                  # Connect to the database, run the query, then disconnect
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" \
+                  psql --tuples-only \
+                       --no-align \
+                       --host="$QA_RELEASEINFO_HOST" \
+                       --port=5432 \
+                       --dbname="$QA_RELEASEINFO_DATABASE" \
+                       --username="$QA_RELEASEINFO_USERNAME" \
+                       --command="INSERT INTO tag_version (version_1,    latest_tag, previous_tag, is_latest)
+                                       VALUES             ('${release}', '${tag}',   NULL,         ${edge_build})
+                                  ON CONFLICT (version_1)
+                                  DO UPDATE SET   latest_tag = EXCLUDED.latest_tag,
+                                                previous_tag = tag_version.latest_tag;"
+                fi
 
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
