@@ -233,8 +233,10 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
+            {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
-            {%- if edge_build %}
+            {%- else %}
+            --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
             --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }})
             --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }})
             --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
