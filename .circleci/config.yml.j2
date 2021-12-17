@@ -168,6 +168,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: {{ dev_build }}
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
@@ -188,6 +189,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -306,6 +308,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: true
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
@@ -330,6 +333,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: true
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -514,6 +518,9 @@ jobs:
       dev_build:
         description: "Indicate if this is a dev build"
         type: boolean
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
       tag:
         type: string
       extra_tags:
@@ -540,6 +547,7 @@ jobs:
           at: {{ workspace_prefix }}
       - push:
           dev_release: << parameters.dev_build >>
+          edge_build: << parameters.edge_build >>
           extra_tags: "<< parameters.extra_tags >>"
           extra_tags_file: "<< parameters.extra_tags_file >>"
           tag: "<< parameters.tag >>"
@@ -737,6 +745,9 @@ commands:
         description: "Indicate if this is a dev release"
         default: true
         type: boolean
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
       extra_tags:
         type: string
         default: ""
@@ -797,12 +808,6 @@ commands:
               echo "${DOCKER_TAGS[@]}"
             fi
 
-            if [[ "<< parameters.tag >>" == *"main"* ]]; then
-              edge_build=true
-            else
-              edge_build=false
-            fi
-
             for tag in "${DOCKER_TAGS[@]}";
             do
               if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
@@ -830,7 +835,7 @@ commands:
                        --dbname="$QA_RELEASEINFO_DATABASE" \
                        --username="$QA_RELEASEINFO_USERNAME" \
                        --command="INSERT INTO tag_version (version_1,    latest_tag, previous_tag, is_latest)
-                                       VALUES             ('${release}', '${tag}',   NULL,         ${edge_build})
+                                       VALUES             ('${release}', '${tag}',   NULL,         << parameters.edge_build >>)
                                   ON CONFLICT (version_1)
                                   DO UPDATE SET   latest_tag = EXCLUDED.latest_tag,
                                                 previous_tag = tag_version.latest_tag;"
