@@ -26,7 +26,13 @@ workflows:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":tada:    *New Astronomer Certified Build*    :tada:\n\nRelease(s) Awaiting Approval"
+                    "text": ":tada:    *New Astronomer Certified Build*    :tada:"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Release(s) Awaiting Approval"
                   },
                   "accessory": {
                     "type": "image",
@@ -162,6 +168,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: {{ dev_build }}
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
@@ -182,6 +189,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -200,6 +208,27 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
+      {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
+      - slack-notification:
+          name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
+          dev_build: {{ dev_build }}
+          airflow_version: "{{ airflow_version }}"
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          tag: "{{ airflow_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          {%- endif %}
+          context:
+            - slack_ap-airflow
+          requires:
+            - push-{{ airflow_version }}-{{ distribution }}-onbuild
+          filters:
+            branches:
+              only:
+                - master
+      {%- endif %}
       {%- endfor %}{# distribution in distributions #}
       {%- endif %}{# not edge_build #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
@@ -281,6 +310,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: true
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
@@ -294,6 +324,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -304,6 +335,7 @@ workflows:
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: true
+          edge_build: {{ edge_build }}
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -314,6 +346,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -487,6 +520,9 @@ jobs:
       dev_build:
         description: "Indicate if this is a dev build"
         type: boolean
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
       tag:
         type: string
       extra_tags:
@@ -512,7 +548,8 @@ jobs:
       - attach_workspace:
           at: {{ workspace_prefix }}
       - push:
-          dev_release: "<< parameters.dev_build >>"
+          dev_release: << parameters.dev_build >>
+          edge_build: << parameters.edge_build >>
           extra_tags: "<< parameters.extra_tags >>"
           extra_tags_file: "<< parameters.extra_tags_file >>"
           tag: "<< parameters.tag >>"
@@ -520,8 +557,88 @@ jobs:
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
 
+  slack-notification:
+    executor: docker-executor
+    description: Push Airflow images
+    parameters:
+      dev_build:
+        description: "Indicate if this is a dev build"
+        type: boolean
+      airflow_version:
+        type: string
+      tag:
+        type: string
+      extra_tags:
+        type: string
+        default: ""
+    steps:
+      - slack/notify:
+          branch_pattern: master,push_tags_db
+          channel: airflow-ac-build-tags
+          event: pass
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":tada:    *New Astronomer Certified DEV Build*    :tada:"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<< parameters.airflow_version >> Development Image(s) Released"
+                  },
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://res.cloudinary.com/practicaldev/image/fetch/s--dPhPEZO8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png",
+                    "alt_text": "Docker Image"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Tags*:\n    << parameters.extra_tags >>"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n    $CIRCLE_USERNAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Git SHA*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1|`${CIRCLE_SHA1:0:7}`>"
+                    }
+                  ]
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "plain_text",
+                      "text": "Release Owners: Airflow Team [<@UHRPL613K>,<@U01PS0N06DN>]",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
 orbs:
-  slack: circleci/slack@4.2.0
+  slack: circleci/slack@4.4.4
   clair-scanner: ovotech/clair-scanner@1.6.0
 executors:
   docker-executor:
@@ -630,6 +747,9 @@ commands:
         description: "Indicate if this is a dev release"
         default: true
         type: boolean
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
       extra_tags:
         type: string
         default: ""
@@ -695,10 +815,31 @@ commands:
               if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
                 echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
                 export NEW_POINT_RELEASE=false
+
               elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || <<parameters.dev_release >> ; then
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
                 docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
                 docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
+
+                if [[ "${tag}" == *"onbuild-"* ]]; then
+                  release="$( cut -d '-' -f 1 \<<< "$tag" )"
+                  sudo apt-get install postgresql postgresql-contrib
+                  echo "UPSERT the latest tag '${tag}' for '${release}' into the QA DB"
+
+                  # Connect to the database, run the query, then disconnect
+                  PGPASSWORD="$QA_RELEASEINFO_PASSWORD" \
+                  psql --tuples-only \
+                       --no-align \
+                       --host="$QA_RELEASEINFO_HOST" \
+                       --port=5432 \
+                       --dbname="$QA_RELEASEINFO_DATABASE" \
+                       --username="$QA_RELEASEINFO_USERNAME" \
+                       --command="INSERT INTO tag_version (version_1,    latest_tag, previous_tag, is_latest)
+                                       VALUES             ('${release}', '${tag}',   NULL,         << parameters.edge_build >>)
+                                  ON CONFLICT (version_1)
+                                  DO UPDATE SET   latest_tag = EXCLUDED.latest_tag,
+                                                previous_tag = tag_version.latest_tag;"
+                fi
 
               else
                 echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.prod_docker_repo_quay_io >>"
