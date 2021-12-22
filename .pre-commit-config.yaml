@@ -18,9 +18,9 @@ repos:
       - id: circle-config-yaml
         name: Checks for consistency between config.yml and config.yml.j2
         language: python
+        additional_dependencies: ['jinja2']
         files: "config.yml$|config.yml.j2|generate_circleci_config.py$"
         entry: python3 .circleci/generate_circleci_config.py
-        additional_dependencies: ['jinja2']
       - id: update-dockerfiles
         name: Updates all Dockerfiles with their respective version numbers and constraint files
         language: python
@@ -33,3 +33,66 @@ repos:
         files: "(common|verify_changelog_entries).py$|README.md$|CHANGELOG.md$"
         entry: python3 .circleci/verify_changelog_entries.py
         require_serial: true
+
+      - id: check-for-jq
+        name: Check for workable jq
+        language: system
+        entry: |
+          bash -c "which jq"
+      - id: check-for-yq
+        name: Check for workable yq
+        language: system
+        entry: |
+          bash -c "which yq"
+
+      - id: brittle-verify-slack-notification-job-json-syntax
+        name: "[May be brittle] Verify build approval is valid JSON"
+        language: system
+        files: ".circleci/(build_approval_slack_notification.json.j2|new_dev_build_slack_notification.json.j2)"
+        entry: |
+          bash -c "echo >&2 \"Feel free to remove this check if it's too brittle\""
+          jq build_approval_slack_notification.json.j2
+          jq new_dev_build_slack_notification.json.j2
+      - id: brittle-verify-push-job-bash-syntax
+        name: "[May be brittle] Verify push job is valid Bash"
+        language: system
+        files: ".circleci/push.bash.j2"
+        entry: |
+          bash -c "echo >&2 \"Feel free to remove this check if it's too brittle\""
+          bash -n .circleci/push.bash.j2
+
+      - id: verify-generated-config-yaml-syntax
+        name: Verify the generated config.yml is valid YAML
+        language: python
+        additional_dependencies: ['jinja2']
+        files: ".*.j2$|.circleci/.*.py$"
+        entry: |
+          python3 .circleci/generate_circleci_config.py \
+          | yq eval . -
+
+      - id: verify-build-approval-slack-notification-json
+        name: Verify build approval Slack notifications use valid JSON
+        language: python
+        additional_dependencies: ['jinja2']
+        files: "config.yml.j2|common.py|generate_circleci_config.py$|build_approval_slack_notification.json.j2|new_dev_build_slack_notification.json.jq|push.bash.j2"
+        entry: |
+          python3 .circleci/generate_circleci_config.py \
+          | yq --output-format=json eval . - \
+          | jq '.workflows."certified-airflow".jobs[]
+                | select(type == "object" and keys[] | startswith("slack/"))
+                | keys[0] as $k
+                | .[$k].custom
+                | fromjson'
+      - id: verify-slack-notification-job-json
+        name: Verify Slack notification job uses valid JSON
+        language: python
+        additional_dependencies: ['jinja2']
+        files: "config.yml.j2|common.py|generate_circleci_config.py$|build_approval_slack_notification.json.j2|new_dev_build_slack_notification.json.jq|push.bash.j2"
+        entry: |
+          python3 .circleci/generate_circleci_config.py \
+          | yq --output-format=json eval . - \
+          | jq '.jobs[].steps[]
+                | select(type == "object" and keys[] | startswith("slack/"))
+                | keys[0] as $k
+                | .[$k].custom
+                | fromjson'
