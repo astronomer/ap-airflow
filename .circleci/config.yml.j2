@@ -808,10 +808,10 @@ commands:
               do
                 DOCKER_TAGS+=($tag)
               done < "<< parameters.extra_tags_file >>"
-
-              echo "DOCKER_TAGS:"
-              echo "${DOCKER_TAGS[@]}"
             fi
+
+            echo "DOCKER_TAGS:"
+            echo "${DOCKER_TAGS[@]}"
 
             for tag in "${DOCKER_TAGS[@]}";
             do
