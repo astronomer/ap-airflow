@@ -180,6 +180,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -201,6 +202,7 @@ workflows:
           context:
             - quay.io
             - docker.io
+            - qa
           requires:
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
