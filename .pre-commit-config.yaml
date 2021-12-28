@@ -44,6 +44,11 @@ repos:
         language: system
         entry: |
           bash -c "which yq"
+      - id: check-for-shellcheck
+        name: Check for workable shellcheck
+        language: system
+        entry: |
+          bash -c "which shellcheck"
 
       - id: brittle-verify-slack-notification-job-json-syntax
         name: "[May be brittle] Verify build approval is valid JSON"
@@ -59,7 +64,7 @@ repos:
         files: ".circleci/push.bash.j2"
         entry: |
           bash -c "echo >&2 \"Feel free to remove this check if it's too brittle\""
-          bash -n .circleci/push.bash.j2
+          shellcheck .circleci/push.bash.j2
 
       - id: verify-generated-config-yaml-syntax
         name: Verify the generated config.yml is valid YAML

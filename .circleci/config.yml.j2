@@ -314,6 +314,11 @@ jobs:
           command: |
             sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
             sudo chmod +x /usr/local/bin/yq
+      - run:
+          name: Install shellcheck
+          command: |
+            sudo apt update
+            sudo apt install --yes shellcheck
       - checkout
       - run:
           name: Load archived Docker image
