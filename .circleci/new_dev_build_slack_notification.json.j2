@@ -1,0 +1,60 @@
+{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":tada:    *New Astronomer Certified DEV Build*    :tada:"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "<< parameters.airflow_version >> Development Image(s) Released"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://res.cloudinary.com/practicaldev/image/fetch/s--dPhPEZO8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png",
+        "alt_text": "Docker Image"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Tags*:\n    << parameters.extra_tags >>"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Author*:\n    $CIRCLE_USERNAME"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Git SHA*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1|`${CIRCLE_SHA1:0:7}`>"
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "plain_text",
+          "text": "Release Owners: Airflow Team [<@UHRPL613K>,<@U01PS0N06DN>]",
+          "emoji": true
+        }
+      ]
+    }
+  ]
+}
