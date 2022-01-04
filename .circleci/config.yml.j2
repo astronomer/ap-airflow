@@ -76,6 +76,15 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
+      - scan-snyk:
+          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["alpine3.10", "buster"] %}
@@ -213,6 +222,15 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
+      - scan-snyk:
+          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
@@ -445,6 +463,15 @@ jobs:
           key: trivy-cache
           paths:
             - {{ workspace_prefix }}/trivy-cache
+  scan-snyk:
+    executor: docker-executor
+    parameters:
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
+    steps:
+      - scan-snyk-docker-image:
+          image_name: "<< parameters.image_name >>"
   push:
     executor: docker-executor
     description: Push Airflow images
@@ -516,6 +543,7 @@ jobs:
 orbs:
   slack: circleci/slack@4.4.4
   clair-scanner: ovotech/clair-scanner@1.6.0
+  snyk: snyk/snyk@1.1.2
 executors:
   docker-executor:
     docker:
@@ -616,6 +644,26 @@ commands:
             .circleci/bin/test-airflow 'ap-airflow' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
+  scan-snyk-docker-image:
+    description: "Snyk: Dependency scanner for a Docker image"
+    parameters:
+      image_name:
+        type: string
+        default: "ap-airflow:2.2.0"
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: {{ workspace_prefix }}
+      - run:
+          name: Load archived Docker image
+          command: docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+      - snyk/scan:
+          docker-image-name: << parameters.image_name >>
+          monitor-on-build: false
+          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
+          severity-threshold: high
+          organization: ${SNYK_CICD_ORGANIZATION}
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
