@@ -74,7 +74,7 @@ def download_wheel(url, destdir):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         r.raw.decode_content = True
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             shutil.copyfileobj(r.raw, f)
     return path
 
@@ -88,8 +88,8 @@ def repack_wheel(output: str, url_or_path: str, local: bool = False):
             src_filename = download_wheel(url_or_path, tmp)
 
         match = WHEEL_INFO_RE.match(src_filename)
-        namever = match.group('namever')
-        ver = match.group('ver')
+        namever = match.group("namever")
+        ver = match.group("ver")
         destination = os.path.join(tmp, namever)
 
         # We can't use WheelFile to unpack it, as the filename doesn't match
@@ -97,7 +97,7 @@ def repack_wheel(output: str, url_or_path: str, local: bool = False):
         with ZipFile(src_filename) as wf:
             wf.extractall(destination)
 
-        real_name = update_metadata(destination, '1!' + ver)
+        real_name = update_metadata(destination, "1!" + ver)
 
         os.unlink(src_filename)
         output = os.path.join(output, real_name)
@@ -117,26 +117,26 @@ def update_metadata(unpacked_folder, ver: str):
     """
     dist_info_path = glob(os.path.join(unpacked_folder, "*.dist-info"))[0]
 
-    with open(os.path.join(dist_info_path, 'METADATA')) as fh:
+    with open(os.path.join(dist_info_path, "METADATA")) as fh:
         metadata = Parser().parse(fh, headersonly=True)
 
-    metadata_ver = metadata['Version']
+    metadata_ver = metadata["Version"]
 
     new_metadata = Message()
 
     # The order matters, so we iterate over the old items, and set them on the
     # new metadata, after adjusting any Requires-Dist on apache-airflow
     for key, val in metadata.items():
-        if key == 'Requires-Dist':
-            val = re.sub(r'^apache-airflow(\s|$)', r'astronomer-certified\1', val)
-        if key == 'Version':
+        if key == "Requires-Dist":
+            val = re.sub(r"^apache-airflow(\s|$)", r"astronomer-certified\1", val)
+        if key == "Version":
             val = ver
 
         new_metadata[key] = val
 
     new_metadata.set_payload(metadata.get_payload())
 
-    with open(os.path.join(dist_info_path, 'METADATA'), 'w') as fh:
+    with open(os.path.join(dist_info_path, "METADATA"), "w") as fh:
         fh.write(new_metadata.as_string())
 
     if metadata_ver != ver:
@@ -146,7 +146,7 @@ def update_metadata(unpacked_folder, ver: str):
         folder = folder.replace(metadata_ver, ver)
         os.rename(dist_info_path, os.path.join(unpacked_folder, folder))
 
-    return metadata['Name']
+    return metadata["Name"]
 
 
 def main():
