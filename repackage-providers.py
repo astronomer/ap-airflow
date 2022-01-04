@@ -159,19 +159,23 @@ def main():
     parser.add_argument(
         "--http_root",
         default="https://dist.apache.org/repos/dist/release/airflow/providers/",
-        help="Root folder containing versioned release folders, for example "
-             "https://dist.apache.org/repos/dist/release/airflow/providers/"
+        help=(
+            "Root folder containing versioned release folders, for example "
+            "https://dist.apache.org/repos/dist/release/airflow/providers/"
+        ),
     )
 
     parser.add_argument(
         "--local-dir",
-        help="If you want to use wheels download in a local folder, pass the path of the folder"
+        help="If you want to use wheels download in a local folder, pass the path of the folder",
     )
 
     parser.add_argument(
         "--output",
-        help="Folder under which to create output folders, suitable for "
-             "uploading to a PEP-503 compatible repository",
+        help=(
+            "Folder under which to create output folders, suitable for "
+            "uploading to a PEP-503 compatible repository"
+        ),
         default="tmp-packages",
     )
 
