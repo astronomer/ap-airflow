@@ -22,24 +22,49 @@ from zipfile import ZipFile
 import requests
 from bs4 import BeautifulSoup
 
+from rich.console import Console
+from rich.table import Table
+
+
+def check_if_version_exists_in_astronomer_pip(package_name: str, version: str) -> bool:
+    """Check if a given provider with exact version exists in astronomer pip repo"""
+    url = "https://pip.astronomer.io/simple/" + package_name.replace("_", "-")
+    listing = requests.get(url)
+    listing.raise_for_status()
+    soup = BeautifulSoup(listing.text, "html.parser")
+    return version not in soup.text
+
 
 def wheel_urls_from_listing(url, version):
     listing = requests.get(url)
     listing.raise_for_status()
-
-    soup = BeautifulSoup(listing.text, 'html.parser')
+    soup = BeautifulSoup(listing.text, "html.parser")
 
     if version:
         relative_wheels = [
-            a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl') and version in a['href']
+            a["href"] for a in soup.find_all("a") if a["href"].endswith(".whl") and version in a["href"]
         ]
     else:
-        relative_wheels = [
-            a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl')
-        ]
+        relative_wheels = [a["href"] for a in soup.find_all("a") if a["href"].endswith(".whl")]
 
-    for rel in relative_wheels:
-        yield urljoin(listing.url, rel)
+    table = Table(title="Providers that needs to be repackaged")
+    table.add_column("Provider Name", justify="right", style="cyan", no_wrap=True)
+    table.add_column("URL", style="magenta")
+    table.add_column("Version", justify="right", style="green")
+
+    for relative_wheel in relative_wheels:
+        match = WHEEL_INFO_RE.match(relative_wheel)
+        package_name = match.group("name")
+        package_version = match.group("ver")
+        if check_if_version_exists_in_astronomer_pip(package_name, package_version):
+
+            table.add_row(package_name, relative_wheel, package_version)
+            rich.print(f"{package_name}, {relative_wheel}, {package_version}")
+
+            yield urljoin(listing.url, relative_wheel)
+
+    console = Console()
+    console.print(table)
 
 
 def download_wheel(url, destdir):
@@ -162,7 +187,7 @@ def main():
     local_dir = args.local_dir
 
     if local_dir:
-        wheels = glob(os.path.join(local_dir, "*.whl"), recursive=True)
+        wheels = glob(os.path.join(local_dir, "**/*.whl"), recursive=True)
         if args.version:
             wheels = [whl for whl in wheels if version in whl]
     else:
