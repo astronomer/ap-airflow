@@ -70,14 +70,6 @@ def update_dockerfiles():
                     flags=re.MULTILINE
                 )
 
-            # Keep copyright year upto date
-            new_text = re.sub(
-                r'# Copyright (\d{4}) Astronomer Inc.',
-                f'# Copyright {datetime.now().year} Astronomer Inc.',
-                new_text,
-                flags=re.MULTILINE
-            )
-
             with open(file_name, "w") as f:
                 f.write(new_text)
 

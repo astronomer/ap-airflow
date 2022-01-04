@@ -15,6 +15,10 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
+      - id: copyright-uptodate
+        name: Keep Copyright Year Up to Date
+        language: python
+        entry: python3 .circleci/pre-commit-scripts/copyright.py
       - id: circle-config-yaml
         name: Checks for consistency between config.yml and config.yml.j2
         language: python
