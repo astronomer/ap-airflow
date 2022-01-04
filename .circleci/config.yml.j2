@@ -471,7 +471,7 @@ jobs:
         default: "ap-airflow:2.2.0"
     steps:
       - scan-snyk-docker-image:
-          image_name: "<< parameters.image_name >>"
+          image_name: "<< parameters.image_name >>-onbuild"
   push:
     executor: docker-executor
     description: Push Airflow images
