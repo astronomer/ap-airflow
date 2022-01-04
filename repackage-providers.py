@@ -5,25 +5,23 @@ Download, and repackage Apache Airflow provider packages to change dependency
 from apache-airflow to astronomer-certified instead.
 """
 
-from argparse import ArgumentParser
-import os
-import shutil
-import re
 from glob import glob
-from tempfile import TemporaryDirectory
 
+import os
+import re
+import requests
+import shutil
+from argparse import ArgumentParser
+from bs4 import BeautifulSoup
 from email.message import Message
 from email.parser import Parser
-from urllib.parse import urljoin
-from wheel.wheelfile import WHEEL_INFO_RE
-from wheel.cli.pack import pack as pack_wheel
-from zipfile import ZipFile
-
-import requests
-from bs4 import BeautifulSoup
-
 from rich.console import Console
 from rich.table import Table
+from tempfile import TemporaryDirectory
+from urllib.parse import urljoin
+from wheel.cli.pack import pack as pack_wheel
+from wheel.wheelfile import WHEEL_INFO_RE
+from zipfile import ZipFile
 
 
 def check_if_version_exists_in_astronomer_pip(package_name: str, version: str) -> bool:
