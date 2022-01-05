@@ -79,9 +79,9 @@ workflows:
       - scan-snyk:
           name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
           {%- if distribution in ["alpine3.10", "buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          tag: "{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          image_name: "ap-airflow:{{ airflow_version }}"
+          tag: "{{ airflow_version }}"
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
@@ -232,9 +232,9 @@ workflows:
       - scan-snyk:
           name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
           {%- if distribution in ["alpine3.10", "buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          tag: "{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          image_name: "ap-airflow:{{ airflow_version }}"
+          tag: "{{ airflow_version }}"
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
@@ -466,12 +466,11 @@ jobs:
   scan-snyk:
     executor: docker-executor
     parameters:
-      image_name:
+      tag:
         type: string
-        default: "ap-airflow:2.2.0"
     steps:
       - scan-snyk-docker-image:
-          image_name: "<< parameters.image_name >>"
+          tag: "<< parameters.tag >>"
   push:
     executor: docker-executor
     description: Push Airflow images
@@ -647,9 +646,8 @@ commands:
   scan-snyk-docker-image:
     description: "Snyk: Dependency scanner for a Docker image"
     parameters:
-      image_name:
+      tag:
         type: string
-        default: "ap-airflow:2.2.0"
     steps:
       - checkout
       - setup_remote_docker
@@ -657,9 +655,10 @@ commands:
           at: {{ workspace_prefix }}
       - run:
           name: Load archived Docker image
-          command: docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+          docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>.tar
+          command: docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
       - snyk/scan:
-          docker-image-name: << parameters.image_name >>-onbuild
+          docker-image-name: ap-airflow:<<parameters.tag>>
           monitor-on-build: false
           project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
           severity-threshold: high
