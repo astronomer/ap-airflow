@@ -655,8 +655,9 @@ commands:
           at: {{ workspace_prefix }}
       - run:
           name: Load archived Docker image
-          docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>.tar
-          command: docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+          command: |
+            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>.tar
       - snyk/scan:
           docker-image-name: ap-airflow:<<parameters.tag>>
           monitor-on-build: false
