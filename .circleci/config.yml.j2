@@ -657,9 +657,8 @@ commands:
           name: Load archived Docker image
           command: |
             docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
-            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>.tar
       - snyk/scan:
-          docker-image-name: ap-airflow:<<parameters.tag>>
+          docker-image-name: ap-airflow:<<parameters.tag>>-onbuild
           monitor-on-build: false
           project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
           severity-threshold: high
