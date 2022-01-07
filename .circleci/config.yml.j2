@@ -76,6 +76,15 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
+      - scan-snyk:
+          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["alpine3.10", "buster"] %}
@@ -101,6 +110,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -123,6 +133,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -220,6 +231,15 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
+      - scan-snyk:
+          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["alpine3.10", "buster"] %}
@@ -248,6 +268,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -270,6 +291,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -445,6 +467,14 @@ jobs:
           key: trivy-cache
           paths:
             - {{ workspace_prefix }}/trivy-cache
+  scan-snyk:
+    executor: docker-executor
+    parameters:
+      tag:
+        type: string
+    steps:
+      - scan-snyk-docker-image:
+          tag: "<< parameters.tag >>"
   push:
     executor: docker-executor
     description: Push Airflow images
@@ -516,6 +546,7 @@ jobs:
 orbs:
   slack: circleci/slack@4.4.4
   clair-scanner: ovotech/clair-scanner@1.6.0
+  snyk: snyk/snyk@1.1.2
 executors:
   docker-executor:
     docker:
@@ -616,6 +647,26 @@ commands:
             .circleci/bin/test-airflow 'ap-airflow' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
+  scan-snyk-docker-image:
+    description: "Snyk: Dependency scanner for a Docker image"
+    parameters:
+      tag:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: {{ workspace_prefix }}
+      - run:
+          name: Load archived Docker image
+          command: |
+            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+      - snyk/scan:
+          docker-image-name: ap-airflow:<<parameters.tag>>-onbuild
+          monitor-on-build: false
+          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
+          severity-threshold: high
+          organization: ${SNYK_CICD_ORGANIZATION}
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
