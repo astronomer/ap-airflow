@@ -110,6 +110,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -132,6 +133,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -266,6 +268,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -288,6 +291,7 @@ workflows:
             - docker.io
             - qa
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
