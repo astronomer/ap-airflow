@@ -5,41 +5,64 @@ Download, and repackage Apache Airflow provider packages to change dependency
 from apache-airflow to astronomer-certified instead.
 """
 
-from argparse import ArgumentParser
-import os
-import shutil
-import re
 from glob import glob
-from tempfile import TemporaryDirectory
 
+import os
+import re
+import requests
+import shutil
+from argparse import ArgumentParser
+from bs4 import BeautifulSoup
 from email.message import Message
 from email.parser import Parser
+from rich.console import Console
+from rich.table import Table
+from tempfile import TemporaryDirectory
 from urllib.parse import urljoin
-from wheel.wheelfile import WHEEL_INFO_RE
 from wheel.cli.pack import pack as pack_wheel
+from wheel.wheelfile import WHEEL_INFO_RE
 from zipfile import ZipFile
 
-import requests
-from bs4 import BeautifulSoup
+
+def check_if_version_exists_in_astronomer_pip(package_name: str, version: str) -> bool:
+    """Check if a given provider with exact version exists in astronomer pip repo"""
+    url = "https://pip.astronomer.io/simple/" + package_name.replace("_", "-")
+    listing = requests.get(url)
+    listing.raise_for_status()
+    soup = BeautifulSoup(listing.text, "html.parser")
+    return version not in soup.text
 
 
 def wheel_urls_from_listing(url, version):
     listing = requests.get(url)
     listing.raise_for_status()
-
-    soup = BeautifulSoup(listing.text, 'html.parser')
+    soup = BeautifulSoup(listing.text, "html.parser")
 
     if version:
         relative_wheels = [
-            a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl') and version in a['href']
+            a["href"] for a in soup.find_all("a") if a["href"].endswith(".whl") and version in a["href"]
         ]
     else:
-        relative_wheels = [
-            a['href'] for a in soup.find_all('a') if a['href'].endswith('.whl')
-        ]
+        relative_wheels = [a["href"] for a in soup.find_all("a") if a["href"].endswith(".whl")]
 
-    for rel in relative_wheels:
-        yield urljoin(listing.url, rel)
+    table = Table(title="Providers that needs to be repackaged")
+    table.add_column("Provider Name", justify="right", style="cyan", no_wrap=True)
+    table.add_column("URL", style="magenta")
+    table.add_column("Version", justify="right", style="green")
+
+    for relative_wheel in relative_wheels:
+        match = WHEEL_INFO_RE.match(relative_wheel)
+        package_name = match.group("name")
+        package_version = match.group("ver")
+        if check_if_version_exists_in_astronomer_pip(package_name, package_version):
+
+            table.add_row(package_name, relative_wheel, package_version)
+            rich.print(f"{package_name}, {relative_wheel}, {package_version}")
+
+            yield urljoin(listing.url, relative_wheel)
+
+    console = Console()
+    console.print(table)
 
 
 def download_wheel(url, destdir):
@@ -49,7 +72,7 @@ def download_wheel(url, destdir):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         r.raw.decode_content = True
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             shutil.copyfileobj(r.raw, f)
     return path
 
@@ -63,8 +86,8 @@ def repack_wheel(output: str, url_or_path: str, local: bool = False):
             src_filename = download_wheel(url_or_path, tmp)
 
         match = WHEEL_INFO_RE.match(src_filename)
-        namever = match.group('namever')
-        ver = match.group('ver')
+        namever = match.group("namever")
+        ver = match.group("ver")
         destination = os.path.join(tmp, namever)
 
         # We can't use WheelFile to unpack it, as the filename doesn't match
@@ -72,7 +95,7 @@ def repack_wheel(output: str, url_or_path: str, local: bool = False):
         with ZipFile(src_filename) as wf:
             wf.extractall(destination)
 
-        real_name = update_metadata(destination, '1!' + ver)
+        real_name = update_metadata(destination, "1!" + ver)
 
         os.unlink(src_filename)
         output = os.path.join(output, real_name)
@@ -92,26 +115,26 @@ def update_metadata(unpacked_folder, ver: str):
     """
     dist_info_path = glob(os.path.join(unpacked_folder, "*.dist-info"))[0]
 
-    with open(os.path.join(dist_info_path, 'METADATA')) as fh:
+    with open(os.path.join(dist_info_path, "METADATA")) as fh:
         metadata = Parser().parse(fh, headersonly=True)
 
-    metadata_ver = metadata['Version']
+    metadata_ver = metadata["Version"]
 
     new_metadata = Message()
 
     # The order matters, so we iterate over the old items, and set them on the
     # new metadata, after adjusting any Requires-Dist on apache-airflow
     for key, val in metadata.items():
-        if key == 'Requires-Dist':
-            val = re.sub(r'^apache-airflow(\s|$)', r'astronomer-certified\1', val)
-        if key == 'Version':
+        if key == "Requires-Dist":
+            val = re.sub(r"^apache-airflow(\s|$)", r"astronomer-certified\1", val)
+        if key == "Version":
             val = ver
 
         new_metadata[key] = val
 
     new_metadata.set_payload(metadata.get_payload())
 
-    with open(os.path.join(dist_info_path, 'METADATA'), 'w') as fh:
+    with open(os.path.join(dist_info_path, "METADATA"), "w") as fh:
         fh.write(new_metadata.as_string())
 
     if metadata_ver != ver:
@@ -121,7 +144,7 @@ def update_metadata(unpacked_folder, ver: str):
         folder = folder.replace(metadata_ver, ver)
         os.rename(dist_info_path, os.path.join(unpacked_folder, folder))
 
-    return metadata['Name']
+    return metadata["Name"]
 
 
 def main():
@@ -134,19 +157,23 @@ def main():
     parser.add_argument(
         "--http_root",
         default="https://dist.apache.org/repos/dist/release/airflow/providers/",
-        help="Root folder containing versioned release folders, for example "
-             "https://dist.apache.org/repos/dist/release/airflow/providers/"
+        help=(
+            "Root folder containing versioned release folders, for example "
+            "https://dist.apache.org/repos/dist/release/airflow/providers/"
+        ),
     )
 
     parser.add_argument(
         "--local-dir",
-        help="If you want to use wheels download in a local folder, pass the path of the folder"
+        help="If you want to use wheels download in a local folder, pass the path of the folder",
     )
 
     parser.add_argument(
         "--output",
-        help="Folder under which to create output folders, suitable for "
-             "uploading to a PEP-503 compatible repository",
+        help=(
+            "Folder under which to create output folders, suitable for "
+            "uploading to a PEP-503 compatible repository"
+        ),
         default="tmp-packages",
     )
 
@@ -162,7 +189,7 @@ def main():
     local_dir = args.local_dir
 
     if local_dir:
-        wheels = glob(os.path.join(local_dir, "*.whl"), recursive=True)
+        wheels = glob(os.path.join(local_dir, "**/*.whl"), recursive=True)
         if args.version:
             wheels = [whl for whl in wheels if version in whl]
     else:
