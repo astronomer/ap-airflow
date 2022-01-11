@@ -2,7 +2,7 @@ APScheduler==3.6.3
 Authlib==0.15.5
 Babel==2.9.1
 Deprecated==1.2.13
-Flask-AppBuilder==3.3.4
+Flask-AppBuilder==3.4.3
 Flask-Babel==2.0.0
 Flask-Bcrypt==0.7.1
 Flask-Caching==1.10.1
@@ -41,7 +41,7 @@ alabaster==0.7.12
 alembic==1.7.4
 aliyun-python-sdk-core==2.13.35
 aliyun-python-sdk-kms==2.15.0
-amqp==5.0.6
+amqp==5.0.9
 analytics-python==1.4.0
 ansiwrap==0.8.4
 anyio==3.3.4
@@ -165,7 +165,7 @@ bowler==0.9.0
 cachetools==4.2.2
 cassandra-driver==3.25.0
 cattrs==1.5.0
-celery==5.2.0
+celery==5.2.3
 certifi==2020.12.5
 cffi==1.15.0
 cfgv==3.3.1
@@ -304,7 +304,7 @@ jupyter-client==7.0.6
 jupyter-core==4.9.1
 jwcrypto==1.0
 keyring==23.2.1
-kombu==5.2.1
+kombu==5.2.3
 krb5==0.2.0
 kubernetes==11.0.0
 kylinpy==2.8.4

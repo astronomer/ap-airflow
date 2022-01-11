@@ -20,3 +20,11 @@ CVE-2020-7774
 # and Kubernetes Python client is already using safe_load
 # Details: https://github.com/astronomer/issues-airflow/issues/39
 CVE-2020-1747
+
+# Airflow 2.1.1 only supports Celery 4,
+# so we cannot upgrade to Celery 5.2.2+ to fix this.
+# In addition, this does require manipulation in the celery
+# backend.
+# Snyk also lists this as medium (contrary to the CVE):
+# https://security.snyk.io/vuln/SNYK-PYTHON-CELERY-2314953
+CVE-2021-23727
