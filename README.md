@@ -9,11 +9,11 @@ Astronomer makes it easy to run, monitor, and scale [Apache Airflow](https://git
 Docker images for deploying and running Astronomer Core are currently available on
 [Quay](https://quay.io/repository/astronomer/ap-airflow?tab=tags).
 
-We publish 2 variants for each AC Version (example: `1.10.10-3`):
+We publish 2 variants for each AC Version (example: `1.10.15-3`):
 
 **For AC<2.2.0**:
-1. `quay.io/astronomer/ap-airflow:1.10.10-3-buster`
-2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild`
+1. `quay.io/astronomer/ap-airflow:1.10.15-3-buster`
+2. `quay.io/astronomer/ap-airflow:1.10.15-3-buster-onbuild`
 
 **For AC>=2.2.0**:
 
@@ -29,9 +29,9 @@ copy `packages.txt`, `requirements.txt` and the entire project directory (includ
 For each of our `-onbuild` images we publish two flavors of tag:
 
 **For AC<2.2.0**:
-1. `quay.io/astronomer/ap-airflow:1.10.10-buster-onbuild` which is our latest release of the `1.10.10` series,
+1. `quay.io/astronomer/ap-airflow:1.10.15-buster-onbuild` which is our latest release of the `1.10.15` series,
 including latest security patches. This tag is "floating" or movable.
-2. `quay.io/astronomer/ap-airflow:1.10.10-3-buster-onbuild` once this tag is pushed it will never change again.
+2. `quay.io/astronomer/ap-airflow:1.10.15-3-buster-onbuild` once this tag is pushed it will never change again.
 
 **For AC>=2.2.0**:
 
@@ -39,6 +39,10 @@ including latest security patches. This tag is "floating" or movable.
 including latest security patches. This tag is "floating" or movable.
 2. `quay.io/astronomer/ap-airflow:2.2.0-3-onbuild` once this tag is pushed it will never change again.
 
+## Version Life Cycle & Maintenance policy
+
+The support and maintenance of the  Docker images are described in
+the [Version Life Cycle](https://docs.astronomer.io/enterprise/ac-support-policy/#astronomer-certified-lifecycle-schedule).
 
 ## Contents of this repo
 
@@ -292,7 +296,6 @@ including latest security patches. This tag is "floating" or movable.
 ## Changelog
 
 All changes applied to available point releases will be documented in the `CHANGELOG.md` files within each version folder:
-- [1.10.10 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.10/CHANGELOG.md)
 - [1.10.12 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.12/CHANGELOG.md)
 - [1.10.14 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.14/CHANGELOG.md)
 - [1.10.15 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.15/CHANGELOG.md)
