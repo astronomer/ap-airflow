@@ -10,6 +10,7 @@ from glob import glob
 import os
 import re
 import requests
+import rich
 import shutil
 from argparse import ArgumentParser
 from bs4 import BeautifulSoup
