@@ -667,6 +667,7 @@ commands:
           project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
           severity-threshold: high
           organization: ${SNYK_CICD_ORGANIZATION}
+          additional-arguments: "--fail-on=all"
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
