@@ -1,7 +1,12 @@
 # Changelog
 
-Astronomer Certified 2.2.2-2, TBD
+Astronomer Certified 2.2.2-2, 2022-01-10
 ----------------------------------------
+
+### Security
+
+- Updated `celery` to `5.2.3` to fix [CVE-2021-23727](https://nvd.nist.gov/vuln/detail/CVE-2021-23727) ([commit](https://github.com/astronomer/ap-airflow/commit/b7ce051b726978691f6f37cb1f2f00a3c88da56f))
+- Updated `numpy` to `1.21.5` to fix [CVE-2021-33430](https://nvd.nist.gov/vuln/detail/CVE-2021-33430) ([commit](https://github.com/astronomer/ap-airflow/commit/953ec71d9228f0c6558d4cd9aa74b8ddb5dfd141))
 
 ### Bugfixes
 
