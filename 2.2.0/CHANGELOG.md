@@ -12,6 +12,7 @@ Astronomer Certified 2.2.0-5, 2022-01-19
 ### Bugfixes
 
 - Fix labels used to find queued KubeExecutor pods (#19904) ([commit](https://github.com/astronomer/airflow/commit/ce9f4ce3b4209d1df28306c978b27729ece634f2))
+- Update [Astronomer FAB Security Manager](https://github.com/astronomer/astronomer-fab-securitymanager) to version [1.8.1](https://github.com/astronomer/astronomer-fab-securitymanager/releases/tag/v1.8.1)
 
 Astronomer Certified 2.2.0-4, 2021-11-05
 ----------------------------------------

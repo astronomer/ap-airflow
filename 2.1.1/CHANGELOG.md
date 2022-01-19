@@ -15,6 +15,7 @@ Astronomer Certified 2.1.1-6, 2022-01-19
 
 - Row lock TI query in SchedulerJob._process_executor_events (#18975) ([commit](https://github.com/astronomer/airflow/commit/b109fe45d740c7d323738a41b53ef27f1bef9925))
 - Fix labels used to find queued KubeExecutor pods (#19904) ([commit](https://github.com/astronomer/airflow/commit/3b60eff565b86e3b95c736e5e73a1645155c5e86))
+- Update [Astronomer FAB Security Manager](https://github.com/astronomer/astronomer-fab-securitymanager) to version [1.8.1](https://github.com/astronomer/astronomer-fab-securitymanager/releases/tag/v1.8.1)
 
 Astronomer Certified 2.1.1-5, 2021-11-13
 ----------------------------------------
