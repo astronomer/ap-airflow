@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.1.3-4, TBD
+Astronomer Certified 2.1.3-4, 2022-01-19
 ----------------------------------------
 
 ### Security

@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.2.2-2, 2022-01-10
+Astronomer Certified 2.2.2-2, 2022-01-19
 ----------------------------------------
 
 ### Security
