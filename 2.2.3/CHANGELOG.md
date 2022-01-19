@@ -1,5 +1,19 @@
 # Changelog
 
+Astronomer Certified 2.2.3-2, 2022-01-19
+----------------------------------------
+
+No Airflow source changes.
+
+### Security
+
+- Updated `celery` to `5.2.3` to fix [CVE-2021-23727](https://nvd.nist.gov/vuln/detail/CVE-2021-23727) ([commit](https://github.com/astronomer/ap-airflow/commit/953ec71d9228f0c6558d4cd9aa74b8ddb5dfd141))
+- Updated `numpy` to `1.21.5` to fix [CVE-2021-33430](https://nvd.nist.gov/vuln/detail/CVE-2021-33430) ([commit](https://github.com/astronomer/ap-airflow/commit/953ec71d9228f0c6558d4cd9aa74b8ddb5dfd141))
+
+### Bugfix
+
+- Update [Astronomer FAB Security Manager](https://github.com/astronomer/astronomer-fab-securitymanager) to version [1.8.1](https://github.com/astronomer/astronomer-fab-securitymanager/releases/tag/v1.8.1)
+
 Astronomer Certified 2.2.3-1, 2021-12-21
 ----------------------------------------
 

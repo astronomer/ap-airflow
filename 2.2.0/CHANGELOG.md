@@ -1,11 +1,18 @@
 # Changelog
 
-Astronomer Certified 2.2.0-5, TBD
+Astronomer Certified 2.2.0-5, 2022-01-19
 ----------------------------------------
+
+### Security
+
+- Updated `celery` to `5.2.3` to fix [CVE-2021-23727](https://nvd.nist.gov/vuln/detail/CVE-2021-23727) ([commit](https://github.com/astronomer/ap-airflow/commit/b7ce051b726978691f6f37cb1f2f00a3c88da56f))
+- Updated `Flask-AppBuilder` to `3.4.3` to fix [CVE-2021-41265](https://nvd.nist.gov/vuln/detail/CVE-2021-41265) ([commit](https://github.com/astronomer/ap-airflow/commit/b7ce051b726978691f6f37cb1f2f00a3c88da56f))
+- Updated `numpy` to `1.21.5` to fix [CVE-2021-33430](https://nvd.nist.gov/vuln/detail/CVE-2021-33430) ([commit](https://github.com/astronomer/ap-airflow/commit/953ec71d9228f0c6558d4cd9aa74b8ddb5dfd141))
 
 ### Bugfixes
 
 - Fix labels used to find queued KubeExecutor pods (#19904) ([commit](https://github.com/astronomer/airflow/commit/ce9f4ce3b4209d1df28306c978b27729ece634f2))
+- Update [Astronomer FAB Security Manager](https://github.com/astronomer/astronomer-fab-securitymanager) to version [1.8.1](https://github.com/astronomer/astronomer-fab-securitymanager/releases/tag/v1.8.1)
 
 Astronomer Certified 2.2.0-4, 2021-11-05
 ----------------------------------------
