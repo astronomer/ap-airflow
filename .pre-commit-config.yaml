@@ -13,6 +13,10 @@ repos:
       - id: mixed-line-ending
         args: ["--fix=lf"]
       - id: trailing-whitespace
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.8.0.3
+    hooks:
+      - id: shellcheck
   - repo: local
     hooks:
       - id: copyright-uptodate
