@@ -332,9 +332,11 @@ jobs:
       - image: quay.io/astronomer/ci-pre-commit:2022-01
     steps:
       - run:
-          name: Install yq
+          name: Install yq, jq
           command: |
             curl -fsSLo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            chmod +x /usr/local/bin/yq
+            curl -fsSLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64
             chmod +x /usr/local/bin/yq
       - run:
           name: Install shellcheck
