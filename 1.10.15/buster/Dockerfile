@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Astronomer Inc.
+# Copyright 2022 Astronomer Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -110,10 +110,11 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.15-3"
+ARG VERSION="1.10.15-4"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="1.10.15"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.1"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -127,9 +128,9 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt" \
-  && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-	&& pip install "astronomer-fab-security-manager~=1.2, >=1.2.2"
+RUN pip install "${AIRFLOW_MODULE}" --constraint /tmp/build-time-pip-constraints.txt \
+    && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
+    && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
 
 ## move this to same layer as airflow because its from tag.
@@ -137,17 +138,19 @@ RUN pip install "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.
 FROM ${APT_DEPS_IMAGE} as main
 
 # By increasing this number we force CI to upgrade all system packages
-ARG PACKAGE_UPGRADE_EPOCH_NUMBER="8"
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="2"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.15-3"
+ARG VERSION="1.10.15-4"
 ARG AIRFLOW_VERSION="1.10.15"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.1"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
+LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
 # Copy all installed python modules. This gets us the compiled without needing dev installed
 COPY --from=devel /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages

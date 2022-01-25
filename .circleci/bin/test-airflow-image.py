@@ -27,6 +27,7 @@ class ImageType(Enum):
 
 airflow_version = os.environ.get("AIRFLOW_VERSION")
 airflow_2 = True if airflow_version.startswith("2") else False
+is_edge_build = os.environ.get("EDGE_BUILD") == "true"
 
 
 def test_airflow_in_path(webserver):
@@ -58,6 +59,7 @@ def test_maintainer(webserver, docker_client):
         "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
 
 
+@pytest.mark.skipif(is_edge_build, reason="Not needed for Edge/main builds")
 def test_version(webserver, docker_client):
     """ Ensure the version of Airflow matches the Docker image label
     """
@@ -260,18 +262,21 @@ def test_airflow_trigger_dags(scheduler):
 def test_airflow_configs(scheduler, docker_client):
     """Verify certain Airflow configurations"""
     distro = get_label(docker_client, "io.astronomer.docker.distro")
+    relative_config_path = "site-packages/airflow/config_templates/default_airflow.cfg"
+    python_install_dir = str(scheduler.check_output(
+        'python -c "import os; print(os.path.dirname(os.__file__))"'
+    )).strip()
+    config_file_path = f"{python_install_dir}/{relative_config_path}"
+
+    assert scheduler.file(config_file_path).exists, f"{relative_config_path} does not exist !"
 
     if distro == "debian":
-        config_file_path = "/usr/local/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = "50000"
     elif distro == "alpine":
-        config_file_path = "/usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = "100"
     elif distro == "rhel":
-        config_file_path = "/usr/local/lib/python3.6/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = "100"
     else:
-        config_file_path = "/usr/lib/python3.7/site-packages/airflow/config_templates/default_airflow.cfg"
         expected_run_as_user = ""
 
     if airflow_2:
@@ -309,6 +314,46 @@ def test_labels_for_onbuild_image(docker_client):
     assert labels['io.astronomer.docker.airflow.onbuild'] == "true"
     assert labels['maintainer'] == "Astronomer <humans@astronomer.io>", \
         "'maintainer' label should be 'Astronomer <humans@astronomer.io>'"
+
+
+@pytest.mark.skipif(not is_edge_build, reason="Not needed for non-Edge/main builds")
+def test_labels_for_edge_builds(docker_client):
+    # Note that this list does not include
+    # org.apache.airflow.git.branch or org.apache.airflow.git.tag
+    # because those aren't guarateed to tbe in the labels.
+    # They are checked seprately down below.
+    labels_to_check = [
+        'org.apache.airflow.ci.build.date',
+        'org.apache.airflow.ci.build.url',
+        'org.apache.airflow.ci.build.version',
+        'org.apache.airflow.ci.js.node.version_string',
+        'org.apache.airflow.ci.js.npm.version_string',
+        'org.apache.airflow.ci.js.yarn.version_string',
+        'org.apache.airflow.ci.python.version_string',
+        'org.apache.airflow.git.commit_sha',
+        'io.astronomer.astronomer_certified.build.version',
+    ]
+
+    image_labels = get_labels(docker_client)
+    for label in labels_to_check:
+        assert (
+            label in image_labels
+        ), f"'{label}' should be in image labels for edge build (image labels: {','.join(image_labels.keys())})"
+        label_value = image_labels[label]
+        assert label_value != ""
+
+    # Assert that either
+    # org.apache.airflow.git.branch
+    # or
+    # org.apache.airflow.git.tag
+    # are in the image labels, and make sure their value is not empty
+    assert (
+        "org.apache.airflow.git.branch" in image_labels
+        and image_labels["org.apache.airflow.git.branch"] != ""
+    ) or (
+        "org.apache.airflow.git.tag" in image_labels
+        and image_labels["org.apache.airflow.git.tag"] != ""
+    )
 
 
 def test_apache_airflow_in_requirements(tmp_path):

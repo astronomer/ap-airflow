@@ -4,10 +4,10 @@
 set -e
 
 if [[ -z "${KIND_VERSION}" ]]; then
-  KIND_VERSION="0.7.0"
+  KIND_VERSION="0.11.1"
 fi
 if [[ -z "${HELM_VERSION}" ]]; then
-  HELM_VERSION="3.3.4"
+  HELM_VERSION="3.7.1"
 fi
 
 OS=$(uname | tr '[:upper:]' '[:lower:]')

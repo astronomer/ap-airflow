@@ -1,0 +1,84 @@
+{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":tada:    *New Astronomer Certified Build*    :tada:"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Release(s) Awaiting Approval"
+      },
+      "accessory": {
+        "type": "image",
+        "image_url": "https://pbs.twimg.com/profile_images/1138094475211878400/f3rTb0hP_400x400.png",
+        "alt_text": "Astronomer.io logo"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Project*:\n    <https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME?branch=$CIRCLE_BRANCH&filter=all|$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME :circleci:>"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Branch*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/tree/$CIRCLE_BRANCH|`$CIRCLE_BRANCH`>"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Author*:\n    $CIRCLE_USERNAME"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Git SHA*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1|`${CIRCLE_SHA1:0:7}`>"
+        }
+      ]
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "image",
+          "image_url": "https://api.slack.com/img/blocks/bkb_template_images/notificationsWarningIcon.png",
+          "alt_text": "notifications warning icon"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Does not include `edge` builds*"
+        }
+      ]
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "Approvers: <@UHRPL613K>,<@U018NSS9G2Y>"
+        }
+      ],
+      "accessory": {
+        "type": "button",
+        "style": "primary",
+        "text": {
+          "emoji": true,
+          "type": "plain_text",
+          "text": "Approve on CircleCI :arrow_upper_right:"
+        },
+        "url": "https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}",
+        "action_id": "button-action"
+      }
+    }
+  ]
+}

@@ -51,8 +51,15 @@ export RELEASE_NAME=$NAMESPACE
 echo "Installing Airflow into kind as $RELEASE_NAME"
 
 AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.airflow.version" }}' "$REPOSITORY:$TEST_TAG")
+# Make the version "SemVer" compliant.. Example: 2.2.0.dev becomes 2.2.0
+echo "Airflow Version (from labels): $AIRFLOW_VERSION"
+AIRFLOW_VERSION_SEMVER="${AIRFLOW_VERSION%.dev*}"
 export AIRFLOW_VERSION
-echo "Airflow Version: $AIRFLOW_VERSION"
+export AIRFLOW_VERSION_SEMVER
+echo "Airflow Version (SemVer): $AIRFLOW_VERSION_SEMVER"
+
+EDGE_BUILD=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.build.edge" }}' "$REPOSITORY:$TEST_TAG")
+export EDGE_BUILD
 
 # Find alpine or debian
 DISTRO=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.distro" }}' "$REPOSITORY:$TEST_TAG")
@@ -75,16 +82,16 @@ WATCH_PID=$!
 
 kubectl create namespace $NAMESPACE
 helm install --namespace $NAMESPACE \
-  --set defaultAirflowRepository=$REPOSITORY \
-  --set defaultAirflowTag=$TEST_TAG \
-  --set images.airflow.repository=$REPOSITORY \
-  --set images.airflow.tag=$TEST_TAG \
-  --set images.airflow.pullPolicy=Never \
-  --set images.flower.pullPolicy=Never \
-  --set executor=KubernetesExecutor \
-  --set airflowVersion=$AIRFLOW_VERSION \
-  --set uid=$IMAGE_UID \
-  --set gid=$IMAGE_GID \
+  --set airflow.defaultAirflowRepository=$REPOSITORY \
+  --set airflow.defaultAirflowTag=$TEST_TAG \
+  --set airflow.images.airflow.repository=$REPOSITORY \
+  --set airflow.images.airflow.tag=$TEST_TAG \
+  --set airflow.images.airflow.pullPolicy=Never \
+  --set airflow.images.flower.pullPolicy=Never \
+  --set airflow.executor=KubernetesExecutor \
+  --set airflow.airflowVersion=$AIRFLOW_VERSION_SEMVER \
+  --set airflow.uid=$IMAGE_UID \
+  --set airflow.gid=$IMAGE_GID \
   --version=$CHART_VERSION \
   $RELEASE_NAME astronomer/airflow
 
