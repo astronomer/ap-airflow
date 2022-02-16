@@ -114,7 +114,7 @@ ARG VERSION="2.2.0-5"
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="2.2.0"
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.1"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.2"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -148,7 +148,7 @@ RUN apt-get update \
 
 ARG VERSION="2.2.0-5"
 ARG AIRFLOW_VERSION="2.2.0"
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.1"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.2"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
