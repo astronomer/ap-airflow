@@ -289,7 +289,7 @@ def test_airflow_configs(scheduler, docker_client):
             f"cat {config_file_path} | "
             "grep '^auth_backend' | awk '{print $3}'"
         ) == "astronomer.flask_appbuilder.current_user_backend", \
-            "[api] auth_backend needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
+            "[api] auth_backend(s) needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
 
         assert scheduler.check_output(
             f"cat {config_file_path} | "

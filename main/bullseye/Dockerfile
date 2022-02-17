@@ -166,7 +166,7 @@ RUN sed -i \
     # We sync permissions in the entrypoint so do not need to run in the Webserver again
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
     # Use Auth Backend defined in Astronomer FAB Security Manager
-    -e 's/^auth_backend =.*/auth_backend = astronomer.flask_appbuilder.current_user_backend/g' \
+    -e 's/^auth_backends =.*/auth_backends = astronomer.flask_appbuilder.current_user_backend/g' \
     # The number of seconds to wait before timing out send_task_to_executor or fetch_celery_task_state operations.
     -e 's/^operation_timeout =.*/operation_timeout = 10.0/g' \
     /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/config_templates/default_airflow.cfg
