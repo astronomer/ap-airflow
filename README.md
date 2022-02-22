@@ -42,7 +42,7 @@ including latest security patches. This tag is "floating" or movable.
 ## Version Life Cycle & Maintenance policy
 
 The support and maintenance of the  Docker images are described in
-the [Version Life Cycle](https://docs.astronomer.io/enterprise/ac-support-policy/#astronomer-certified-lifecycle-schedule).
+the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/).
 
 ## Contents of this repo
 
