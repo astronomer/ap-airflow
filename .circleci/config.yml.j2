@@ -16,37 +16,13 @@ workflows:
     jobs:
       - static-checks
 
-      - slack/on-hold:
-          name: Slack-Notification
-          context: slack_ap-airflow
-          custom: |
-            {% filter indent(width=12) -%}
-            {% include "build_approval_slack_notification.json.j2" %}
-            {% endfilter %}
-          requires:
-            - static-checks
-          filters:
-            branches:
-              only:
-                - master
-
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
       {%- set dev_build = "true" if "dev" in ac_version else "false" %}
-      {%- set edge_build = ac_version | is_edge_build -%}
-      {%- if not edge_build %}
-
-      - pause_workflow:
-          name: Need-Approval-{{ airflow_version }}
-          requires:
-            - Slack-Notification
-          type: approval
-          filters:
-            branches:
-              only:
-                - master
+      {%- set edge_build = ac_version | is_edge_build %}
       {%- for distribution in distributions %}
+      # AC {{ airflow_version }} {{ distribution }}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -62,7 +38,6 @@ workflows:
           image_name: "ap-airflow:{{ airflow_version }}"
           {%- endif %}
           requires:
-            - Need-Approval-{{ airflow_version }}
             - static-checks
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -94,6 +69,31 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
+      {#- Allow only dev and edge builds are allowed to skip approval before pushing and notifying #}
+      {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+      - slack/on-hold:
+          name: Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
+          context: slack_ap-airflow
+          custom: |
+            {% filter indent(width=12) -%}
+            {% include "build_approval_slack_notification.json.j2" %}
+            {%- endfilter %}
+          requires:
+            - test-{{ airflow_version }}-{{ distribution }}-images
+          filters:
+            branches:
+              only:
+                - master
+      - pause_workflow:
+          name: Need-Approval-{{ airflow_version }}-{{ distribution }}
+          requires:
+            - Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      {%- endif %}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: {{ dev_build }}
@@ -113,6 +113,9 @@ workflows:
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
+            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}
+            {%- endif %}
           filters:
             branches:
               only:
@@ -136,12 +139,14 @@ workflows:
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
+            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}
+            {%- endif %}
           filters:
             branches:
               only:
                 - master
                 - slack-build-approvals
-      {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
       - slack-notification:
           name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
@@ -156,15 +161,14 @@ workflows:
           context:
             - slack_ap-airflow
           requires:
+            - push-{{ airflow_version }}-{{ distribution }}
             - push-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
               only:
                 - master
-      {%- endif %}
       {%- endfor %}{# distribution in distributions #}
-      {%- endif %}{# not edge_build #}
-      {%- endfor %}{# ac_version, distributions in image_map.items() #}
+      {% endfor %}{# ac_version, distributions in image_map.items() #}
   {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
     when:
