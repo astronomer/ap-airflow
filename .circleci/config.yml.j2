@@ -35,7 +35,7 @@ workflows:
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
       {%- set dev_build = ac_version | is_dev_release %}
       {%- set edge_build = ac_version | is_edge_build %}
-
+      {%- if not edge_build %}
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
           requires:
@@ -45,6 +45,7 @@ workflows:
             branches:
               only:
                 - master
+      {%- endif %}{# not edge_build #}
       {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
@@ -61,7 +62,9 @@ workflows:
           image_name: "ap-airflow:{{ airflow_version }}"
           {%- endif %}
           requires:
+            {%- if not edge_build %}
             - Need-Approval-{{ airflow_version }}
+            {%- endif %}{# not edge_build #}
             - static-checks
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
