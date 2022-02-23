@@ -206,8 +206,10 @@ workflows:
             --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }})
             --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }})
             --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})"
-            --label org.apache.airflow.git.commit_sha=$(jq -r '.git.commit' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.git.$(jq -r '.git.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.ref.name' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_from.git.branch=$(jq -r '.git.built_from.branch' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_from.git.commit_sha=$(jq -r '.git.built_from.commit' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
             --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
             {%- endif %}{# edge_build #}
           {%- if distribution in ["alpine3.10", "buster"] %}
