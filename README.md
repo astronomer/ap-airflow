@@ -296,18 +296,8 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
 ## Changelog
 
 All changes applied to available point releases will be documented in the `CHANGELOG.md` files within each version folder:
-- [1.10.12 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.12/CHANGELOG.md)
-- [1.10.14 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.14/CHANGELOG.md)
 - [1.10.15 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.15/CHANGELOG.md)
-- [2.0.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.0.0/CHANGELOG.md)
-- [2.0.2 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.0.2/CHANGELOG.md)
-- [2.1.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.0/CHANGELOG.md)
-- [2.1.1 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.1/CHANGELOG.md)
-- [2.1.3 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.3/CHANGELOG.md)
 - [2.1.4 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.4/CHANGELOG.md)
-- [2.2.0 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.0/CHANGELOG.md)
-- [2.2.1 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.1/CHANGELOG.md)
-- [2.2.2 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.2/CHANGELOG.md)
 - [2.2.3 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.3/CHANGELOG.md)
 - [2.2.4 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.4/CHANGELOG.md)
 <!-- CHANGELOG END -->
