@@ -110,7 +110,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.15-4"
+ARG VERSION="1.10.15-5.*"
 ARG SUBMODULES="async,azure_blob_storage,azure_cosmos,azure_container_instances,celery,crypto,elasticsearch,gcp,kubernetes,mysql,postgres,s3,emr,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="1.10.15"
@@ -145,7 +145,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="1.10.15-4"
+ARG VERSION="1.10.15-5.*"
 ARG AIRFLOW_VERSION="1.10.15"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.3"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
