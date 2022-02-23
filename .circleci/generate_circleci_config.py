@@ -13,6 +13,7 @@ from common import (
     get_airflow_version,
     IMAGE_MAP,
     is_edge_build,
+    is_dev_release,
 )
 
 
@@ -25,6 +26,7 @@ def generate_circleci_config():
     template_env.filters['dev_releases'] = dev_releases
     template_env.filters['get_airflow_version'] = get_airflow_version
     template_env.filters['is_edge_build'] = is_edge_build
+    template_env.filters['is_dev_release'] = is_dev_release
     template = template_env.get_template("config.yml.j2")
 
     config = template.render(

@@ -33,9 +33,8 @@ workflows:
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
-      {%- set dev_build = "true" if "dev" in ac_version else "false" %}
-      {%- set edge_build = ac_version | is_edge_build -%}
-      {%- if not edge_build %}
+      {%- set dev_build = ac_version | is_dev_release %}
+      {%- set edge_build = ac_version | is_edge_build %}
 
       - pause_workflow:
           name: Need-Approval-{{ airflow_version }}
@@ -141,7 +140,7 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
-      {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
+      {%- if "dev" in ac_version and airflow_version not in dev_allowlist and not edge_build %}
       - slack-notification:
           name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
@@ -163,7 +162,6 @@ workflows:
                 - master
       {%- endif %}
       {%- endfor %}{# distribution in distributions #}
-      {%- endif %}{# not edge_build #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
   {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
