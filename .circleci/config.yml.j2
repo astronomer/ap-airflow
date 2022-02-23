@@ -369,7 +369,7 @@ jobs:
           command: |
             curl << parameters.url >> > << parameters.file >>
             # Avoid polluting logs with a huge file - <= 100 lines or <= 2048 bytes
-            if [[ "$(wc -l << parameters.file >>)" -le 100 || "$(wc -c)" -le 2048 ]]; then
+            if [[ "$(wc -l < << parameters.file >>)" -le 100 || "$(wc -c)" -le 2048 ]]; then
               echo "Output file:"
               cat << parameters.file >>
             else
