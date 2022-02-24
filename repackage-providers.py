@@ -26,12 +26,18 @@ from zipfile import ZipFile
 
 
 def check_if_version_exists_in_astronomer_pip(package_name: str, version: str) -> bool:
-    """Check if a given provider with exact version exists in astronomer pip repo"""
+    """
+    Check if a given provider with exact version exists in astronomer pip repo.
+    If it finds a provider with the same name and version, it will return True.
+    """
     url = "https://pip.astronomer.io/simple/" + package_name.replace("_", "-")
     listing = requests.get(url)
+    # For New Providers we don't have a listing yet so it will fail with 404
+    if listing.status_code == 404:
+        return False
     listing.raise_for_status()
     soup = BeautifulSoup(listing.text, "html.parser")
-    return version not in soup.text
+    return version in soup.text
 
 
 def wheel_urls_from_listing(url, version):
@@ -55,7 +61,7 @@ def wheel_urls_from_listing(url, version):
         match = WHEEL_INFO_RE.match(relative_wheel)
         package_name = match.group("name")
         package_version = match.group("ver")
-        if check_if_version_exists_in_astronomer_pip(package_name, package_version):
+        if not check_if_version_exists_in_astronomer_pip(package_name, package_version):
 
             table.add_row(package_name, relative_wheel, package_version)
             rich.print(f"{package_name}, {relative_wheel}, {package_version}")
