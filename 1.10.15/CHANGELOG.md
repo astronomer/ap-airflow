@@ -1,5 +1,15 @@
 # Changelog
 
+Astronomer Certified 1.10.15-5, 2022-02-24
+--------------------------------------------
+
+### Security
+
+- Update example DAGs (#21372) to fix [CVE-2022-24288](https://nvd.nist.gov/vuln/detail/CVE-2022-24288) ([commit](https://github.com/astronomer/airflow/commit/982d1c70f1c4d15fc22b7504e802068a1bfd9920))
+- Simplify trigger cancel button (#21591) to fix [CVE-2021-45229](https://nvd.nist.gov/vuln/detail/CVE-2021-45229) ([commit](https://github.com/astronomer/airflow/commit/0f94604932cb69a0dbf0edf86f34e860ac2cf035))
+- Updated `protobuf` to `3.15.0` to fix [CVE-2021-22570](https://nvd.nist.gov/vuln/detail/CVE-2021-22570) ([commit](https://github.com/astronomer/ap-airflow/commit/50ce8cee18a2660b13542e53471f6b28474645b3))
+- Updated `expat` to `2.2.6-2+deb10u3` to fix [DSA-5073-1](https://security-tracker.debian.org/tracker/DSA-5073-1) and [DSA-5085-1](https://security-tracker.debian.org/tracker/DSA-5085-1) ([commit](https://github.com/astronomer/ap-airflow/commit/b875830c3ccb8ad0d232d99e962fecc7ea639bc9), [commit](https://github.com/astronomer/ap-airflow/commit/4ffca19f5428ed2911dd30f1ac10064b8a0bb7ea))
+
 Astronomer Certified 1.10.15-4, 2021-09-24
 --------------------------------------------
 

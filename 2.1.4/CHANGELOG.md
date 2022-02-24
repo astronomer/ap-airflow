@@ -1,5 +1,20 @@
 # Changelog
 
+Astronomer Certified 2.1.4-5, 2022-02-24
+----------------------------------------
+
+
+### Security
+
+- Simplify trigger cancel button (#21591) to fix [CVE-2021-45229](https://nvd.nist.gov/vuln/detail/CVE-2021-45229) ([commit](https://github.com/astronomer/airflow/commit/4ee86ad2eec68f0c14f077392f75048dcadfb7e0))
+- Update example DAGs (#21372) to fix [CVE-2022-24288](https://nvd.nist.gov/vuln/detail/CVE-2022-24288) ([commit](https://github.com/astronomer/airflow/commit/4e1ab17316d2a1ad9e343a10220fcbb63b928747))
+- Updated `expat` to `2.2.6-2+deb10u3` to fix [DSA-5073-1](https://security-tracker.debian.org/tracker/DSA-5073-1) and [DSA-5085-1](https://security-tracker.debian.org/tracker/DSA-5085-1) ([commit](https://github.com/astronomer/ap-airflow/commit/b875830c3ccb8ad0d232d99e962fecc7ea639bc9), [commit](https://github.com/astronomer/ap-airflow/commit/4ffca19f5428ed2911dd30f1ac10064b8a0bb7ea))
+
+### Bugfixes
+
+- Do not set `TaskInstance.max_tries` in `refresh_from_task` (#21018) ([commit](https://github.com/astronomer/airflow/commit/70d195a9ab184788a7df0dc466ee088c2daed7b5))
+
+
 Astronomer Certified 2.1.4-4, 2022-01-19
 ----------------------------------------
 
