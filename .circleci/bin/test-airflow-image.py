@@ -330,7 +330,9 @@ def test_labels_for_edge_builds(docker_client):
         'org.apache.airflow.ci.js.npm.version_string',
         'org.apache.airflow.ci.js.yarn.version_string',
         'org.apache.airflow.ci.python.version_string',
-        'org.apache.airflow.git.commit_sha',
+        'io.astronomer.airflow.built_from.git.branch',
+        'io.astronomer.airflow.built_from.git.commit_sha',
+        'io.astronomer.airflow.built_by.git.commit_sha',
         'io.astronomer.astronomer_certified.build.version',
     ]
 
@@ -348,11 +350,11 @@ def test_labels_for_edge_builds(docker_client):
     # org.apache.airflow.git.tag
     # are in the image labels, and make sure their value is not empty
     assert (
-        "org.apache.airflow.git.branch" in image_labels
-        and image_labels["org.apache.airflow.git.branch"] != ""
+        "io.astronomer.airflow.built_by.git.branch" in image_labels
+        and image_labels["io.astronomer.airflow.built_by.git.branch"] != ""
     ) or (
-        "org.apache.airflow.git.tag" in image_labels
-        and image_labels["org.apache.airflow.git.tag"] != ""
+        "io.astronomer.airflow.built_by.git.tag" in image_labels
+        and image_labels["io.astronomer.airflow.built_by.git.tag"] != ""
     )
 
 
