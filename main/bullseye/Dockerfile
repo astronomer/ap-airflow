@@ -114,6 +114,7 @@ ARG VERSION
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION=${VERSION}
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -122,11 +123,10 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager. Install Airflow module with extra separately to account
 # for difference of OSS and Astro Providers
-RUN pip install "astronomer_certified==${VERSION}" celery flower "elasticsearch==7.13.4" \
+RUN pip install "${AIRFLOW_MODULE}" celery flower "elasticsearch==7.13.4" \
     --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-main/constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt" \
-  && pip install "${AIRFLOW_MODULE}" \
-  && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-	&& pip install "astronomer-fab-security-manager~=1.7"
+	&& pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
+	&& pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
 
 ## move this to same layer as airflow because its from tag.
@@ -143,8 +143,10 @@ RUN apt-get update \
 
 ARG VERSION
 ARG AIRFLOW_VERSION=${VERSION}
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
+LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 LABEL io.astronomer.docker.build.edge="true"
 
 # Copy all installed python modules. This gets us the compiled without needing dev installed
