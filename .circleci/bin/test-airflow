@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
 
 export REPOSITORY=$1
 if [[ -z "$2" ]]; then
@@ -8,10 +9,10 @@ else
 fi
 
 function get_debugging_info {
-  for pod in $(kubectl get pods -n $NAMESPACE --no-headers=true | awk '{ print $1 }'); do
+  for pod in $(kubectl get pods -n "$NAMESPACE" --no-headers=true | awk '{ print $1 }'); do
     echo "======================="
     set -x
-    kubectl logs --all-containers -n  $NAMESPACE $pod | tail -n 30
+    kubectl logs --all-containers -n "$NAMESPACE" "$pod" | tail -n 30
     set +x
     echo "======================="
   done
@@ -20,8 +21,8 @@ function get_debugging_info {
 # set DIR to the directory of this script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-source $DIR/install-ci-tools
-source $DIR/start-kind-cluster
+source "$DIR/install-ci-tools"
+source "$DIR/start-kind-cluster"
 
 helm repo add stable https://charts.helm.sh/stable/
 helm repo add astronomer https://helm.astronomer.io/
@@ -42,15 +43,15 @@ cat "$TEST_DOCKERFILE_PATH"
 
 export TEST_TAG=$TAG-test
 
-docker build -t $REPOSITORY:$TEST_TAG $DIR/example_project
+docker build -t "${REPOSITORY}:${TEST_TAG}" "${DIR}/example_project"
 
-kind load docker-image --name $CLUSTER_NAME $REPOSITORY:$TEST_TAG
+kind load docker-image --name "$CLUSTER_NAME" "${REPOSITORY}:${TEST_TAG}"
 
 export NAMESPACE=airflow-$RANDOM
 export RELEASE_NAME=$NAMESPACE
 echo "Installing Airflow into kind as $RELEASE_NAME"
 
-AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.airflow.version" }}' "$REPOSITORY:$TEST_TAG")
+AIRFLOW_VERSION=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.airflow.version" }}' "${REPOSITORY}:${TEST_TAG}")
 # Make the version "SemVer" compliant.. Example: 2.2.0.dev becomes 2.2.0
 echo "Airflow Version (from labels): $AIRFLOW_VERSION"
 AIRFLOW_VERSION_SEMVER="${AIRFLOW_VERSION%.dev*}"
@@ -58,11 +59,11 @@ export AIRFLOW_VERSION
 export AIRFLOW_VERSION_SEMVER
 echo "Airflow Version (SemVer): $AIRFLOW_VERSION_SEMVER"
 
-EDGE_BUILD=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.build.edge" }}' "$REPOSITORY:$TEST_TAG")
+EDGE_BUILD=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.build.edge" }}' "${REPOSITORY}:${TEST_TAG}")
 export EDGE_BUILD
 
 # Find alpine or debian
-DISTRO=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.distro" }}' "$REPOSITORY:$TEST_TAG")
+DISTRO=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.distro" }}' "${REPOSITORY}:${TEST_TAG}")
 # This is handled by Houston for the platform: https://github.com/astronomer/houston-api/pull/581
 if [[ "$DISTRO" == "alpine" ]]; then
   export IMAGE_UID="100"
@@ -80,22 +81,21 @@ echo "Chart Version: $CHART_VERSION"
 kubectl get pods -n $NAMESPACE -w &
 WATCH_PID=$!
 
-kubectl create namespace $NAMESPACE
-helm install --namespace $NAMESPACE \
-  --set airflow.defaultAirflowRepository=$REPOSITORY \
-  --set airflow.defaultAirflowTag=$TEST_TAG \
-  --set airflow.images.airflow.repository=$REPOSITORY \
-  --set airflow.images.airflow.tag=$TEST_TAG \
+kubectl create namespace "$NAMESPACE"
+if ! helm install --namespace "$NAMESPACE" \
+  --set airflow.defaultAirflowRepository="$REPOSITORY" \
+  --set airflow.defaultAirflowTag="$TEST_TAG" \
+  --set airflow.images.airflow.repository="$REPOSITORY" \
+  --set airflow.images.airflow.tag="$TEST_TAG" \
   --set airflow.images.airflow.pullPolicy=Never \
   --set airflow.images.flower.pullPolicy=Never \
   --set airflow.executor=KubernetesExecutor \
-  --set airflow.airflowVersion=$AIRFLOW_VERSION_SEMVER \
-  --set airflow.uid=$IMAGE_UID \
-  --set airflow.gid=$IMAGE_GID \
-  --version=$CHART_VERSION \
-  $RELEASE_NAME astronomer/airflow
-
-if [ ! $? -eq 0 ]; then
+  --set airflow.airflowVersion="$AIRFLOW_VERSION_SEMVER" \
+  --set airflow.uid="$IMAGE_UID" \
+  --set airflow.gid="$IMAGE_GID" \
+  --version="$CHART_VERSION" \
+  "$RELEASE_NAME" astronomer/airflow
+then
   echo "Airflow image failed to work with latest Helm chart."
   get_debugging_info
   exit 1
@@ -105,10 +105,11 @@ kill $WATCH_PID
 
 echo "Deployed Airflow into latest Helm chart."
 
-export WEBSERVER_POD=$(kubectl get pods -n $NAMESPACE | grep webserver | awk '{ print $1 }')
-export SCHEDULER_POD=$(kubectl get pods -n $NAMESPACE | grep scheduler | awk '{ print $1 }')
+WEBSERVER_POD=$(kubectl get pods -n "$NAMESPACE" | grep webserver | awk '{ print $1 }')
+SCHEDULER_POD=$(kubectl get pods -n "$NAMESPACE" | grep scheduler | awk '{ print $1 }')
+export WEBSERVER_POD SCHEDULER_POD
 
 mkdir -p /tmp/test-reports
 export AIRFLOW_IMAGE="$REPOSITORY:$TAG"
 export AIRFLOW_ONBUILD_IMAGE="$REPOSITORY:$TAG-onbuild"
-pytest $DIR/test-airflow-image.py --junitxml=/tmp/test-reports/airflow-test-$REPOSITORY:$TAG.xml
+pytest "$DIR/test-airflow-image.py" --junitxml="/tmp/test-reports/airflow-test-${REPOSITORY}:${TAG}.xml"

@@ -330,26 +330,40 @@ jobs:
             git push --force origin astro-main
             git --no-pager remote --verbose
   static-checks:
-    executor: machine-executor
-    description: Static Checks
+    docker:
+      - image: quay.io/astronomer/ci-pre-commit:2022-01
     steps:
       - run:
-          name: Install yq
+          name: Install yq, jq
           command: |
-            sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-            sudo chmod +x /usr/local/bin/yq
+            curl -fsSLo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+            chmod +x /usr/local/bin/yq
+            curl -fsSLo /usr/local/bin/jq https://github.com/stedolan/jq/releases/latest/download/jq-linux64
+            chmod +x /usr/local/bin/jq
       - run:
           name: Install shellcheck
           command: |
-            sudo apt update
-            sudo apt install --yes shellcheck
+            apt update
+            apt install --yes shellcheck
       - checkout
       - run:
-          name: Load archived Docker image
+          name: Create pre-commit-cache-key.txt
           command: |
-            pyenv global 3.8.5
-            pip install -r .circleci/test-requirements.txt
-            pre-commit run --all-files || { git --no-pager diff && false ; }
+            cp .pre-commit-config.yaml /tmp/pre-commit-cache-key.txt
+            python --version --version | sed 's/^/# /' >> /tmp/pre-commit-cache-key.txt
+      - restore_cache:
+          keys:
+            - pre-commit-cache-{{ '{{' }} checksum "/tmp/pre-commit-cache-key.txt" }}
+      - run:
+          name: Install pre-commit hooks
+          command: pre-commit install-hooks
+      - save_cache:
+          key: pre-commit-cache-{{ '{{' }} checksum "/tmp/pre-commit-cache-key.txt" }}
+          paths:
+            - ~/.cache/pre-commit
+      - run:
+          name: Run pre-commit
+          command: pre-commit run --all-files --show-diff-on-failure
   download-file:
     executor: machine-executor
     description: Download a file to disk
