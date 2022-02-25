@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 2.2.4-2, 2022-02-25
+----------------------------------------
+
+### Security
+
+- Updated `expat` to `2.2.10-2+deb11u2` to fix [DSA-5085-1](https://security-tracker.debian.org/tracker/DSA-5085-1) ([commit](https://github.com/astronomer/ap-airflow/commit/3d7c4127ee46b2e194e9cb8a116f237cf2147429))
+
+### Bug Fixes
+
+- Upgrade FAB Security Manager to `1.8.4` ([commit](https://github.com/astronomer/ap-airflow/commit/0bd531351cdc37dd0fbd6d76c3b680615b31241e))
+
 Astronomer Certified 2.2.4-1, 2022-02-22
 ----------------------------------------
 
