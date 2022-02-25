@@ -16,37 +16,25 @@ workflows:
     jobs:
       - static-checks
 
-      - slack/on-hold:
-          name: Slack-Notification
-          context: slack_ap-airflow
-          custom: |
-            {% filter indent(width=12) -%}
-            {% include "build_approval_slack_notification.json.j2" %}
-            {% endfilter %}
-          requires:
-            - static-checks
-          filters:
-            branches:
-              only:
-                - master
-
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
+      {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
+      {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set dev_build = "true" if "dev" in ac_version else "false" %}
-      {%- set edge_build = ac_version | is_edge_build -%}
-      {%- if not edge_build %}
+      {%- set edge_build = ac_version | is_edge_build %}
 
-      - pause_workflow:
-          name: Need-Approval-{{ airflow_version }}
-          requires:
-            - Slack-Notification
-          type: approval
-          filters:
-            branches:
-              only:
-                - master
+      # {{ airflow_version }}
+      {%- if edge_build %}
+      - download-file:
+          name: download-latest-{{ airflow_version_wout_dev }}-build-metadata-file
+          url: https://pip.astronomer.io/simple/astronomer-certified/{{ ext_build_filename }}
+          file: {{ ext_build_filename }}
+          output_file: extra-tags-{{ airflow_version_wout_dev }}.txt
+      {%- endif %}{# edge_build #}
+
       {%- for distribution in distributions %}
+      # {{ airflow_version }} - {{ distribution }}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
           airflow_version: {{ airflow_version }}
@@ -54,7 +42,24 @@ workflows:
           dev_build: {{ dev_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
           extra_args:
+            {#- If you modify this, make sure you also modify it in the 'nightly' workflow -#}
+            {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
+            {%- else %}
+            --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }})
+            --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})"
+            --label io.astronomer.airflow.built_from.git.branch=$(jq -r '.git.built_from.branch' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_from.git.commit_sha=$(jq -r '.git.built_from.commit' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
+            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
+            {%- endif %}{# edge_build #}
           {%- endif %}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
@@ -62,8 +67,10 @@ workflows:
           image_name: "ap-airflow:{{ airflow_version }}"
           {%- endif %}
           requires:
-            - Need-Approval-{{ airflow_version }}
             - static-checks
+            {%- if edge_build %}
+            - download-latest-{{ airflow_version_wout_dev }}-build-metadata-file
+            {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: {{ airflow_version }}
@@ -94,6 +101,31 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
+      {#- Allow only dev and edge builds are allowed to skip approval before pushing and notifying #}
+      {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+      - slack/on-hold:
+          name: Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
+          context: slack_ap-airflow
+          custom: |
+            {% filter indent(width=12) -%}
+            {% include "build_approval_slack_notification.json.j2" %}
+            {%- endfilter %}
+          requires:
+            - test-{{ airflow_version }}-{{ distribution }}-images
+          filters:
+            branches:
+              only:
+                - master
+      - pause_workflow:
+          name: Need-Approval-{{ airflow_version }}-{{ distribution }}
+          requires:
+            - Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      {%- endif %}
       - push:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: {{ dev_build }}
@@ -113,6 +145,9 @@ workflows:
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
+            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}
+            {%- endif %}
           filters:
             branches:
               only:
@@ -136,12 +171,14 @@ workflows:
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
+            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}
+            {%- endif %}
           filters:
             branches:
               only:
                 - master
                 - slack-build-approvals
-      {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
       - slack-notification:
           name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
@@ -156,14 +193,13 @@ workflows:
           context:
             - slack_ap-airflow
           requires:
+            - push-{{ airflow_version }}-{{ distribution }}
             - push-{{ airflow_version }}-{{ distribution }}-onbuild
           filters:
             branches:
               only:
                 - master
-      {%- endif %}
       {%- endfor %}{# distribution in distributions #}
-      {%- endif %}{# not edge_build #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
   {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
@@ -195,6 +231,7 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           extra_args:
+            {#- If you modify this, make sure you also modify it in the 'certified-airflow' workflow -#}
             {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
             {%- else %}
@@ -369,7 +406,7 @@ jobs:
           command: |
             curl << parameters.url >> > << parameters.file >>
             # Avoid polluting logs with a huge file - <= 100 lines or <= 2048 bytes
-            if [[ "$(wc -l << parameters.file >>)" -le 100 || "$(wc -c)" -le 2048 ]]; then
+            if [[ "$(wc -l < << parameters.file >>)" -le 100 || "$(wc -c)" -le 2048 ]]; then
               echo "Output file:"
               cat << parameters.file >>
             else
