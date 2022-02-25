@@ -110,11 +110,11 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.1.4-5"
+ARG VERSION="2.1.4-6.*"
 ARG SUBMODULES="async,azure,amazon,celery,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="2.1.4"
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.3"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -146,9 +146,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.1.4-5"
+ARG VERSION="2.1.4-6.*"
 ARG AIRFLOW_VERSION="2.1.4"
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.3"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
