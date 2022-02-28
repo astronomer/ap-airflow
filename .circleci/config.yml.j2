@@ -40,6 +40,7 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           dev_build: {{ dev_build }}
+          edge_build: {{ edge_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
           extra_args:
             {#- If you modify this, make sure you also modify it in the 'nightly' workflow -#}
@@ -230,6 +231,7 @@ workflows:
           airflow_version: {{ airflow_version }}
           distribution_name: {{ distribution }}
           dev_build: true
+          edge_build: {{ edge_build }}
           extra_args:
             {#- If you modify this, make sure you also modify it in the 'certified-airflow' workflow -#}
             {%- if not edge_build %}
@@ -438,6 +440,10 @@ jobs:
       dev_build:
         description: "Indicate if this is a dev build"
         type: boolean
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
+        default: false
       extra_args:
         description: "Extra args to pass to pass to Docker build command"
         default: ""
@@ -451,6 +457,7 @@ jobs:
           distribution_name: "<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
           image_name: "<< parameters.image_name >>"
+          edge_build: "<< parameters.edge_build >>"
   test:
     executor: machine-executor
     description: Test Airflow images
@@ -611,6 +618,10 @@ commands:
       image_name:
         type: string
         default: "ap-airflow:2.2.0"
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
+        default: false
     steps:
       - checkout
       - setup_remote_docker:
@@ -619,11 +630,13 @@ commands:
           image_name: "<< parameters.image_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
           extra_args: "<< parameters.extra_args >>"
+          edge_build: "<< parameters.edge_build >>"
       - docker-build:
           image_name: "<< parameters.image_name >>-onbuild"
           path: "common/"
           dockerfile: "Dockerfile.onbuild-<< parameters.distribution_name >>"
           extra_args: "--build-arg baseimage=<< parameters.image_name >>"
+          edge_build: "<< parameters.edge_build >>"
       - persist_to_workspace:
           root: .
           paths:
@@ -643,6 +656,10 @@ commands:
       extra_args:
         type: string
         default: ""
+      edge_build:
+        description: "Indicate if this is an edge build"
+        type: boolean
+        default: false
     steps:
       - attach_workspace:
           at: {{ workspace_prefix }}
@@ -651,7 +668,7 @@ commands:
           command: |
             set -xe
             mkdir -p saved-images/"$(dirname '<< parameters.image_name >>')"
-            docker build \
+            docker build $([[ "<< parameters.edge_build >>" == "true" ]] && printf -- "--no-cache") \
               --tag '<< parameters.image_name >>' \
               --label io.astronomer.docker.build_time="$(date +%s)" \
               --label io.astronomer.repo.commit_sha="${CIRCLE_SHA1}" \
