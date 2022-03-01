@@ -1,3 +1,9 @@
+{%- set approvers = ["UHRPL613K", "U01PS0N06DN"] -%}
+{%- if approvers|length > 1 -%}
+{%- set approvers_slack_syntax = ("<@" + (approvers|join(">\\n<@")) + ">") | safe -%}
+{%- else -%}
+{%- set approvers_slack_syntax = ("<@" + (approvers|join("")) + ">" ) | safe -%}
+{%- endif -%}
 {%- set workspace_prefix = '/tmp/workspace' -%}
 version: 2.1
 

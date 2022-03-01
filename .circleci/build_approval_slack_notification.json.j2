@@ -11,7 +11,7 @@
       "type": "section",
       "text": {
         "type": "mrkdwn",
-        "text": "Release(s) Awaiting Approval"
+        "text": "Version {{ ac_version }} Release Awaiting Approval"
       },
       "accessory": {
         "type": "image",
@@ -53,7 +53,7 @@
         },
         {
           "type": "mrkdwn",
-          "text": "*Does not include `edge` builds*"
+          "text": "*Edge (main) builds and dev builds bypass approval*"
         }
       ]
     },
@@ -65,7 +65,7 @@
       "fields": [
         {
           "type": "mrkdwn",
-          "text": "Approvers: <@UHRPL613K>,<@U018NSS9G2Y>"
+          "text": "Allowed Approvers:\n{{ approvers_slack_syntax }}"
         }
       ],
       "accessory": {
