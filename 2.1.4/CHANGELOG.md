@@ -1,8 +1,14 @@
 # Changelog
 
-Astronomer Certified 2.1.4-5, 2022-02-24
+Astronomer Certified 2.1.4-6, 2022-02-24
 ----------------------------------------
 
+### Bug Fixes
+
+- Upgrade FAB Security Manager to `1.8.4` ([commit](https://github.com/astronomer/ap-airflow/commit/0bd531351cdc37dd0fbd6d76c3b680615b31241e))
+
+Astronomer Certified 2.1.4-5, 2022-02-24
+----------------------------------------
 
 ### Security
 

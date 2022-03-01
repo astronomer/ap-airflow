@@ -110,7 +110,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.2.4-2.*"
+ARG VERSION="2.2.4-2"
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="2.2.4"
@@ -139,14 +139,14 @@ RUN pip install "${AIRFLOW_MODULE}" celery flower \
 FROM ${APT_DEPS_IMAGE} as main
 
 # By increasing this number we force CI to upgrade all system packages
-ARG PACKAGE_UPGRADE_EPOCH_NUMBER="3"
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="4"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.2.4-2.*"
+ARG VERSION="2.2.4-2"
 ARG AIRFLOW_VERSION="2.2.4"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
