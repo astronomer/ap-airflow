@@ -111,10 +111,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ARG VERSION
-ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
-ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION=${VERSION}
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
+ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
+ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -128,6 +128,10 @@ RUN pip install "${AIRFLOW_MODULE}" celery flower "elasticsearch==7.13.4" \
 	&& pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
+LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
+LABEL io.astronomer.docker.ac.version="${VERSION}"
+LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
+LABEL io.astronomer.docker.build.edge="true"
 
 ## move this to same layer as airflow because its from tag.
 
@@ -140,14 +144,6 @@ RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-ARG VERSION
-ARG AIRFLOW_VERSION=${VERSION}
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
-LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
-LABEL io.astronomer.docker.ac.version="${VERSION}"
-LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
-LABEL io.astronomer.docker.build.edge="true"
 
 # Copy all installed python modules. This gets us the compiled without needing dev installed
 COPY --from=devel /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages
