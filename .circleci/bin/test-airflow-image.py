@@ -417,7 +417,7 @@ def test_istio_patch_exists_in_kubernetes_providers(scheduler: testinfra.host.Ho
 def test_istio_patch_exists_in_kubernetes_executor(scheduler: testinfra.host.Host):
     """Test that Istio patch exists in the Kubernetes Executor"""
 
-    scheduler.check_output("python -c 'from airflow.executors.istio import Istio'")
+    scheduler.check_output("python -c 'from airflow.executors.kubernetes_executor import Istio'")
 
 
 @pytest.fixture(scope='session')
