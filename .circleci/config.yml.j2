@@ -22,6 +22,62 @@ workflows:
     jobs:
       - static-checks
 
+      - run:
+          name: check-env-vars
+          command: |
+            echo "CI: ${CI}"
+            echo "CIRCLECI: ${CIRCLECI}"
+            echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
+            echo "CIRCLE_BUILD_NUM: ${CIRCLE_BUILD_NUM}"
+            echo "CIRCLE_BUILD_URL: ${CIRCLE_BUILD_URL}"
+            echo "CIRCLE_JOB: ${CIRCLE_JOB}"
+            echo "CIRCLE_NODE_INDEX: ${CIRCLE_NODE_INDEX}"
+            echo "CIRCLE_NODE_TOTAL: ${CIRCLE_NODE_TOTAL}"
+            echo "CIRCLE_PR_NUMBER: ${CIRCLE_PR_NUMBER}"
+            echo "CIRCLE_PR_REPONAME: ${CIRCLE_PR_REPONAME}"
+            echo "CIRCLE_PR_USERNAME: ${CIRCLE_PR_USERNAME}"
+            echo "CIRCLE_PREVIOUS_BUILD_NUM: ${CIRCLE_PREVIOUS_BUILD_NUM}"
+            echo "CIRCLE_PROJECT_REPONAME: ${CIRCLE_PROJECT_REPONAME}"
+            echo "CIRCLE_PROJECT_USERNAME: ${CIRCLE_PROJECT_USERNAME}"
+            echo "CIRCLE_PULL_REQUEST: ${CIRCLE_PULL_REQUEST}"
+            echo "CIRCLE_PULL_REQUESTS: ${CIRCLE_PULL_REQUESTS}"
+            echo "CIRCLE_REPOSITORY_URL: ${CIRCLE_REPOSITORY_URL}"
+            echo "CIRCLE_SHA1: ${CIRCLE_SHA1}"
+            echo "CIRCLE_TAG: ${CIRCLE_TAG}"
+            echo "CIRCLE_USERNAME: ${CIRCLE_USERNAME}"
+            echo "CIRCLE_WORKFLOW_ID: ${CIRCLE_WORKFLOW_ID}"
+            echo "CIRCLE_WORKFLOW_WORKSPACE_ID: ${CIRCLE_WORKFLOW_WORKSPACE_ID}"
+            echo "CIRCLE_WORKING_DIRECTORY: ${CIRCLE_WORKING_DIRECTORY}"
+
+      - run:
+          name: check-env-vars-2
+          requires:
+            - check-env-vars
+          command: |
+            echo "CI: ${CI}"
+            echo "CIRCLECI: ${CIRCLECI}"
+            echo "CIRCLE_BRANCH: ${CIRCLE_BRANCH}"
+            echo "CIRCLE_BUILD_NUM: ${CIRCLE_BUILD_NUM}"
+            echo "CIRCLE_BUILD_URL: ${CIRCLE_BUILD_URL}"
+            echo "CIRCLE_JOB: ${CIRCLE_JOB}"
+            echo "CIRCLE_NODE_INDEX: ${CIRCLE_NODE_INDEX}"
+            echo "CIRCLE_NODE_TOTAL: ${CIRCLE_NODE_TOTAL}"
+            echo "CIRCLE_PR_NUMBER: ${CIRCLE_PR_NUMBER}"
+            echo "CIRCLE_PR_REPONAME: ${CIRCLE_PR_REPONAME}"
+            echo "CIRCLE_PR_USERNAME: ${CIRCLE_PR_USERNAME}"
+            echo "CIRCLE_PREVIOUS_BUILD_NUM: ${CIRCLE_PREVIOUS_BUILD_NUM}"
+            echo "CIRCLE_PROJECT_REPONAME: ${CIRCLE_PROJECT_REPONAME}"
+            echo "CIRCLE_PROJECT_USERNAME: ${CIRCLE_PROJECT_USERNAME}"
+            echo "CIRCLE_PULL_REQUEST: ${CIRCLE_PULL_REQUEST}"
+            echo "CIRCLE_PULL_REQUESTS: ${CIRCLE_PULL_REQUESTS}"
+            echo "CIRCLE_REPOSITORY_URL: ${CIRCLE_REPOSITORY_URL}"
+            echo "CIRCLE_SHA1: ${CIRCLE_SHA1}"
+            echo "CIRCLE_TAG: ${CIRCLE_TAG}"
+            echo "CIRCLE_USERNAME: ${CIRCLE_USERNAME}"
+            echo "CIRCLE_WORKFLOW_ID: ${CIRCLE_WORKFLOW_ID}"
+            echo "CIRCLE_WORKFLOW_WORKSPACE_ID: ${CIRCLE_WORKFLOW_WORKSPACE_ID}"
+            echo "CIRCLE_WORKING_DIRECTORY: ${CIRCLE_WORKING_DIRECTORY}"
+
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
@@ -351,6 +407,17 @@ workflows:
   {%- endif %}{# image_map.keys() | dev_releases | length > 0 #}
 
 jobs:
+  run:
+    executor: machine-executor
+    description: Run arbitrary commands
+    parameters:
+      command:
+        description: Run the command
+        type: string
+    steps:
+      - run:
+          name: Run commands
+          command: << parameters.command >>
   rebase-astro-main:
     machine:
       image: ubuntu-2004:202107-02
