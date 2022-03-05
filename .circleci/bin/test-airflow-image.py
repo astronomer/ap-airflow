@@ -405,7 +405,7 @@ def test_airflow_in_constraints(scheduler):
     assert installed_airflow_version in pip_constraints_file
 
 
-@pytest.mark.skipif(not airflow_2, reason="Airflow <2.0.0 does not support this test")
+@pytest.mark.skipif(not airflow_2 or is_edge_build, reason="Airflow <2.0.0 does not support this test")
 def test_istio_patch_exists_in_kubernetes_providers(scheduler: testinfra.host.Host):
     """Test that Istio patch exists in the Kubernetes Provider and Kubernetes Executor"""
 
