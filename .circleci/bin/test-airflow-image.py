@@ -405,6 +405,21 @@ def test_airflow_in_constraints(scheduler):
     assert installed_airflow_version in pip_constraints_file
 
 
+@pytest.mark.skipif(not airflow_2, reason="Airflow <2.0.0 does not support this test")
+def test_istio_patch_exists_in_kubernetes_providers(scheduler: testinfra.host.Host):
+    """Test that Istio patch exists in the Kubernetes Provider and Kubernetes Executor"""
+
+    scheduler.check_output(
+        "python -c 'from airflow.providers.cncf.kubernetes.utils.istio import Istio'"
+    )
+
+
+def test_istio_patch_exists_in_kubernetes_executor(scheduler: testinfra.host.Host):
+    """Test that Istio patch exists in the Kubernetes Executor"""
+
+    scheduler.check_output("python -c 'from airflow.executors.istio import Istio'")
+
+
 @pytest.fixture(scope='session')
 def webserver(request):
     """ This is the host fixture for testinfra. To read more, please see
