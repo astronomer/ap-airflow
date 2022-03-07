@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.2.4-3, 2022-03-07
+----------------------------------------
+
+### Bug Fixes
+
+- Add Istio patch ([commit](https://github.com/astronomer/ap-airflow/commit/fb837881dd3471609ac42e2d8114411c9400c4c1))
+
 Astronomer Certified 2.2.4-2, 2022-02-25
 ----------------------------------------
 
