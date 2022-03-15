@@ -197,10 +197,10 @@ workflows:
           airflow_version: "{{ airflow_version }}"
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ ac_version }}-{{ distribution }}-onbuild"
           {%- else %}
           tag: "{{ airflow_version }}-onbuild"
-          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          extra_tags: "{{ ac_version }}-onbuild"
           {%- endif %}
           context:
             - slack_ap-airflow
