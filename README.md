@@ -273,21 +273,11 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
     FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
    ```
-4. Run the `verify-changelog-entries` pre-commit hook (this should fail but it should change the
-   relevant Dockerfile).
-
-   Example:
-   ```bash
-   pre-commit run verify-changelog-entries
-   ```
-
-   The pre-commit hook should add a link to the changelog in `README.md`.
-   ```diff
 4. Stage the changes to the Dockerfile and commit (the pre-commit hooks should all succeed).
 
    Example:
    ```bash
-   git add 2.3.0/bullseye && git commit
+   git add .circleci/common.py 2.3.0/bullseye && git commit
    ```
 
 </details>
