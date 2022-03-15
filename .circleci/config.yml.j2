@@ -140,6 +140,7 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
+          nightly_build: false
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
@@ -166,6 +167,7 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
+          nightly_build: false
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -306,12 +308,13 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: true
           edge_build: {{ edge_build }}
+          nightly_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
+          extra_tags: "{{ airflow_version }}-{{ distribution }},{{ ac_version }}-{{ distribution }}"
           {%- else %}
           tag: "{{ airflow_version }}"
-          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM},{{ ac_version }}"
+          extra_tags: "{{ airflow_version }},{{ ac_version }}"
           {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
           {%- if edge_build %}
           extra_tags_file: {{ workspace_prefix }}/extra-tags-{{ airflow_version_wout_dev }}.txt
@@ -332,12 +335,13 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: true
           edge_build: {{ edge_build }}
+          nightly_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild,{{ ac_version }}-{{ distribution }}-onbuild"
           {%- else %}
           tag: "{{ airflow_version }}-onbuild"
-          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild,{{ ac_version }}-onbuild"
           {%- endif %}
           context:
             - quay.io
@@ -543,6 +547,9 @@ jobs:
       edge_build:
         description: "Indicate if this is an edge build"
         type: boolean
+      nightly_build:
+        description: "Indicate if this is a nightly build"
+        type: boolean
       tag:
         type: string
       extra_tags:
@@ -570,6 +577,7 @@ jobs:
       - push:
           dev_release: << parameters.dev_build >>
           edge_build: << parameters.edge_build >>
+          nightly_build: << parameters.nightly_build >>
           extra_tags: "<< parameters.extra_tags >>"
           extra_tags_file: "<< parameters.extra_tags_file >>"
           tag: "<< parameters.tag >>"
@@ -745,6 +753,9 @@ commands:
         type: boolean
       edge_build:
         description: "Indicate if this is an edge build"
+        type: boolean
+      nightly_build:
+        description: "Indicate if this is a nightly build"
         type: boolean
       extra_tags:
         type: string
