@@ -4,6 +4,26 @@
 
 Astronomer makes it easy to run, monitor, and scale [Apache Airflow](https://github.com/apache/airflow) deployments in our cloud or yours. Source code is made available for the benefit of customers.
 
+#### Terminology
+
+| Terms         | Example                  | Description                                                                                         |
+| :------------ | :----------------------- | :-------------------------------------------------------------------------------------------------- |
+| `edge` build  | `main.dev`               | Built from the current `main` branch of [astronomer/airflow](https://github.com/astronomer/airflow) |
+| dev build     | `2.2.4-4.dev`            | Development build, released during ap-airflow changes, including pre-releases and version releases  |
+| nightly build | `2.2.4-nightly+20220314` | Nightly builds, regularly triggered by a CircleCI pipeline sometime during the midnight hour UTC    |
+| release build | `2.2.4-4`                | Release builds, triggered by a release PR                                                           |
+
+Note: Edge builds are always development builds
+
+#### Build matrix
+
+| Build         | Nightly                   | Pre-release PR     | Release PR         |
+| :------------ | :------------------------ | :----------------- | :----------------- |
+| `edge` build  | :white_check_mark:        | :white_check_mark: | :white_check_mark: |
+| nightly build | :white_check_mark:        | :white_check_mark: |                    |
+| dev build     | (only during pre-release) | :white_check_mark: | :white_check_mark: |
+| release build |                           |                    | :white_check_mark: |
+
 ## Docker images
 
 Docker images for deploying and running Astronomer Core are currently available on
@@ -273,21 +293,11 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
     FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
    ```
-4. Run the `verify-changelog-entries` pre-commit hook (this should fail but it should change the
-   relevant Dockerfile).
-
-   Example:
-   ```bash
-   pre-commit run verify-changelog-entries
-   ```
-
-   The pre-commit hook should add a link to the changelog in `README.md`.
-   ```diff
 4. Stage the changes to the Dockerfile and commit (the pre-commit hooks should all succeed).
 
    Example:
    ```bash
-   git add 2.3.0/bullseye && git commit
+   git add .circleci/common.py 2.3.0/bullseye && git commit
    ```
 
 </details>

@@ -7,6 +7,14 @@ IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.extra_tags >>"
 
 echo "DOCKER_TAGS: ${DOCKER_TAGS[@]}"
 
+if [[ "<< parameters.nightly_build >>" =~ (True|true) ]]; then
+  echo "Adding '-nightly+$(date +%Y%m%d)' to all docker tags"
+  for (( i=0; i<{% raw %}${#DOCKER_TAGS[@]}{% endraw %}; i++ )); do
+    DOCKER_TAGS[$i]=${DOCKER_TAGS[$i]}-nightly+$(date +%Y%m%d)
+  done
+  echo "DOCKER_TAGS->  ${DOCKER_TAGS[@]}"
+fi
+
 # Read in more tags from the extra_tags_file, if it exists
 if [[ -f "<< parameters.extra_tags_file >>" ]]; then
   echo "Contents of << parameters.extra_tags_file >>:"

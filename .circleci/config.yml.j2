@@ -66,6 +66,9 @@ workflows:
             --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }})
             --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
             --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
+            --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}"
+            {#- This redirects to the canonical workflow URL #}
+            --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
           {%- endif %}
           {%- if distribution in ["alpine3.10", "buster"] %}
@@ -137,6 +140,7 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
+          nightly_build: false
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
@@ -163,6 +167,7 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
+          nightly_build: false
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
           extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
@@ -192,10 +197,10 @@ workflows:
           airflow_version: "{{ airflow_version }}"
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ ac_version }}-{{ distribution }}-onbuild"
           {%- else %}
           tag: "{{ airflow_version }}-onbuild"
-          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          extra_tags: "{{ ac_version }}-onbuild"
           {%- endif %}
           context:
             - slack_ap-airflow
@@ -256,6 +261,9 @@ workflows:
             --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }})
             --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
             --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
+            --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}"
+            {#- This redirects to the canonical workflow URL -#}
+            --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
           {%- if distribution in ["alpine3.10", "buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
@@ -300,12 +308,13 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}
           dev_build: true
           edge_build: {{ edge_build }}
+          nightly_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM}"
+          extra_tags: "{{ airflow_version }}-{{ distribution }},{{ ac_version }}-{{ distribution }}"
           {%- else %}
           tag: "{{ airflow_version }}"
-          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM}"
+          extra_tags: "{{ airflow_version }},{{ ac_version }}"
           {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
           {%- if edge_build %}
           extra_tags_file: {{ workspace_prefix }}/extra-tags-{{ airflow_version_wout_dev }}.txt
@@ -326,12 +335,13 @@ workflows:
           name: push-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: true
           edge_build: {{ edge_build }}
+          nightly_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild,{{ ac_version }}-{{ distribution }}-onbuild"
           {%- else %}
           tag: "{{ airflow_version }}-onbuild"
-          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild,{{ ac_version }}-onbuild"
           {%- endif %}
           context:
             - quay.io
@@ -537,6 +547,9 @@ jobs:
       edge_build:
         description: "Indicate if this is an edge build"
         type: boolean
+      nightly_build:
+        description: "Indicate if this is a nightly build"
+        type: boolean
       tag:
         type: string
       extra_tags:
@@ -564,6 +577,7 @@ jobs:
       - push:
           dev_release: << parameters.dev_build >>
           edge_build: << parameters.edge_build >>
+          nightly_build: << parameters.nightly_build >>
           extra_tags: "<< parameters.extra_tags >>"
           extra_tags_file: "<< parameters.extra_tags_file >>"
           tag: "<< parameters.tag >>"
@@ -739,6 +753,9 @@ commands:
         type: boolean
       edge_build:
         description: "Indicate if this is an edge build"
+        type: boolean
+      nightly_build:
+        description: "Indicate if this is a nightly build"
         type: boolean
       extra_tags:
         type: string
