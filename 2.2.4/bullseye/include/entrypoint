@@ -1,52 +1,108 @@
 #!/usr/bin/env bash
-set -e
+set -ex
 
-if [[ $UID == "${ASTRONOMER_UID:-1000}" ]]; then
+# Optional sidecar logging keepalive support
+if [[ -n "${SIDECAR_LOGGING_KEEPALIVE_PORT}" ]] && [[ "$COMPONENT" =~ ^(scheduler|webserver|worker)$ ]] && [[ $1 != "python" ]] ; then
+  SIDECAR_LOGGING_KEEPALIVE_SOCKET=/dev/tcp/127.0.0.1/${SIDECAR_LOGGING_KEEPALIVE_PORT}
+  echo "Connecting to sidecar logging keepalive-daemon on ${SIDECAR_LOGGING_KEEPALIVE_SOCKET}"
+  # loop while we wait for the socket to come up, quashing stderr in the process
+  # once we do manage to make a connection, redirect it to fd #7
+  while true ; do
+    set +e
+    exec 4>&2 2>/dev/null 7<>"$SIDECAR_LOGGING_KEEPALIVE_SOCKET" 2>&4
+    set -e
+    # shellcheck disable=SC2181
+    if [ $? -eq 0 ] ; then
+        echo "Connected to sidecar logging keepalive-daemon on ${SIDECAR_LOGGING_KEEPALIVE_SOCKET}"
+    break
+    else
+      sleep .05
+    fi
+  done
+fi
+
+# Optional support for shipping unstructured logs
+if [[ -n "$UNSTRUCTURED_LOGGING_HOST" ]] && [[ "$COMPONENT" =~ ^(scheduler|webserver|worker)$ ]] && [[ $1 != "python" ]] ; then
+  if [[ -z "${COMPONENT}" ]] ; then
+    echo "COMPONENT must be set when using sidecar logging."
+    exit 2
+  fi
+  # shellcheck disable=SC2153
+  UNSTRUCTURED_LOGGING_SOCKET="/dev/tcp/${UNSTRUCTURED_LOGGING_HOST}/${UNSTRUCTURED_LOGGING_PORT}"
+  echo "Connecting to tcp logging daemon on ${UNSTRUCTURED_LOGGING_SOCKET}"
+  while true ; do
+    set +e
+    # create a pointer to the original stdout and stderr
+    exec 3>&1 4>&2 2>&4
+    # clobber old stdout and stderr
+    set -e
+    # shellcheck disable=SC2181
+    if [ $? -eq 0 ] ; then
+        echo "Connected to sidecar logging keepalive-daemon on ${SIDECAR_LOGGING_KEEPALIVE_SOCKET}"
+        break
+    else
+      sleep .05
+    fi
+  done
+  # perform actual io redirection
+  echo "Redirecting stdio and stderr to ${UNSTRUCTURED_LOGGING_SOCKET}"
+  # line-format for logs is versioned by the characters before the first space - see fluentd config for details
+  # v1 format is space delimited and is <version> <timestamp> <stream> <component> <message>
+  exec 1> >(tee >(sed "s/^/v1 $(date +%s%N) stdout ${COMPONENT} /" >>"$UNSTRUCTURED_LOGGING_SOCKET"))
+  exec 2> >(tee >(sed "s/^/v1 $(date +%s%N) stderr ${COMPONENT} /" >>"$UNSTRUCTURED_LOGGING_SOCKET") >(cat >&4) 1 >> /dev/null)
+fi
+
+if [[ $UID == "${ASTRONOMER_UID:-1000}" ]] ; then
   # Since we need to support running tini as another user, we can't put tini in
   # the ENTRYPOINT command, we have to run it here, if we haven't already
-  if [[ -z "$__TINIFIED" ]]; then
+  if [[ -z "$__TINIFIED" ]] ; then
     __TINIFIED=1 exec tini -- "$0" "$@"
   fi
 else
-  __TINIFIED=1 exec gosu "${ASTRONOMER_USER}" tini -- "$0" "$@"
+  __TINIFIED=1 exec gosu "$ASTRONOMER_USER" tini -- "$0" "$@"
 fi
 
-if [[ -n "$EXECUTOR" && -z "$AIRFLOW__CORE__EXECUTOR" ]]; then
+if [[ -n "$EXECUTOR" && -z "$AIRFLOW__CORE__EXECUTOR" ]] ; then
   # Support for puckle style of defining configs
   export AIRFLOW__CORE__EXECUTOR "${EXECUTOR}Executor"
 fi
 
 # Airflow subcommand
-CMD=$2
+CMD="$2"
 
 url_parse_regex="[^:]+://([^@/]*@)?([^/:]*):?([0-9]*)/?"
 
 # Wait for postgres then init the db
-if [[ -n $AIRFLOW__CORE__SQL_ALCHEMY_CONN  ]]; then
+if [[ -n "$AIRFLOW__CORE__SQL_ALCHEMY_CONN" ]] ; then
   # Wait for database port to open up
-  [[ ${AIRFLOW__CORE__SQL_ALCHEMY_CONN} =~ $url_parse_regex ]]
-  HOST=${BASH_REMATCH[2]}
-  PORT=${BASH_REMATCH[3]}
+  [[ "$AIRFLOW__CORE__SQL_ALCHEMY_CONN" =~ $url_parse_regex ]]
+  HOST="${BASH_REMATCH[2]}"
+  PORT="${BASH_REMATCH[3]}"
   echo "Waiting for host: ${HOST} ${PORT}"
-  while ! nc -w 1 -z "${HOST}" "${PORT}"; do
+  while ! nc -w 1 -z "$HOST" "$PORT" ; do
     sleep 0.001
   done
 fi
 
-if [[ -n $AIRFLOW__CELERY__BROKER_URL ]] && [[ $CMD =~ ^(scheduler|celery worker|celery flower)$ ]]; then
+if [[ -n $AIRFLOW__CELERY__BROKER_URL ]] && [[ $CMD =~ ^(scheduler|celery worker|celery flower)$ ]] ; then
   # Wait for database port to open up
   [[ ${AIRFLOW__CELERY__BROKER_URL} =~ $url_parse_regex ]]
-  HOST=${BASH_REMATCH[2]}
-  PORT=${BASH_REMATCH[3]}
+  HOST="${BASH_REMATCH[2]}"
+  PORT="${BASH_REMATCH[3]}"
   echo "Waiting for host: ${HOST} ${PORT}"
-  while ! nc -w 1 -z "${HOST}" "${PORT}"; do
+  while ! nc -w 1 -z "$HOST" "$PORT" ; do
     sleep 0.001
   done
 fi
 
-if [[ $CMD == "webserver" ]]; then
+if [[ "$CMD" == "webserver" ]] ; then
   airflow sync-perm
 fi
 
 # Run the original command
-exec "$@"
+"$@"
+
+# If we are using a sidecar logging keepalive socket hang up
+if [[ -n "$SIDECAR_LOGGING_KEEPALIVE_SOCKET" ]] && [[ "$COMPONENT" =~ ^(scheduler|webserver|worker)$ ]] ; then
+  echo "goodbye" >> "$SIDECAR_LOGGING_KEEPALIVE_SOCKET"
+fi
