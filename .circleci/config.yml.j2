@@ -262,7 +262,7 @@ workflows:
             --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
             --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
             --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}"
-            {#- This redirects to the canonical workflow URL -#}
+            {#- This redirects to the canonical workflow URL #}
             --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
           {%- if distribution in ["alpine3.10", "buster"] %}
