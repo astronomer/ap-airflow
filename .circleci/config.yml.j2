@@ -226,7 +226,7 @@ workflows:
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
-      {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
+      {%- if airflow_version not in dev_allowlist  %}
 
       {%- if edge_build %}
       - download-file:
@@ -356,7 +356,7 @@ workflows:
               only:
                 - master
       {%- endfor %}{# distribution in distributions #}
-      {%- endif %}{# if "dev" in ac_version and airflow_version not in dev_allowlist #}
+      {%- endif %}{# if airflow_version not in dev_allowlist #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
   {%- endif %}{# image_map.keys() | dev_releases | length > 0 #}
 
