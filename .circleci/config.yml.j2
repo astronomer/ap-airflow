@@ -24,7 +24,7 @@ workflows:
 
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version -%}
-      {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
+      {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') | replace('-dev', '') -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set dev_build = "true" if "dev" in ac_version else "false" %}
@@ -222,7 +222,7 @@ workflows:
     jobs:
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version %}
-      {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') -%}
+      {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') | replace('-dev', '') -%}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
