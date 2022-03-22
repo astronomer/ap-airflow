@@ -8,8 +8,8 @@ Astronomer makes it easy to run, monitor, and scale [Apache Airflow](https://git
 
 | Terms         | Example                  | Description                                                                                         |
 | :------------ | :----------------------- | :-------------------------------------------------------------------------------------------------- |
-| `edge` build  | `main.dev`               | Built from the current `main` branch of [astronomer/airflow](https://github.com/astronomer/airflow) |
-| dev build     | `2.2.4-4.dev`            | Development build, released during ap-airflow changes, including pre-releases and version releases  |
+| `edge` build  | `main-dev`               | Built from the current `main` branch of [astronomer/airflow](https://github.com/astronomer/airflow) |
+| dev build     | `2.2.4-4-dev`            | Development build, released during ap-airflow changes, including pre-releases and version releases  |
 | nightly build | `2.2.4-nightly-20220314` | Nightly builds, regularly triggered by a CircleCI pipeline sometime during the midnight hour UTC    |
 | release build | `2.2.4-4`                | Release builds, triggered by a release PR                                                           |
 
@@ -82,10 +82,10 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
 <details>
 <summary>Click to expand Step-By-Step instructions</summary>
 
-1. Remove the `.dev` part of the relevant version in `IMAGE_MAP` in `.circleci/common.py`.
+1. Remove the `-dev` part of the relevant version in `IMAGE_MAP` in `.circleci/common.py`.
 
    Example:
-   The latest dev version is `2.2.1-1.dev`, and we want to release `2.2.1-1`.
+   The latest dev version is `2.2.1-1-dev`, and we want to release `2.2.1-1`.
    ```diff
    diff --git a/.circleci/common.py b/.circleci/common.py
    index xxxxxxx..yyyyyyy 100644
@@ -94,8 +94,8 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
    @@ -35,7 +35,7 @@ IMAGE_MAP = collections.OrderedDict([
         ("2.1.3-2", ["buster"]),
         ("2.1.4-2", ["buster"]),
-        ("2.2.0-3.dev", ["bullseye", "buster"]),
-   -    ("2.2.1-1.dev", ["bullseye", "buster"]),
+        ("2.2.0-3-dev", ["bullseye", "buster"]),
+   -    ("2.2.1-1-dev", ["bullseye", "buster"]),
    +    ("2.2.1-1", ["bullseye", "buster"]),
    ])
 
@@ -134,7 +134,7 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
    @@ -35,7 +35,7 @@ IMAGE_MAP = collections.OrderedDict([
         ("2.1.3-2", ["buster"]),
         ("2.1.4-2", ["buster"]),
-        ("2.2.0-3.dev", ["bullseye", "buster"]),
+        ("2.2.0-3-dev", ["bullseye", "buster"]),
    -    ("2.2.1-1", ["bullseye", "buster"]),
    +    ("2.2.1-2", ["bullseye", "buster"]),
     ])
@@ -166,7 +166,7 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
 1. Add the Astronomer Certified version to `IMAGE_MAP` in `.circleci/common.py`.
 
    Example:
-   The latest previous release was `2.2.1-1` and we're adding `2.3.0-1.dev`.
+   The latest previous release was `2.2.1-1` and we're adding `2.3.0-1-dev`.
    ```diff
    diff --git a/.circleci/common.py b/.circleci/common.py
    index xxxxxxx..yyyyyyy 100644
@@ -174,9 +174,9 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
    +++ b/.circleci/common.py
    @@ -36,6 +36,7 @@ IMAGE_MAP = collections.OrderedDict([
         ("2.1.4-2", ["buster"]),
-        ("2.2.0-3.dev", ["bullseye", "buster"]),
+        ("2.2.0-3-dev", ["bullseye", "buster"]),
         ("2.2.1-1", ["bullseye", "buster"]),
-   +    ("2.3.0-1.dev", ["bullseye"]),
+   +    ("2.3.0-1-dev", ["bullseye"]),
     ])
 
     # Airflow Versions for which we don't publish Python Wheels
@@ -258,10 +258,10 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
    +++ b/.circleci/common.py
    @@ -36,7 +36,7 @@ IMAGE_MAP = collections.OrderedDict([
         ("2.1.4-2", ["buster"]),
-        ("2.2.0-3.dev", ["bullseye", "buster"]),
+        ("2.2.0-3-dev", ["bullseye", "buster"]),
         ("2.2.1-1", ["bullseye", "buster"]),
-   -    ("2.3.0-1.dev", ["buster"]),
-   +    ("2.3.0-1.dev", ["bullseye", "buster"]),
+   -    ("2.3.0-1-dev", ["buster"]),
+   +    ("2.3.0-1-dev", ["bullseye", "buster"]),
     ])
 
     # Airflow Versions for which we don't publish Python Wheels

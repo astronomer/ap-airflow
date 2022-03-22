@@ -78,9 +78,9 @@ def test_version(webserver, docker_client):
     assert "+astro." in ac_version_output
     ac_version_postfix_output = ac_version_output.rsplit('+astro.')[-1]
 
-    # Example: 2.0.2.post2.dev2
+    # Example: 2.0.2.post2-dev2
     if "dev" in ac_version:
-        ac_version = ac_version.rsplit('.dev')[0]
+        ac_version = ac_version.rsplit('-dev')[0]
         post_fix_version_astro = ac_version.rsplit('.post')[-1]
     else:
         # Example: 1.10.10-8 will give '8'

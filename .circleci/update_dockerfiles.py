@@ -51,7 +51,7 @@ def update_dockerfiles():
             # We only do this for all buster images
             # If it is the first post-fix version in AC / Airflow series use constraints-branch, if not
             # use the constraints from Airflow Version tag.
-            if dev_version and "-1.dev" in ac_version:
+            if dev_version and "-1-dev" in ac_version:
                 branch = "-".join(airflow_version.split(".", 3)[0:2])
                 constraints_url = (
                     f'https://raw.githubusercontent.com/apache/airflow/constraints-{branch}/'
