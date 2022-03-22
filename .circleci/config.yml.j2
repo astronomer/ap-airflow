@@ -226,7 +226,7 @@ workflows:
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
-      {%- if "dev" in ac_version and airflow_version not in dev_allowlist  %}
+      {%- if airflow_version not in dev_allowlist  %}
 
       {%- if edge_build %}
       - download-file:
@@ -311,10 +311,10 @@ workflows:
           nightly_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}"
-          extra_tags: "{{ airflow_version }}-{{ distribution }},{{ ac_version }}-{{ distribution }}"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
           {%- else %}
           tag: "{{ airflow_version }}"
-          extra_tags: "{{ airflow_version }},{{ ac_version }}"
+          extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM},{{ ac_version }}"
           {%- endif %}{# distribution in ["alpine3.10", "buster"] #}
           {%- if edge_build %}
           extra_tags_file: {{ workspace_prefix }}/extra-tags-{{ airflow_version_wout_dev }}.txt
@@ -338,10 +338,10 @@ workflows:
           nightly_build: true
           {%- if distribution in ["alpine3.10", "buster"] %}
           tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild,{{ ac_version }}-{{ distribution }}-onbuild"
+          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
           {%- else %}
           tag: "{{ airflow_version }}-onbuild"
-          extra_tags: "{{ airflow_version }}-onbuild,{{ ac_version }}-onbuild"
+          extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
           {%- endif %}
           context:
             - quay.io
@@ -356,7 +356,7 @@ workflows:
               only:
                 - master
       {%- endfor %}{# distribution in distributions #}
-      {%- endif %}{# if "dev" in ac_version and airflow_version not in dev_allowlist #}
+      {%- endif %}{# if airflow_version not in dev_allowlist #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
   {%- endif %}{# image_map.keys() | dev_releases | length > 0 #}
 
