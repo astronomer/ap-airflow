@@ -25,7 +25,14 @@ if [[ -f "<< parameters.extra_tags_file >>" ]]; then
 
   while read tag;
   do
-    DOCKER_TAGS+=($tag)
+    # Replace '.dev' with '-dev' to make them SemVer compatible
+    tag_with_semver=${tag/.dev/-dev}
+
+    # If the tag to be pushed is onbuild, add '-onbuild' suffix to the tag
+    if [[ "<< parameters.tag >>" == *"onbuild-"* ]]; then
+        tag_with_semver="$tag_with_semver"-onbuild"
+    fi
+    DOCKER_TAGS+=(${tag_with_semver})
   done < "<< parameters.extra_tags_file >>"
 fi
 
