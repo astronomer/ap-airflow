@@ -1,5 +1,13 @@
 # Changelog
 
+Astronomer Certified 1.10.15-7, 2022-04-04
+----------------------------------------
+
+### Security
+
+- Updated `mariadb-common` and `libmariadb3` to `1:10.3.34-0+deb10u1` to fix [CVE-2021-43618](https://nvd.nist.gov/vuln/detail/CVE-2021-43618) ([commit](https://github.com/astronomer/ap-airflow/commit/8642c845c719b14faf89d1901fcade24250ff78e))
+- Updated `libgmp10` to `2:6.1.2+dfsg-4+deb10u1` to fix [CVE-2021-46667](https://nvd.nist.gov/vuln/detail/CVE-2021-46667), [CVE-2022-24048](https://nvd.nist.gov/vuln/detail/CVE-2022-24048), [CVE-2022-24050](https://nvd.nist.gov/vuln/detail/CVE-2022-24050), [CVE-2022-24051](https://nvd.nist.gov/vuln/detail/CVE-2022-24051), and [CVE-2022-24052](https://nvd.nist.gov/vuln/detail/CVE-2022-24052) ([commit](https://github.com/astronomer/ap-airflow/commit/8642c845c719b14faf89d1901fcade24250ff78e))
+
 Astronomer Certified 1.10.15-6, 2022-02-25
 --------------------------------------------
 
