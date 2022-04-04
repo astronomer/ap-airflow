@@ -53,7 +53,7 @@ ENV DEBIAN_FRONTEND=noninteractive LANGUAGE=C.UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8 
     LC_CTYPE=C.UTF-8 LC_MESSAGES=C.UTF-8
 
 # By increasing this number we can do force build of all dependencies
-ARG DEPENDENCIES_EPOCH_NUMBER="4"
+ARG DEPENDENCIES_EPOCH_NUMBER="5"
 # Increase the value below to force renstalling of all dependencies
 ENV DEPENDENCIES_EPOCH_NUMBER=${DEPENDENCIES_EPOCH_NUMBER}
 
@@ -139,7 +139,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
 FROM ${APT_DEPS_IMAGE} as main
 
 # By increasing this number we force CI to upgrade all system packages
-ARG PACKAGE_UPGRADE_EPOCH_NUMBER="4"
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="5"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
