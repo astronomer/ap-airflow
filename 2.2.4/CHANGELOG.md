@@ -1,5 +1,17 @@
 # Changelog
 
+Astronomer Certified 2.2.4-4, 2022-04-04
+----------------------------------------
+
+### Security
+
+- Updated `glibc` and `locales` to `2.31-13+deb11u3` to fix [CVE-2021-33574](https://nvd.nist.gov/vuln/detail/CVE-2021-33574), [CVE-2022-23218](https://nvd.nist.gov/vuln/detail/CVE-2022-23218), and [CVE-2022-23219](https://nvd.nist.gov/vuln/detail/CVE-2022-23219) ([commit](https://github.com/astronomer/ap-airflow/commit/8642c845c719b14faf89d1901fcade24250ff78e))
+- Updated `mariadb-common` and `libmariadb3` to `2.31-13+deb11u3` to fix [CVE-2021-46667](https://nvd.nist.gov/vuln/detail/CVE-2021-46667), [CVE-2022-24048](https://nvd.nist.gov/vuln/detail/CVE-2022-24048), [CVE-2022-24050](https://nvd.nist.gov/vuln/detail/CVE-2022-24050), [CVE-2022-24051](https://nvd.nist.gov/vuln/detail/CVE-2022-24051), and [CVE-2022-24052](https://nvd.nist.gov/vuln/detail/CVE-2022-24052) ([commit](https://github.com/astronomer/ap-airflow/commit/8642c845c719b14faf89d1901fcade24250ff78e))
+
+### Bug Fixes
+
+- Do not log the hook connection details even at DEBUG level ([commit](https://github.com/astronomer/airflow/commit/969f2cd13b31143899c3be6b345f09c7945a4b8c))
+
 Astronomer Certified 2.2.4-3, 2022-03-07
 ----------------------------------------
 
