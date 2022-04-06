@@ -1,5 +1,11 @@
 # Changelog
 
+Astronomer Certified 2.2.5-2, 2022-04-06
+
+### Bugfixes
+
+- Pin `apache-airflow-providers-elasticsearch` to `1!2.2.0`
+
 Astronomer Certified 2.2.5-1, 2022-04-04
 ----------------------------------------
 
