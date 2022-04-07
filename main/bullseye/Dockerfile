@@ -143,7 +143,7 @@ RUN apt-get update \
 
 ARG VERSION
 ARG AIRFLOW_VERSION=${VERSION}
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.0"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
