@@ -114,7 +114,7 @@ ARG VERSION
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION=${VERSION}
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.8.4"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.0"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
