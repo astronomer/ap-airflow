@@ -7,7 +7,7 @@ for dockerfile in $@; do
             echo "Found multiple ARG $argname in $dockerfile with different values:" >&2
             grep -n "^ARG $argname=" $dockerfile
             echo >&2
-            echo "Please update both/all ARG $argname directives to the same value in $dockerfile." >&2
+            echo "Please update all ARG $argname directives to the same value in $dockerfile." >&2
             echo >&2
             echo "You can also temporarily disable this check by setting SKIP=check-different-arg-values." >&2
             EXIT=$(( $EXIT + 1 ))
