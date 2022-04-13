@@ -1,5 +1,11 @@
 # Changelog
 
+Astronomer Certified 2.2.5-3, TBD
+
+### Bugfixes
+
+- Fix `email_on_failure` with `render_template_as_native_obj` ([commit](https://github.com/astronomer/airflow/commit/06d8dfb7acebd8eb44362e3b3e66dc7d1ff3a31e))
+
 Astronomer Certified 2.2.5-2, 2022-04-06
 
 ### Bugfixes
