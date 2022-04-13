@@ -1,6 +1,7 @@
 # Changelog
 
 Astronomer Certified 2.2.5-3, TBD
+----------------------------------------
 
 ### Bugfixes
 
