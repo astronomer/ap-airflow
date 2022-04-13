@@ -25,6 +25,12 @@ repos:
         additional_dependencies: ['jinja2']
         files: "config.yml$|config.yml.j2|generate_circleci_config.py$"
         entry: python3 .circleci/generate_circleci_config.py
+      - id: check-different-arg-values
+        name: Checking that all ARG variable values agree with each other in Dockerfiles
+        files: "^(\\d+\\.\\d+\\.\\d+.*|main)/\\w+/Dockerfile$"
+        types: [file, dockerfile]
+        language: script
+        entry: .circleci/bin/check-different-arg-values.sh
       - id: update-dockerfiles
         name: Updates all Dockerfiles with their respective version numbers and constraint files
         language: python
