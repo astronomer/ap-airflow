@@ -163,10 +163,10 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 # Pin apache-airflow version to avoid accidental upgrade
 RUN pip freeze | grep "apache-airflow==" >>  /usr/local/share/astronomer-pip-constraints.txt
 
+# Run pods spun up by Kubernetes Executor as astro user
+# Sync permissions in the entrypoint so we do not need to run in the Webserver again
 RUN sed -i \
-    # Run pods spun up by Kubernetes Executor as astro user
     -e 's/^run_as_user =.*/run_as_user = 50000/g' \
-    # We sync permissions in the entrypoint so do not need to run in the Webserver again
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
     /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/config_templates/default_airflow.cfg
 
