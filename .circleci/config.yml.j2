@@ -695,8 +695,6 @@ commands:
               --label io.astronomer.repo.url="${CIRCLE_REPOSITORY_URL}" \
               --label io.astronomer.ci.build_url="${CIRCLE_BUILD_URL}" \
               --file '<< parameters.path>>/<< parameters.dockerfile >>' \
-              --build-arg "BUILD_NUMBER=${CIRCLE_BUILD_NUM}" \
-              --build-arg "REPO_BRANCH=${CIRCLE_BRANCH}" \
               << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
             docker inspect << parameters.image_name >>
