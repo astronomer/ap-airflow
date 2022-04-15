@@ -116,6 +116,9 @@ workflows:
       - slack/on-hold:
           name: Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
           context: slack_ap-airflow
+          # If anybody complains about us using the old Astronomer logo, here's
+          # an Imgur album containing a few different options:
+          # https://imgur.com/a/CYRKjQ3
           custom: |
             {% filter indent(width=12) -%}
             {% include "build_approval_slack_notification.json.j2" %}
