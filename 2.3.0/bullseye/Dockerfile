@@ -173,7 +173,7 @@ RUN sed -i \
     -e 's/^run_as_user =.*/run_as_user = 50000/g' \
     -e 's/^lazy_load_plugins =.*/lazy_load_plugins = False/g' \
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
-    -e 's/^auth_backend =.*/auth_backend = astronomer.flask_appbuilder.current_user_backend/g' \
+    -e 's/^auth_backends =.*/auth_backends = astronomer.flask_appbuilder.current_user_backend/g' \
     -e 's/^operation_timeout =.*/operation_timeout = 10.0/g' \
     /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/config_templates/default_airflow.cfg
 
