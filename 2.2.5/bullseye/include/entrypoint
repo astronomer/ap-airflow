@@ -48,5 +48,8 @@ if [[ $CMD == "webserver" ]]; then
   airflow sync-perm
 fi
 
-# Run the original command
-exec "$@"
+if [[ $LOGGING_SIDECAR == true ]]; then
+  exec "$@ 1> >( tee -a /var/log/$LOGGING_SIDECAR_CONTAINER_NAME/out.log ) 2> >( tee -a /var/log/$LOGGING_SIDECAR_CONTAINER_NAME/err.log >&2 )"
+else
+  exec "$@"
+fi
