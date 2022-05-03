@@ -43,6 +43,7 @@ if [[ -n $AIRFLOW__DATABASE__SQL_ALCHEMY_CONN  ]]; then
   while ! nc -w 1 -z "${HOST}" "${PORT}"; do
     sleep 0.001
   done
+  echo "Successfully connected to the database."
 fi
 
 if [[ -n $AIRFLOW__CELERY__BROKER_URL ]] && [[ $CMD =~ ^(scheduler|celery worker|celery flower)$ ]]; then
@@ -54,6 +55,7 @@ if [[ -n $AIRFLOW__CELERY__BROKER_URL ]] && [[ $CMD =~ ^(scheduler|celery worker
   while ! nc -w 1 -z "${HOST}" "${PORT}"; do
     sleep 0.001
   done
+  echo "Successfully connected to the broker."
 fi
 
 if [[ $CMD == "webserver" ]]; then
