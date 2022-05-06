@@ -1,5 +1,13 @@
 # Changelog
 
+Astronomer Certified 2.3.0-4, 2022-05-06
+----------------------------------------
+
+### Bug Fixes
+
+- Change approach to finding bad rows to LEFT OUTER JOIN. [commit](https://github.com/astronomer/airflow/commit/808650d4793cba9ae0fcb69b2be8a7cb3102cd39))
+- Only count bad refs when `moved` table exists ([commit](https://github.com/astronomer/airflow/commit/42b3e121e190fbfbf1a8ddfb29030b8e98df19a7))
+
 Astronomer Certified 2.3.0-3, 2022-05-03
 ----------------------------------------
 
