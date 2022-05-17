@@ -5,7 +5,7 @@ Astronomer Certified 2.3.0-5, 2022-05-17
 
 ### Bug Fixes
 
-- Prevent KubernetesJobWatcher getting stuck on resource too old ([commit](https://github.com/astronomer/airflow/commit/c5dd799c5e49220a02ed0c5a12f81da95487f61f))
+- Prevent `KubernetesJobWatcher` getting stuck on resource too old ([commit](https://github.com/astronomer/airflow/commit/c5dd799c5e49220a02ed0c5a12f81da95487f61f))
 
 ### Security
 
