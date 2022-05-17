@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 2.3.0-5, 2022-05-17
+----------------------------------------
+
+### Bug Fixes
+
+- Prevent KubernetesJobWatcher getting stuck on resource too old ([commit](https://github.com/astronomer/airflow/commit/c5dd799c5e49220a02ed0c5a12f81da95487f61f))
+
+### Security
+
+- Updated `libpq5` to `13.7-0+deb11u1` to fix [CVE-2022-1552](https://nvd.nist.gov/vuln/detail/CVE-2022-1552)
+
 Astronomer Certified 2.3.0-4, 2022-05-06
 ----------------------------------------
 
