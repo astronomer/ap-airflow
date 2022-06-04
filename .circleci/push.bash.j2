@@ -45,7 +45,7 @@ do
 
     if [[ "${tag}" == *"onbuild-"* && <<parameters.dev_release >> ]]; then
       release="$( cut -d '-' -f 1 \<<< "$tag" )"
-      sudo apt-get install postgresql postgresql-contrib
+      sudo apt-get update && sudo apt-get install postgresql postgresql-contrib
       echo "UPSERT the latest tag '${tag}' for '${release}' into the QA DB"
 
       # Connect to the database, run the query, then disconnect
