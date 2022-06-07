@@ -1,5 +1,14 @@
 # Changelog
 
+Astronomer Certified 2.3.2-2, TBD
+---------------------------------
+
+User-facing CHANGELOG for AC 2.3.2+astro.2 from Airflow 2.3.2:
+
+### Bugfixes
+
+- Apply per-run log templates to log handlers ([commit](https://github.com/astronomer/airflow/commit/6d6c5aae74f277683271ae5f020cf7f3b3442fff))
+
 Astronomer Certified 2.3.2-1, 2022-06-04
 ----------------------------------------
 
