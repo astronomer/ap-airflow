@@ -10,3 +10,9 @@ CVE-2020-1747
 # Snyk also lists this as medium (contrary to the CVE):
 # https://security.snyk.io/vuln/SNYK-PYTHON-CELERY-2314953
 CVE-2021-23727
+
+# Airflow and FABs use of PyJWT isn't impacted
+CVE-2022-29217
+
+# Disputed CVE in werkzeug
+CVE-2022-29361

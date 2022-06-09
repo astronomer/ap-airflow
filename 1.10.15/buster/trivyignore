@@ -22,3 +22,9 @@ CVE-2021-41265
 # In addition, this DOS vulnerability can really only cause
 # service disruption, so the risk is greater to do the upgrade
 CVE-2021-33503
+
+# Airflow and FABs use of PyJWT isn't impacted
+CVE-2022-29217
+
+# Disputed CVE in werkzeug
+CVE-2022-29361
