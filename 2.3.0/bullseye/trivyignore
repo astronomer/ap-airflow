@@ -3,5 +3,8 @@
 # Details: https://github.com/astronomer/issues-airflow/issues/39
 CVE-2020-1747
 
-# Can't upgrade pyJWT.
+# Airflow and FABs use of PyJWT isn't impacted
 CVE-2022-29217
+
+# Disputed CVE in werkzeug
+CVE-2022-29361
