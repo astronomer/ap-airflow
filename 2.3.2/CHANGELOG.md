@@ -1,13 +1,16 @@
 # Changelog
 
-Astronomer Certified 2.3.2-2, TBD
----------------------------------
+Astronomer Certified 2.3.2-2, 2022-06-22
+----------------------------------------
 
 User-facing CHANGELOG for AC 2.3.2+astro.2 from Airflow 2.3.2:
 
 ### Bugfixes
 
+- Fix log_template seeding ([commit](https://github.com/astronomer/airflow/commit/a65ad2b4831bc2b0f68bf61579d959579dab14cb))
 - Apply per-run log templates to log handlers ([commit](https://github.com/astronomer/airflow/commit/6d6c5aae74f277683271ae5f020cf7f3b3442fff))
+- Don't crash scheduler if exec config has old k8s objects ([commit](https://github.com/astronomer/airflow/commit/d7d6f99aa94eadc7a9d2a74162c9e3619f1b46ad))
+- Check for run_id for grid group summaries ([commit](https://github.com/astronomer/airflow/commit/3450105a8e02bfa13ec0d43d06e66798cf177ea5))
 
 Astronomer Certified 2.3.2-1, 2022-06-04
 ----------------------------------------
