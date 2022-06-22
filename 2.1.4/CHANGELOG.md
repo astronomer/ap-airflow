@@ -1,5 +1,17 @@
 # Changelog
 
+Astronomer Certified 2.1.4-8, 2022-06-22
+----------------------------------------
+### Security
+
+- Updated `httpx` to `0.20.0` to fix [CVE-2021-41945](https://avd.aquasec.com/nvd/cve-2021-41945)([commit](https://github.com/astronomer/ap-airflow/commit/761a089fcd3bc9ab1227af78a3f4007a5e956270))
+- Updated `libssl1.1` and `openssl` to `1.1.1n-0+deb10u2` to fix [CVE-2022-1292](https://avd.aquasec.com/nvd/cve-2022-1292)([commit](https://github.com/astronomer/ap-airflow/commit/7e637f4f8ecf8a4c29ad108ef185fe16cb2c4d06))
+- Updated `libpq5` to `11.16-0+deb10u1` to fix [CVE-2022-1552](https://avd.aquasec.com/nvd/cve-2022-1552)([commit](https://github.com/astronomer/ap-airflow/commit/7e637f4f8ecf8a4c29ad108ef185fe16cb2c4d06))
+- Updated `liblzma5` to `5.2.4-1+deb10u1` to fix [CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)([commit](https://github.com/astronomer/ap-airflow/commit/7e637f4f8ecf8a4c29ad108ef185fe16cb2c4d06))
+- Updated `libldap-2.4-2` and `libldap-common` to `2.4.47+dfsg-3+deb10u7` to fix [CVE-2022-29155](https://avd.aquasec.com/nvd/cve-2022-29155)([commit](https://github.com/astronomer/ap-airflow/commit/7e637f4f8ecf8a4c29ad108ef185fe16cb2c4d06))
+- Updated `gzip` to `1.9-3+deb10u1` to fix [CVE-2022-1271](https://avd.aquasec.com/nvd/cve-2022-1271)([commit](https://github.com/astronomer/ap-airflow/commit/7e637f4f8ecf8a4c29ad108ef185fe16cb2c4d06))
+- Updated `dpkg` to `1.19.8` to fix [CVE-2022-1664](https://avd.aquasec.com/nvd/cve-2022-1664)([commit](https://github.com/astronomer/ap-airflow/commit/7e637f4f8ecf8a4c29ad108ef185fe16cb2c4d06))
+
 Astronomer Certified 2.1.4-7, 2022-04-04
 ----------------------------------------
 
