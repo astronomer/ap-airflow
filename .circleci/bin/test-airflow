@@ -11,7 +11,7 @@ function get_debugging_info {
   for pod in $(kubectl get pods -n $NAMESPACE --no-headers=true | awk '{ print $1 }'); do
     echo "======================="
     set -x
-    kubectl logs --all-containers -n  $NAMESPACE $pod | tail -n 30
+    kubectl logs --all-containers -n  $NAMESPACE --tail=100 $pod
     set +x
     echo "======================="
   done
