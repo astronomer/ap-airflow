@@ -1,0 +1,84 @@
+{
+    "blocks": [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": ":question:    *Start QA Tests?*    :question:"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Run regression tests for `$CIRCLE_BRANCH` branch?"
+            },
+            "accessory": {
+                "type": "image",
+                "image_url": "https://cdn2.iconfinder.com/data/icons/picons-basic-2/57/basic2-112_to_do_list_clipboard-128.png",
+                "alt_text": "Clipboard icon"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "*Airflow Version*:\n    {{ airflow_version }}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Branch*:\n    $CIRCLE_BRANCH"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Author*:\n    $CIRCLE_USERNAME"
+                }
+            ]
+        },
+        {
+            "type": "context",
+            "elements": [
+                {
+                    "type": "image",
+                    "image_url": "https://api.slack.com/img/blocks/bkb_template_images/notificationsWarningIcon.png",
+                    "alt_text": "notifications warning icon"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Only edge (main) builds and dev builds trigger regression tests*"
+                }
+            ]
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "\n"
+                }
+            ],
+            "accessory": {
+                "type": "button",
+                "style": "primary",
+                "text": {
+                    "emoji": true,
+                    "type": "plain_text",
+                    "text": "Approve on CircleCI :arrow_upper_right:"
+                },
+                "url": "https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}",
+                "action_id": "button-action"
+            }
+        }
+    ]
+}

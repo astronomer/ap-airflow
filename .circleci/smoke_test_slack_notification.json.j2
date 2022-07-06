@@ -1,0 +1,71 @@
+]&(@#())
+{
+    "blocks": [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": ":drum_with_drumsticks:    *Smoke Tests Started*    :drum_with_drumsticks:"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "\n"
+            },
+            "accessory": {
+                "type": "image",
+                "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Circleci-icon-logo.svg/104px-Circleci-icon-logo.svg.png",
+                "alt_text": "CircleCI icon, a backwards letter C with a dot in the center"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "*Airflow Version*:\n    << parameters.airflow_version >>"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Branch*:\n    $CIRCLE_BRANCH"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Author*:\n    $CIRCLE_USERNAME"
+                }
+            ]
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "\n"
+                }
+            ],
+            "accessory": {
+                "type": "button",
+                "style": "primary",
+                "text": {
+                    "emoji": true,
+                    "type": "plain_text",
+                    "text": "Follow on CircleCI :arrow_upper_right:"
+                },
+                "url": "https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}",
+                "action_id": "button-action"
+            }
+        }
+    ]
+}

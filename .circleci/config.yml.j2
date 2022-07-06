@@ -111,7 +111,7 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
-      {#- Allow only dev and edge builds are allowed to skip approval before pushing and notifying #}
+      {#- Only dev and edge builds are allowed to skip approval before pushing and notifying #}
       {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
       - slack/on-hold:
           name: Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
@@ -121,7 +121,7 @@ workflows:
           # https://imgur.com/a/CYRKjQ3
           custom: |
             {% filter indent(width=12) -%}
-            {% include "build_approval_slack_notification.json.j2" %}
+            {% include "new_build_slack_approval.json.j2" %}
             {%- endfilter %}
           requires:
             - test-{{ airflow_version }}-{{ distribution }}-images
@@ -194,8 +194,8 @@ workflows:
               only:
                 - master
                 - slack-build-approvals
-      - slack-notification:
-          name: slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
+      - new-build-slack-notification:
+          name: new-build-slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
           airflow_version: "{{ airflow_version }}"
           {%- if distribution in ["alpine3.10", "buster"] %}
@@ -214,8 +214,80 @@ workflows:
             branches:
               only:
                 - master
+
+      {#- Only dev and edge builds kick off smoke and regression tests (for now) #}
+      {%- if (dev_build and airflow_version in dev_allowlist) or edge_build %}
+      - kick-off-smoke-tests:
+          name: Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
+          airflow_version: "{{ airflow_version }}"
+          requires:
+            - push-{{ airflow_version }}-{{ distribution }}
+            - push-{{ airflow_version }}-{{ distribution }}-onbuild
+          filters:
+            branches:
+              only:
+                - master
+      - smoke-test-slack-notification:
+          name: smoke-test-slack-notification-{{ airflow_version }}-{{ distribution }}
+          airflow_version: "{{ airflow_version }}"
+          context:
+            - slack_ap-airflow
+          requires:
+            - Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
+          filters:
+            branches:
+              only:
+                - master
+      - slack/on-hold:
+          name: Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}-Regression-Tests
+          context: slack_ap-airflow
+          # If anybody complains about us using the old Astronomer logo, here's
+          # an Imgur album containing a few different options:
+          # https://imgur.com/a/CYRKjQ3
+          custom: |
+            {% filter indent(width=12) -%}
+            {% include "regression_test_slack_approval.json.j2" %}
+            {%- endfilter %}
+          requires:
+            - smoke-test-slack-notification-{{ airflow_version }}-{{ distribution }}
+          filters:
+            branches:
+              only:
+                - master
+
+      - pause_workflow:
+          name: Need-Approval-{{ airflow_version }}-{{ distribution }}-Regression-Tests
+          requires:
+            - Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}-Regression-Tests
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      - kick-off-regression-tests:
+          name: Kick-off-regression-tests-{{ airflow_version }}-{{ distribution }}
+          airflow_version: "{{ airflow_version }}"
+          requires:
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}-Regression-Tests
+          filters:
+            branches:
+              only:
+                - master
+      - regression-test-slack-notification:
+          name: regression-test-slack-notification-{{ airflow_version }}-{{ distribution }}
+          airflow_version: "{{ airflow_version }}"
+          context:
+            - slack_ap-airflow
+          requires:
+            - Kick-off-regression-tests-{{ airflow_version }}-{{ distribution }}
+          filters:
+            branches:
+              only:
+                - master
+      {%- endif %}{# dev and edge builds - smoke regression tests #}
       {%- endfor %}{# distribution in distributions #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
+
   {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
     when:
@@ -588,9 +660,9 @@ jobs:
           prod_docker_repo_quay_io: "<< parameters.prod_docker_repo_quay_io >>"
           dev_docker_repo_quay_io: "<< parameters.dev_docker_repo_quay_io >>"
 
-  slack-notification:
+  new-build-slack-notification:
     executor: docker-executor
-    description: Push Airflow images
+    description: Slack notification about new image builds
     parameters:
       dev_build:
         description: "Indicate if this is a dev build"
@@ -609,7 +681,69 @@ jobs:
           event: pass
           custom: |
             {% filter indent(width=12) -%}
-            {% include "new_dev_build_slack_notification.json.j2" %}
+            {% include "new_build_slack_approval.json.j2" %}
+            {% endfilter %}
+
+  kick-off-smoke-tests:
+    description: Kick off new smoke tests
+    executor: docker-executor
+    parameters:
+      airflow_version:
+        type: string
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+      - run:
+          name: Kick off new smoke tests
+          command: |
+            .circleci/kickoff_qa_tests.sh smoke ac << parameters.airflow_version >>
+
+  smoke-test-slack-notification:
+    executor: docker-executor
+    description: Slack notification about kicking off smoke builds
+    parameters:
+      airflow_version:
+        type: string
+    steps:
+      - slack/notify:
+          branch_pattern: master,push_tags_db
+          channel: airflow-ac-build-tags
+          event: pass
+          custom: |
+            {% filter indent(width=12) -%}
+            {% include "smoke_test_slack_notification.json.j2" %}
+            {% endfilter %}
+
+  kick-off-regression-tests:
+    description: Kick off new regression tests
+    executor: docker-executor
+    parameters:
+      airflow_version:
+        type: string
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+      - run:
+          name: Kick off new regression tests
+          command: |
+            .circleci/kickoff_qa_tests.sh regression ac << parameters.airflow_version >>
+
+  regression-test-slack-notification:
+    executor: docker-executor
+    description: Slack notification about kicking off regression builds
+    parameters:
+      airflow_version:
+        type: string
+    steps:
+      - slack/notify:
+          branch_pattern: master,push_tags_db
+          channel: airflow-ac-build-tags
+          event: pass
+          custom: |
+            {% filter indent(width=12) -%}
+            {% include "regression_test_slack_notification.json.j2" %}
             {% endfilter %}
 
 orbs:
