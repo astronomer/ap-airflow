@@ -112,9 +112,6 @@ def repack_wheel(output: str, url_or_path: str, local: bool = False):
 
 def update_metadata(unpacked_folder, ver: str):
     """
-    Update the METADATA in the unpacked wheel folder, replacing requirements on
-    ``apache-airflow`` with ``astronomer-certified``.
-
     If we are repackaging the Apache Airflow RCs from dist.apache.org, the
     filename will contain rc1, but the version in the wheel will not match.
     This will update the version contained in the wheel to include the matching
@@ -132,8 +129,6 @@ def update_metadata(unpacked_folder, ver: str):
     # The order matters, so we iterate over the old items, and set them on the
     # new metadata, after adjusting any Requires-Dist on apache-airflow
     for key, val in metadata.items():
-        if key == "Requires-Dist":
-            val = re.sub(r"^apache-airflow(\s|$)", r"astronomer-certified\1", val)
         if key == "Version":
             val = ver
 
