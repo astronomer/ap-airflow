@@ -1,7 +1,7 @@
 # Changelog
 
-Astronomer Certified 2.3.3-1, TBD
----------------------------------
+Astronomer Certified 2.3.3-1, 2022-07-09
+----------------------------------------
 
 User-facing CHANGELOG for AC 2.3.3+astro.1 from Airflow 2.3.3:
 
