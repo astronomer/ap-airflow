@@ -35,7 +35,7 @@ def get_airflow_version(ac_version):
 
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.15-8", ["buster"]),
-    ("2.1.4-8", ["buster"]),
+    ("2.1.4-9-dev", ["buster"]),
     ("2.3.3-1", ["bullseye"]),
     ("main-dev", ["bullseye"]),
 ])
