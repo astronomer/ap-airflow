@@ -308,8 +308,6 @@ the [Version Life Cycle](https://docs.astronomer.io/software/ac-support-policy/)
 All changes applied to available point releases will be documented in the `CHANGELOG.md` files within each version folder:
 - [1.10.15 Changelog](https://github.com/astronomer/ap-airflow/blob/master/1.10.15/CHANGELOG.md)
 - [2.1.4 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.1.4/CHANGELOG.md)
-- [2.2.5 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.2.5/CHANGELOG.md)
-- [2.3.2 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.3.2/CHANGELOG.md)
 - [2.3.3 Changelog](https://github.com/astronomer/ap-airflow/blob/master/2.3.3/CHANGELOG.md)
 <!-- CHANGELOG END -->
 
