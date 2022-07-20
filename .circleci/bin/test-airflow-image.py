@@ -220,10 +220,6 @@ def test_airflow_trigger_dags(scheduler):
         dag_state_command = "airflow dag_state example_dag 2020-05-01"
 
     assert "Dag: example_dag, paused: True" in scheduler.check_output(pause_dag_command)
-    # Airflow commit:
-    # https://github.com/apache/airflow/commit/7850dc3c714ef188014a08aae63b4d344242208e
-    # changed the log format, so we relax this test to just test for a short-ish
-    # substring of the log line
     assert "Created <DagRun example_dag @ 2020-05-01T00:00:00+00:00: test_run" \
            in scheduler.check_output(trigger_dag_command)
 
