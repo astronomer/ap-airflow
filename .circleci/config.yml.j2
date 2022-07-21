@@ -700,7 +700,7 @@ jobs:
       - run:
           name: Kick off new smoke tests
           command: |
-            .circleci/kickoff_qa_tests.sh smoke ac << parameters.airflow_version >>
+            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> smoke
 
   smoke-test-slack-notification:
     executor: docker-executor
@@ -732,7 +732,7 @@ jobs:
       - run:
           name: Kick off new regression tests
           command: |
-            .circleci/kickoff_qa_tests.sh regression ac << parameters.airflow_version >>
+            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> regression
 
   regression-test-slack-notification:
     executor: docker-executor
