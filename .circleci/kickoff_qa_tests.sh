@@ -1,27 +1,21 @@
 #!/bin/bash
 # This script kicks off QA smoke or regression tests
 
-set -ex -o pipefail
-
 GIT_REPOSITORY="https://github.com/astronomer/${TEST_REPO_NAME}.git"
 
 if [[ -z "${TEST_REPO_NAME}" ]]; then
-    echo "The TEST_REPO_NAME environment variable must be defined" >&2
+    echo "The TEST_REPO_NAME environment variable must be defined (currently: '${TEST_REPO_NAME}')" >&2
     exit 1
 fi
 
-read -r -d '' USAGE <<EOF
-kickoff_qa_tests.sh <test_type> <airflow_version>
-
-Arguments:
-  airflow_version (required) - the version of Airflow to test
-  test_type (required)       - the type of tests to kick off, can be either 'smoke' or 'regression'
-EOF
-
 if [[ $# -lt 2 ]]; then
-    echo "$USAGE" >&2
-    echo
-    echo "You must specify both arguments" >&2
+    echo >&2 "kickoff_qa_tests.sh <test_type> <airflow_version>"
+    echo >&2 ""
+    echo >&2 "Arguments:"
+    echo >&2 "  airflow_version (required) - the version of Airflow to test"
+    echo >&2 "  test_type (required)       - the type of tests to kick off, can be either 'smoke' or 'regression'"
+    echo >&2 ""
+    echo >&2 "You must specify both arguments"
     exit 1
 fi
 
@@ -37,11 +31,13 @@ fi
 
 
 
+set -ex -o pipefail
+
 # Update the repo with the latest
 if [[ -d "${TEST_REPO_NAME}" ]]; then
     cd "${TEST_REPO_NAME}"
     git fetch
-    git reset --hard origin/$(git branch --show-current)
+    git pull || ( git rebase --abort; git reset --hard origin/$(git branch --show-current) )
 else
     git clone ${GIT_REPOSITORY}
     cd ${TEST_REPO_NAME}
@@ -49,14 +45,27 @@ fi
 
 git branch --show-current
 
-CONFIG_FILE=platform_configs_default.yaml
+CONFIG_FILE=platforms_config.yaml
 
 # Update $CONFIG_FILE:
 # - platform:
 #     ...
-#     airflow: ${AIRFLOW_VERSION}
+#     airflow:
+#       - "${AIRFLOW_VERSION}"
 #     ...
-sed -i.bak "s/^\([[:space:]]*airflow:[[:space:]]*\)\".*\"/\1\"${AIRFLOW_VERSION}\"/" $CONFIG_FILE
+#     tests:
+#       - "smoke"
+#     ...
+# Replace each .platform.airflow value with a list of airflow versions and
+# replace each .platform.tests value with the test type
+# We double quote the array values to ensure YAML interprets them as strings
+# and not floats (for the version strings)
+AIRFLOW_VERSION=$AIRFLOW_VERSION \
+TEST_TYPE=$TEST_TYPE \
+yq e --inplace \
+    '(.[].platform.airflow) |= [strenv(AIRFLOW_VERSION)] | ..style="double"
+    |(.[].platform.tests) |= [strenv(TEST_TYPE)] | ..style="double"' \
+    ${CONFIG_FILE}
 
 # For runtime, need to update version and image_tag properties in $CONFIG_FILE
 
@@ -66,12 +75,15 @@ sed -i.bak "s/^\([[:space:]]*airflow:[[:space:]]*\)\".*\"/\1\"${AIRFLOW_VERSION}
 # and version/s on another
 
 git add $CONFIG_FILE
-git config user.name "astronomer/ap-airflow GitHub:CircleCI integration"
+git config user.name "ap-airflow"
 git config user.email "astronomer@users.noreply.github.com"
 git commit -m "Run ${TEST_TYPE} tests for Airflow $AIRFLOW_VERSION"
 
-# Try to minimize the amount of time we are vulnerable to a race condition with other jobs
+if [[ -n "$DRY_RUN" ]]; then
+    exit 0
+fi
 
+# Try to minimize the amount of time we are vulnerable to a race condition with other jobs
 FAILURE_COUNT=0
 until [[ $FAILURE_COUNT -ge 5 ]] || git push; do
     git fetch && git merge --no-edit --strategy=ours origin/$(git branch --show-current)
