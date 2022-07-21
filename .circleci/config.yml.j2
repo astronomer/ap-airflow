@@ -223,10 +223,12 @@ workflows:
           requires:
             - push-{{ airflow_version }}-{{ distribution }}
             - push-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only:
                 - master
+                - test
       - smoke-test-slack-notification:
           name: smoke-test-slack-notification-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
