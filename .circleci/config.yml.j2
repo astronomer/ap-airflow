@@ -697,6 +697,7 @@ jobs:
           fingerprints:
             - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
       - checkout
+      - install-yq
       - run:
           name: Kick off new smoke tests
           command: |
@@ -729,6 +730,7 @@ jobs:
           fingerprints:
             - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
       - checkout
+      - install-yq
       - run:
           name: Kick off new regression tests
           command: |
@@ -935,4 +937,18 @@ commands:
           command: |
             {% filter indent(width=12) -%}
             {% include "push.bash.j2" -%}
-            {% endfilter -%}
+            {% endfilter %}
+  install-yq:
+    description: Install yq in a Docker container
+    parameters:
+      version:
+        type: string
+        default: v4.26.1  # update at any time
+      binary:
+        type: string
+        default: yq_linux_amd64
+    steps:
+      - run:
+          name: Install yq
+          command: |
+            wget https://github.com/mikefarah/yq/releases/download/v4.26.1/yq_linux_amd64.tar.gz -O - |  tar xz && sudo mv yq_linux_amd64 /usr/bin/yq

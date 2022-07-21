@@ -58,6 +58,8 @@ CONFIG_FILE=platforms_config.yaml
 #     ...
 # Replace each .platform.airflow value with a list of airflow versions and
 # replace each .platform.tests value with the test type
+# https://stackoverflow.com/a/72627603
+# https://stackoverflow.com/a/72795815
 # We double quote the array values to ensure YAML interprets them as strings
 # and not floats (for the version strings)
 AIRFLOW_VERSION=$AIRFLOW_VERSION \
