@@ -1,6 +1,8 @@
 #!/bin/bash
 # This script kicks off QA smoke or regression tests
 
+set -ex -o pipefail
+
 GIT_REPOSITORY="https://github.com/astronomer/${TEST_REPO_NAME}.git"
 
 if [[ -z "${TEST_REPO_NAME}" ]]; then
