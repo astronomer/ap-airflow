@@ -686,7 +686,7 @@ jobs:
 
   kick-off-smoke-tests:
     description: Kick off new smoke tests
-    executor: docker-executor
+    executor: machine-executor
     parameters:
       airflow_version:
         type: string
@@ -717,7 +717,7 @@ jobs:
 
   kick-off-regression-tests:
     description: Kick off new regression tests
-    executor: docker-executor
+    executor: machine-executor
     parameters:
       airflow_version:
         type: string
