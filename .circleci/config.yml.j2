@@ -688,7 +688,7 @@ jobs:
 
   kick-off-smoke-tests:
     description: Kick off new smoke tests
-    executor: machine-executor
+    executor: docker-executor
     parameters:
       airflow_version:
         type: string
@@ -696,6 +696,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+      - checkout
       - run:
           name: Kick off new smoke tests
           command: |
@@ -719,7 +720,7 @@ jobs:
 
   kick-off-regression-tests:
     description: Kick off new regression tests
-    executor: machine-executor
+    executor: docker-executor
     parameters:
       airflow_version:
         type: string
@@ -727,6 +728,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+      - checkout
       - run:
           name: Kick off new regression tests
           command: |
