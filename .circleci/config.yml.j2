@@ -216,7 +216,7 @@ workflows:
                 - master
 
       {#- Only dev and edge builds kick off smoke and regression tests (for now) #}
-      {%- if (dev_build and airflow_version in dev_allowlist) or edge_build %}
+      {%- if dev_build or edge_build %}
       - kick-off-smoke-tests:
           name: Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
