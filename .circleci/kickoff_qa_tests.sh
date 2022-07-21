@@ -66,6 +66,8 @@ sed -i.bak "s/^\([[:space:]]*airflow:[[:space:]]*\)\".*\"/\1\"${AIRFLOW_VERSION}
 # and version/s on another
 
 git add $CONFIG_FILE
+git config user.name "astronomer/ap-airflow GitHub:CircleCI integration"
+git config user.email "astronomer@users.noreply.github.com"
 git commit -m "Run ${TEST_TYPE} tests for Airflow $AIRFLOW_VERSION"
 
 # Try to minimize the amount of time we are vulnerable to a race condition with other jobs
