@@ -64,7 +64,7 @@ CONFIG_FILE=platforms_config.yaml
 # and not floats (for the version strings)
 AIRFLOW_VERSION=$AIRFLOW_VERSION \
 TEST_TYPE=$TEST_TYPE \
-yq e --inplace \
+yq eval --inplace \
     '(.[].platform.airflow) |= [strenv(AIRFLOW_VERSION)] | ..style="double"
     |(.[].platform.tests) |= [strenv(TEST_TYPE)] | ..style="double"' \
     ${CONFIG_FILE}
@@ -79,7 +79,7 @@ yq e --inplace \
 git add $CONFIG_FILE
 git config user.name "ap-airflow"
 git config user.email "astronomer@users.noreply.github.com"
-git commit -m "Run ${TEST_TYPE} tests for Airflow $AIRFLOW_VERSION"
+git commit --message="Run ${TEST_TYPE} tests for Airflow $AIRFLOW_VERSION"
 
 if [[ -n "$DRY_RUN" ]]; then
     exit 0
