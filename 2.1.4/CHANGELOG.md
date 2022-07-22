@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 2.1.4-9, 2022-07-22
+----------------------------------------
+
+### Bug Fixes
+
+- [astro] Fix graph view states([commit](https://github.com/astronomer/airflow/commit/b23be74bb48c2dc4593dacdb2d81b77dac03eae4))
+
+### Security
+
+- Updated `libssl1.1` and `openssl` to `1.1.1n-0+deb10u3` to fix [CVE-2022-2068](https://avd.aquasec.com/nvd/CVE-2022-2068)([commit](https://github.com/astronomer/ap-airflow/commit/5214a321d2f2af21a1184f97ddc1b1eed8397106))
+
 Astronomer Certified 2.1.4-8, 2022-06-22
 ----------------------------------------
 ### Security
