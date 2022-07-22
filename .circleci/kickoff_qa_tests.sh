@@ -22,7 +22,7 @@ fi
 AIRFLOW_VERSION=$1
 
 TEST_TYPE=$(echo "$2" | tr '[[:upper:]]' '[[:lower:]]')  # smoke or regression
-if [[ "$TEST_TYPE" = "smoke" && "$TEST_TYPE" = "regression" ]]; then
+if [[ "$TEST_TYPE" != "smoke" && "$TEST_TYPE" != "regression" ]]; then
     echo "The specified test type must be either 'smoke' or 'regression'" >&2
     exit 1
 fi
