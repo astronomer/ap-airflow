@@ -216,17 +216,19 @@ workflows:
                 - master
 
       {#- Only dev and edge builds kick off smoke and regression tests (for now) #}
-      {%- if (dev_build and airflow_version in dev_allowlist) or edge_build %}
+      {%- if ("dev" in ac_version and airflow_version not in dev_allowlist) or edge_build %}
       - kick-off-smoke-tests:
           name: Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
           requires:
             - push-{{ airflow_version }}-{{ distribution }}
             - push-{{ airflow_version }}-{{ distribution }}-onbuild
+            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only:
                 - master
+                - test
       - smoke-test-slack-notification:
           name: smoke-test-slack-notification-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
@@ -694,10 +696,12 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+      - checkout
+      - install-yq
       - run:
           name: Kick off new smoke tests
           command: |
-            .circleci/kickoff_qa_tests.sh smoke ac << parameters.airflow_version >>
+            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> smoke
 
   smoke-test-slack-notification:
     executor: docker-executor
@@ -725,10 +729,12 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+      - checkout
+      - install-yq
       - run:
           name: Kick off new regression tests
           command: |
-            .circleci/kickoff_qa_tests.sh regression ac << parameters.airflow_version >>
+            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> regression
 
   regression-test-slack-notification:
     executor: docker-executor
@@ -931,4 +937,18 @@ commands:
           command: |
             {% filter indent(width=12) -%}
             {% include "push.bash.j2" -%}
-            {% endfilter -%}
+            {% endfilter %}
+  install-yq:
+    description: Install yq in a Docker container
+    parameters:
+      version:
+        type: string
+        default: v4.26.1  # update at any time
+      binary:
+        type: string
+        default: yq_linux_amd64
+    steps:
+      - run:
+          name: Install yq
+          command: |
+            wget https://github.com/mikefarah/yq/releases/download/v4.26.1/yq_linux_amd64.tar.gz -O - |  tar xz && sudo mv yq_linux_amd64 /usr/bin/yq
