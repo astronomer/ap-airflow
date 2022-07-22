@@ -36,7 +36,6 @@ set -ex -o pipefail
 # Update the repo with the latest
 if [[ -d "${TEST_REPO_NAME}" ]]; then
     cd "${TEST_REPO_NAME}"
-    git fetch
     git pull || ( git rebase --abort; git reset --hard origin/$(git branch --show-current) )
 else
     git clone ${GIT_REPOSITORY}
