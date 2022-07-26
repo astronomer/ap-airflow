@@ -5,9 +5,9 @@ export NEW_POINT_RELEASE=true
 
 IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.extra_tags >>"
 
-echo "DOCKER_TAGS: " "${DOCKER_TAGS[@]}"
+echo "DOCKER_TAGS: ${DOCKER_TAGS[@]}"
 
-if [[ "<< parameters.nightly_build >>" ]]; then
+if "<< parameters.nightly_build >>"; then
   # Docker tags must match [\w][\w.-]{0,127}
   # https://github.com/distribution/distribution/blob/514cbd71bedb3331f53e2fe5293075726c67e68a/reference/regexp.go#L41
   TAG_PRERELEASE_SUFFIX="-nightly-$(date +%Y%m%d)"
@@ -15,7 +15,7 @@ if [[ "<< parameters.nightly_build >>" ]]; then
   for (( i=0; i<{% raw %}${#DOCKER_TAGS[@]}{% endraw %}; i++ )); do
     DOCKER_TAGS[$i]=${DOCKER_TAGS[$i]}${TAG_PRERELEASE_SUFFIX}
   done
-  echo "DOCKER_TAGS->  " "${DOCKER_TAGS[@]}"
+  echo "DOCKER_TAGS->  ${DOCKER_TAGS[@]}"
 fi
 
 # Read in more tags from the extra_tags_file, if it exists
@@ -38,12 +38,12 @@ do
     echo "Image with Tag (<< parameters.prod_docker_repo_docker_hub >>:$tag) already exists"
     export NEW_POINT_RELEASE=false
 
-  elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" || "<< parameters.dev_release >>" ]]; then
+  elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || "<< parameters.dev_release >>"; then
     echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
     docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
     docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
-    if [[ "${tag}" == *"onbuild-"* && "<<parameters.dev_release >>" ]]; then
+    if [[ "${tag}" == *"onbuild-"* ]] && "<<parameters.dev_release >>"; then
       release="$( cut -d '-' -f 1 \<<< "$tag" )"
       sudo apt-get update && sudo apt-get install postgresql postgresql-contrib
       echo "UPSERT the latest tag '${tag}' for '${release}' into the QA DB"
