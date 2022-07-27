@@ -7,7 +7,7 @@ IFS="," read -ra DOCKER_TAGS \<<< "<< parameters.extra_tags >>"
 
 echo "DOCKER_TAGS: ${DOCKER_TAGS[@]}"
 
-if [[ "<< parameters.nightly_build >>" =~ (True|true) ]]; then
+if "<< parameters.nightly_build >>"; then
   # Docker tags must match [\w][\w.-]{0,127}
   # https://github.com/distribution/distribution/blob/514cbd71bedb3331f53e2fe5293075726c67e68a/reference/regexp.go#L41
   TAG_PRERELEASE_SUFFIX="-nightly-$(date +%Y%m%d)"
@@ -23,9 +23,9 @@ if [[ -f "<< parameters.extra_tags_file >>" ]]; then
   echo "Contents of << parameters.extra_tags_file >>:"
   cat "<< parameters.extra_tags_file >>"
 
-  while read tag;
+  while read -r tag;
   do
-    DOCKER_TAGS+=($tag)
+    DOCKER_TAGS+=("$tag")
   done < "<< parameters.extra_tags_file >>"
 fi
 
@@ -35,15 +35,15 @@ echo "${DOCKER_TAGS[@]}"
 for tag in "${DOCKER_TAGS[@]}";
 do
   if DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect "<< parameters.prod_docker_repo_docker_hub >>:$tag" >/dev/null 2>&1; then
-    echo "Image with Tag ("<< parameters.prod_docker_repo_docker_hub >>:$tag") already exists"
+    echo "Image with Tag (<< parameters.prod_docker_repo_docker_hub >>:$tag) already exists"
     export NEW_POINT_RELEASE=false
 
-  elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || <<parameters.dev_release >> ; then
+  elif [[ "$tag" == "<< parameters.tag >>-$CIRCLE_BUILD_NUM" ]] || "<< parameters.dev_release >>"; then
     echo "Tagging and pushing image <<parameters.image_name>>:$tag to << parameters.dev_docker_repo_quay_io >>"
     docker tag "$image" "<< parameters.dev_docker_repo_quay_io >>:${tag}"
     docker push "<< parameters.dev_docker_repo_quay_io >>:${tag}"
 
-    if [[ "${tag}" == *"onbuild-"* && <<parameters.dev_release >> ]]; then
+    if [[ "${tag}" == *"onbuild-"* ]] && "<<parameters.dev_release >>"; then
       release="$( cut -d '-' -f 1 \<<< "$tag" )"
       sudo apt-get update && sudo apt-get install postgresql postgresql-contrib
       echo "UPSERT the latest tag '${tag}' for '${release}' into the QA DB"
@@ -83,7 +83,7 @@ done
 # as compared to above code-blocks that publish images with build-number & immutable tag
 # e.g (e.g. 1.10.13-1-buster-onbuild and 1.10.13-buster-onbuild-24119)
 if $NEW_POINT_RELEASE ; then
-  if ! <<parameters.dev_release >> ; then
+  if ! "<<parameters.dev_release >>"; then
     # If it is not a Dev Release publish the image to Prod Repos
     echo "Tagging and pushing image <<parameters.image_name>>:<< parameters.tag >> to << parameters.prod_docker_repo_quay_io >>"
     docker tag "$image" "<< parameters.prod_docker_repo_quay_io >>:<< parameters.tag >>"

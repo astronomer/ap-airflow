@@ -5,6 +5,9 @@ repos:
     hooks:
       - id: check-case-conflict
       - id: check-merge-conflict
+      - id: check-json
+        types: [file]
+        files: "(.json$|.json.j2$)"
       - id: check-yaml
       - id: end-of-file-fixer
       - id: file-contents-sorter
@@ -13,6 +16,13 @@ repos:
       - id: mixed-line-ending
         args: ["--fix=lf"]
       - id: trailing-whitespace
+  - repo: https://github.com/detailyang/pre-commit-shell
+    rev: v1.0.6
+    hooks:
+      - id: shell-lint
+        name: "Verify .circleci/kickoff_qa_tests.sh is valid Bash"
+        types: [file]
+        files: ".circleci/kickoff_qa_tests.sh"
   - repo: local
     hooks:
       - id: copyright-uptodate
@@ -54,38 +64,9 @@ repos:
         language: system
         entry: |
           bash -c "which yq"
-      - id: check-for-shellcheck
-        name: Check for workable shellcheck
-        language: system
-        entry: |
-          bash -c "which shellcheck"
-
-      - id: brittle-verify-slack-notification-job-json-syntax
-        name: "[May be brittle] Verify build approval is valid JSON"
-        language: system
-        files: ".circleci/(new_build_slack_approval.json.j2|new_dev_build_slack_notification.json.j2|regression_test_slack_approval.json.j2)"
-        entry: |
-          bash -c "echo >&2 \"Feel free to remove this check if it's too brittle\""
-          jq new_build_slack_approval.json.j2
-          jq new_dev_build_slack_notification.json.j2
-          jq regression_test_slack_approval.json.j2
-      - id: brittle-verify-push-job-bash-syntax
-        name: "[May be brittle] Verify push job is valid Bash"
-        language: system
-        files: ".circleci/push.bash.j2"
-        entry: |
-          bash -c "echo >&2 \"Feel free to remove this check if it's too brittle\""
-          shellcheck .circleci/push.bash.j2
-      - id: brittle-verify-kickoff-tests-script-bash-syntax
-        name: "[May be brittle] Verify the QA test kickoff script is valid Bash"
-        language: system
-        files: ".circleci/kickoff_qa_tests.sh"
-        entry: |
-          bash -c "echo >&2 \"Feel free to remove this chck if it's too brittle\""
-          shellcheck .circleci/kickoff_qa_tests.sh
 
       - id: verify-generated-config-yaml-syntax
-        name: Verify the generated config.yml is valid YAML
+        name: Verify generated config.yml is valid YAML
         language: python
         additional_dependencies: ['jinja2']
         files: ".*.j2$|.circleci/.*.py$"
@@ -93,11 +74,11 @@ repos:
           python3 .circleci/generate_circleci_config.py \
           | yq eval . -
 
-      - id: verify-build-approval-slack-notification-json
-        name: Verify build approval Slack notifications use valid JSON
+      - id: verify-generated-slack-message-templates-json-syntax
+        name: Verify generated Slack message templates are valid JSON
         language: python
         additional_dependencies: ['jinja2']
-        files: "config.yml.j2|common.py|generate_circleci_config.py$|new_build_slack_approval.json.j2|new_dev_build_slack_notification.json.jq|push.bash.j2"
+        files: ".circleci/(config.yml.j2|common.py|generate_circleci_config.py$|new_build_slack_approval.json.j2|new_dev_build_slack_notification.json.j2|push.bash.j2|regression_test_slack_approval.json.j2|regression_test_slack_notification.json.j2|smoke_test_slack_notification.json.j2)"
         entry: |
           python3 .circleci/generate_circleci_config.py \
           | yq --output-format=json eval . - \
@@ -106,11 +87,12 @@ repos:
                 | keys[0] as $k
                 | .[$k].custom
                 | fromjson'
-      - id: verify-slack-notification-job-json
-        name: Verify Slack notification job uses valid JSON
+
+      - id: verify-generated-slack-notification-templates-json-syntax
+        name: Verify generated Slack notification templates are valid JSON
         language: python
         additional_dependencies: ['jinja2']
-        files: "config.yml.j2|common.py|generate_circleci_config.py$|new_build_slack_approval.json.j2|new_dev_build_slack_notification.json.j2|push.bash.j2|regression_test_slack_approval.json.j2|regression_test_slack_notification.json.j2|smoke_test_slack_notification.json.j2"
+        files: ".circleci/(config.yml.j2|common.py|generate_circleci_config.py$|new_build_slack_approval.json.j2|new_dev_build_slack_notification.json.j2|push.bash.j2|regression_test_slack_approval.json.j2|regression_test_slack_notification.json.j2|smoke_test_slack_notification.json.j2)"
         entry: |
           python3 .circleci/generate_circleci_config.py \
           | yq --output-format=json eval . - \

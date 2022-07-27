@@ -21,7 +21,7 @@ fi
 
 AIRFLOW_VERSION=$1
 
-TEST_TYPE=$(echo "$2" | tr '[[:upper:]]' '[[:lower:]]')  # smoke or regression
+TEST_TYPE=$(echo "$2" | tr '[:upper:]' '[:lower:]')  # smoke or regression
 if [[ "$TEST_TYPE" != "smoke" && "$TEST_TYPE" != "regression" ]]; then
     echo "The specified test type must be either 'smoke' or 'regression'" >&2
     exit 1
@@ -36,10 +36,10 @@ set -ex -o pipefail
 # Update the repo with the latest
 if [[ -d "${TEST_REPO_NAME}" ]]; then
     cd "${TEST_REPO_NAME}"
-    git pull || ( git rebase --abort; git reset --hard origin/$(git branch --show-current) )
+    git pull || ( git rebase --abort; git reset --hard "origin/$(git branch --show-current)" )
 else
-    git clone ${GIT_REPOSITORY}
-    cd ${TEST_REPO_NAME}
+    git clone "${GIT_REPOSITORY}"
+    cd "${TEST_REPO_NAME}"
 fi
 
 git branch --show-current
@@ -87,8 +87,8 @@ fi
 # Try to minimize the amount of time we are vulnerable to a race condition with other jobs
 FAILURE_COUNT=0
 until [[ $FAILURE_COUNT -ge 5 ]] || git push; do
-    git fetch && git merge --no-edit --strategy=ours origin/$(git branch --show-current)
-    FAILURE_COUNT=$(( $FAILURE_COUNT + 1 ))
+    git fetch && git merge --no-edit --strategy=ours "origin/$(git branch --show-current)"
+    FAILURE_COUNT=$(( FAILURE_COUNT + 1 ))
     sleep $FAILURE_COUNT
 done
 if [[ "$FAILURE_COUNT" -ge 5 ]]; then
