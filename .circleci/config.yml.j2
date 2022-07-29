@@ -48,7 +48,7 @@ workflows:
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
-          extra_args: |
+          extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'nightly' workflow -#}
             {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
@@ -320,7 +320,7 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           edge_build: {{ edge_build }}
-          extra_args: |
+          extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'certified-airflow' workflow -#}
             {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
