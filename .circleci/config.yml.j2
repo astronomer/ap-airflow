@@ -48,25 +48,25 @@ workflows:
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
           {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
-          extra_args:
+          extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'nightly' workflow -#}
             {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
             {%- else %}
-            --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})"
-            --label io.astronomer.airflow.built_from.git.branch=$(jq -r '.git.built_from.branch' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.airflow.built_from.git.commit_sha=$(jq -r '.git.built_from.commit' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
-            --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}"
+            --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})" \
+            --label io.astronomer.airflow.built_from.git.branch=$(jq -r '.git.built_from.branch' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.airflow.built_from.git.commit_sha=$(jq -r '.git.built_from.commit' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }}) \
+            --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}" \
             {#- This redirects to the canonical workflow URL #}
             --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
@@ -320,25 +320,25 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: true
           edge_build: {{ edge_build }}
-          extra_args:
+          extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'certified-airflow' workflow -#}
             {%- if not edge_build %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
             {%- else %}
-            --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }})
-            --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})"
-            --label io.astronomer.airflow.built_from.git.branch=$(jq -r '.git.built_from.branch' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.airflow.built_from.git.commit_sha=$(jq -r '.git.built_from.commit' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }})
-            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }})
-            --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}"
+            --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.build.url=$(jq -r '.github.run.url' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.build.version=$(jq -r '.output.airflow.package.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.js.node.version_string=$(jq -r '.js.node.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.js.npm.version_string=$(jq -r '.js.npm.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.js.yarn.version_string=$(jq -r '.js.yarn.version' <{{ ext_build_filename_workspace }}) \
+            --label org.apache.airflow.ci.python.version_string="$(jq -r '.python.version' <{{ ext_build_filename_workspace }})" \
+            --label io.astronomer.airflow.built_from.git.branch=$(jq -r '.git.built_from.branch' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.airflow.built_from.git.commit_sha=$(jq -r '.git.built_from.commit' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.airflow.built_by.git.$(jq -r '.git.built_by.ref.type' <{{ ext_build_filename_workspace }})=$(jq -r '.git.built_by.ref.name' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.airflow.built_by.git.commit_sha=$(jq -r '.git.built_by.commit' <{{ ext_build_filename_workspace }}) \
+            --label io.astronomer.astronomer_certified.build.version=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }}) \
+            --label com.circleci.workflow.id="${CIRCLE_WORKFLOW_ID}" \
             {#- This redirects to the canonical workflow URL #}
             --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
