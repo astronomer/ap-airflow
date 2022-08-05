@@ -219,6 +219,11 @@ workflows:
       {%- if ("dev" in ac_version and airflow_version not in dev_allowlist) or edge_build %}
       - kick-off-smoke-tests:
           name: Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_tag: "{{ airflow_version }}"
+          {%- endif %}
           airflow_version: "{{ airflow_version }}"
           requires:
             - push-{{ airflow_version }}-{{ distribution }}
@@ -268,6 +273,11 @@ workflows:
                 - master
       - kick-off-regression-tests:
           name: Kick-off-regression-tests-{{ airflow_version }}-{{ distribution }}
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_tag: "{{ airflow_version }}"
+          {%- endif %}
           airflow_version: "{{ airflow_version }}"
           requires:
             - Need-Approval-{{ airflow_version }}-{{ distribution }}-Regression-Tests
@@ -690,6 +700,8 @@ jobs:
     description: Kick off new smoke tests
     executor: docker-executor
     parameters:
+      image_tag:
+        type: string
       airflow_version:
         type: string
     steps:
@@ -701,7 +713,7 @@ jobs:
       - run:
           name: Kick off new smoke tests
           command: |
-            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> smoke
+            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> << parameters.image_tag >> smoke
 
   smoke-test-slack-notification:
     executor: docker-executor
@@ -723,6 +735,8 @@ jobs:
     description: Kick off new regression tests
     executor: docker-executor
     parameters:
+      image_tag:
+        type: string
       airflow_version:
         type: string
     steps:
@@ -734,7 +748,7 @@ jobs:
       - run:
           name: Kick off new regression tests
           command: |
-            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> regression
+            .circleci/kickoff_qa_tests.sh << parameters.airflow_version >> << parameters.image_tag >> regression
 
   regression-test-slack-notification:
     executor: docker-executor

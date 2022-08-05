@@ -1,18 +1,15 @@
 #!/bin/bash
 # This script kicks off QA smoke or regression tests
 
+TEST_REPO_NAME=qa-airflow-run-on-software
 GIT_REPOSITORY="https://github.com/astronomer/${TEST_REPO_NAME}.git"
 
-if [[ -z "${TEST_REPO_NAME}" ]]; then
-    echo "The TEST_REPO_NAME environment variable must be defined (currently: '${TEST_REPO_NAME}')" >&2
-    exit 1
-fi
-
-if [[ $# -lt 2 ]]; then
-    echo >&2 "kickoff_qa_tests.sh <test_type> <airflow_version>"
+if [[ $# -lt 3 ]]; then
+    echo >&2 "kickoff_qa_tests.sh <airflow_version> <image_tag> <test_type>"
     echo >&2 ""
     echo >&2 "Arguments:"
     echo >&2 "  airflow_version (required) - the version of Airflow to test"
+    echo >&2 "  image_tag (required)       - the Airflow container image to pull"
     echo >&2 "  test_type (required)       - the type of tests to kick off, can be either 'smoke' or 'regression'"
     echo >&2 ""
     echo >&2 "You must specify both arguments"
@@ -21,7 +18,9 @@ fi
 
 AIRFLOW_VERSION=$1
 
-TEST_TYPE=$(echo "$2" | tr '[:upper:]' '[:lower:]')  # smoke or regression
+IMAGE_TAG=$2
+
+TEST_TYPE=$(echo "$3" | tr '[:upper:]' '[:lower:]')  # smoke or regression
 if [[ "$TEST_TYPE" != "smoke" && "$TEST_TYPE" != "regression" ]]; then
     echo "The specified test type must be either 'smoke' or 'regression'" >&2
     exit 1
@@ -63,9 +62,11 @@ CONFIG_FILE=platforms_config.yaml
 # and not floats (for the version strings)
 AIRFLOW_VERSION=$AIRFLOW_VERSION \
 TEST_TYPE=$TEST_TYPE \
+IMAGE_TAG=$IMAGE_TAG \
 yq eval --inplace \
     '(.[].platform.airflow) |= [strenv(AIRFLOW_VERSION)] | ..style="double"
-    |(.[].platform.tests) |= [strenv(TEST_TYPE)] | ..style="double"' \
+    |(.[].platform.tests) |= [strenv(TEST_TYPE)] | ..style="double"
+    |(.[].platform.image_tag = strenv(IMAGE_TAG) | ..style="double")' \
     ${CONFIG_FILE}
 
 # For runtime, need to update version and image_tag properties in $CONFIG_FILE
