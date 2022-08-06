@@ -1,50 +1,33 @@
 {
     "blocks": [
         {
-            "type": "section",
+            "type": "header",
             "text": {
-                "type": "mrkdwn",
-                "text": ":drum_with_drumsticks:    *Regression Tests Started*    :drum_with_drumsticks:"
+                "type": "plain_text",
+                "text": ":drum_with_drumsticks::clipboard::drum_with_drumsticks:    Regression Tests Started    :drum_with_drumsticks::clipboard::drum_with_drumsticks:",
+                "emoji": true
             }
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "\n"
-            },
-            "accessory": {
-                "type": "image",
-                "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Circleci-icon-logo.svg/104px-Circleci-icon-logo.svg.png",
-                "alt_text": "CircleCI icon, a backwards letter C with a dot in the center"
-            }
-        },
-        {
-            "type": "divider"
         },
         {
             "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "*Airflow Version*:\n    {{ airflow_version }}"
+                    "text": "*Airflow Version*:\n    << parameters.airflow_version >>"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Image Tag*:\n    `<< parameters.image_tag >>`"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Branch*:\n    <https://github.com/astronomer/qa-airflow-run-on-software|<< parameters.qa_repo_default_branch >> >"
                 },
                 {
                     "type": "mrkdwn",
                     "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": "*Branch*:\n    $CIRCLE_BRANCH"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": "*Author*:\n    $CIRCLE_USERNAME"
                 }
             ]
-        },
-        {
-            "type": "divider"
         },
         {
             "type": "section",
@@ -62,7 +45,7 @@
                     "type": "plain_text",
                     "text": "Follow on CircleCI :arrow_upper_right:"
                 },
-                "url": "https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}",
+                "url": "<< parameters.qa_circleci_project >>",
                 "action_id": "button-action"
             }
         }
