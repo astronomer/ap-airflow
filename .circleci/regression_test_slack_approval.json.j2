@@ -1,10 +1,11 @@
 {
     "blocks": [
         {
-            "type": "section",
+            "type": "header",
             "text": {
-                "type": "mrkdwn",
-                "text": ":question:    *Start QA Tests?*    :question:"
+                "type": "plain_text",
+                "text": ":question::clipboard::question:    *Start QA Tests?*    :question::clipboard::question:",
+                "emoji": true
             }
         },
         {
@@ -35,7 +36,7 @@
                 },
                 {
                     "type": "mrkdwn",
-                    "text": "*Branch*:\n    $CIRCLE_BRANCH"
+                    "text": "*Branch*:\n    `$CIRCLE_BRANCH`"
                 },
                 {
                     "type": "mrkdwn",

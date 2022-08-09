@@ -1,59 +1,48 @@
 {
-  "blocks": [
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": ":tada:    *New Astronomer Certified DEV Build*    :tada:"
-      }
-    },
-    {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": "<< parameters.airflow_version >> Development Image(s) Released"
-      },
-      "accessory": {
-        "type": "image",
-        "image_url": "https://res.cloudinary.com/practicaldev/image/fetch/s--dPhPEZO8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png",
-        "alt_text": "Cute cartoon Docker whale with containers on its back and a notification bell in the upper left showing one notification"
-      }
-    },
-    {
-      "type": "divider"
-    },
-    {
-      "type": "section",
-      "fields": [
+    "blocks": [
         {
-          "type": "mrkdwn",
-          "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": ":tada:    *New Astronomer Certified DEV Build*    :tada:",
+                "emoji": true
+            }
         },
         {
-          "type": "mrkdwn",
-          "text": "*Tags*:\n    << parameters.extra_tags >>"
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "<< parameters.airflow_version >> Development Image(s) Released"
+            },
+            "accessory": {
+                "type": "image",
+                "image_url": "https://res.cloudinary.com/practicaldev/image/fetch/s--dPhPEZO8--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://raw.githubusercontent.com/crazy-max/diun/master/.res/diun.png",
+                "alt_text": "Cute cartoon Docker whale with containers on its back and a notification bell in the upper left showing one notification"
+            }
         },
         {
-          "type": "mrkdwn",
-          "text": "*Author*:\n    $CIRCLE_USERNAME"
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "*Image Registry*:\n    <https://quay.io/repository/astronomer/ap-airflow-dev?tag=latest&tab=tags|ap-airflow-dev>"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Tags*:\n    `<< parameters.extra_tags >>`"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Author*:\n    $CIRCLE_USERNAME"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": "*Git SHA*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1|`${CIRCLE_SHA1:0:7}`>"
+                }
+            ]
         },
         {
-          "type": "mrkdwn",
-          "text": "*Git SHA*:\n    <https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/commit/$CIRCLE_SHA1|`${CIRCLE_SHA1:0:7}`>"
+            "type": "divider"
         }
-      ]
-    },
-    {
-      "type": "divider"
-    },
-    {
-      "type": "section",
-      "fields": [
-        {
-          "type": "mrkdwn",
-          "text": "Release Owners: Airflow Team\n{{ approvers_slack_syntax }}"
-        }
-      ]
-    }
-  ]
+    ]
 }

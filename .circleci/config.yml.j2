@@ -4,6 +4,10 @@
 {%- else -%}
 {%- set approvers_slack_syntax = ("<@" + (approvers|join("")) + ">" ) | safe -%}
 {%- endif -%}
+{%- set qa_reponame = "qa-airflow-run-on-software" -%}
+{%- set qa_repo = "https://github.com/astronomer/" + qa_reponame -%}
+{%- set qa_repo_default_branch = "master" -%}
+{%- set qa_circleci_project ="https://app.circleci.com/pipelines/github/astronomer/qa-airflow-run-on-software?branch=" + qa_repo_default_branch -%}
 {%- set workspace_prefix = '/tmp/workspace' -%}
 version: 2.1
 
@@ -237,6 +241,11 @@ workflows:
       - smoke-test-slack-notification:
           name: smoke-test-slack-notification-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_tag: "{{ airflow_version }}"
+          {%- endif %}
           context:
             - slack_ap-airflow
           requires:
@@ -288,6 +297,11 @@ workflows:
       - regression-test-slack-notification:
           name: regression-test-slack-notification-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_tag: "{{ airflow_version }}"
+          {%- endif %}
           context:
             - slack_ap-airflow
           requires:
@@ -721,6 +735,14 @@ jobs:
     parameters:
       airflow_version:
         type: string
+      image_tag:
+        type: string
+      qa_repo_default_branch:
+        type: string
+        default: {{ qa_repo_default_branch }}
+      qa_circleci_project:
+        type: string
+        default: {{ qa_circleci_project }}
     steps:
       - slack/notify:
           branch_pattern: master,push_tags_db
@@ -756,6 +778,14 @@ jobs:
     parameters:
       airflow_version:
         type: string
+      image_tag:
+        type: string
+      qa_repo_default_branch:
+        type: string
+        default: {{ qa_repo_default_branch }}
+      qa_circleci_project:
+        type: string
+        default: {{ qa_circleci_project }}
     steps:
       - slack/notify:
           branch_pattern: master,push_tags_db
