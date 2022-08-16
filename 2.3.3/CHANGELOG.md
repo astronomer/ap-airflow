@@ -1,5 +1,21 @@
 # Changelog
 
+Astronomer Certified 2.3.3-2, 2022-08-16
+----------------------------------------
+
+## Bug Fixes
+
+- Only load distribution of a name once ([#25296](https://github.com/apache/airflow/pull/25296))
+- Ensure that zombie tasks for dags with errors get cleaned up ([#25550](https://github.com/apache/airflow/pull/25550))
+- Clear next method when clearing TIs ([#23929](https://github.com/apache/airflow/pull/23929))
+
+## Security
+
+- Updated `curl` to `7.74.0-1.3+deb11u2` to fix [DSA-5197](https://www.debian.org/security/2022/dsa-5197)
+- Updated `gnutls` to `3.7.1-5+deb11u2` to fix [CVE-2022-2509](https://avd.aquasec.com/nvd/cve-2022-2509)
+- Updated `libtirpc` to `1.3.1-1+deb11u1` to fix [CVE-2021-46828](https://avd.aquasec.com/nvd/cve-2021-46828)
+
+
 Astronomer Certified 2.3.3-1, 2022-07-11
 ----------------------------------------
 
