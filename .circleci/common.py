@@ -36,7 +36,7 @@ def get_airflow_version(ac_version):
 IMAGE_MAP = collections.OrderedDict([
     ("1.10.15-9", ["buster"]),
     ("2.1.4-9", ["buster"]),
-    ("2.3.3-2-dev", ["bullseye"]),
+    ("2.3.3-2", ["bullseye"]),
 ])
 
 # Airflow Versions for which we don't publish Python Wheels
