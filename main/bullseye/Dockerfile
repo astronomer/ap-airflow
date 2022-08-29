@@ -123,8 +123,8 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 
 # Pip install airflow and astro security manager. Install Airflow module with extra separately to account
 # for difference of OSS and Astro Providers
-RUN pip install celery flower --constraint /tmp/build-time-pip-constraints.txt "elasticsearch==7.13.4" \
-    && pip install --extra-index-url "https://pip.astronomer.io/simple/" "${AIRFLOW_MODULE}" --constraint /tmp/build-time-pip-constraints.txt \
+RUN pip install celery flower "elasticsearch==7.13.4" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-main/constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt"  \
+    && pip install --extra-index-url "https://pip.astronomer.io/simple/" "${AIRFLOW_MODULE}" --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-main/constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt" \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
     && pip install  jwcrypto>0.6.0 && pip install --index-url "https://pip.astronomer.io/simple/" "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
