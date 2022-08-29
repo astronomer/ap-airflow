@@ -128,10 +128,9 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" \
-        --constraint /tmp/build-time-pip-constraints.txt \
+RUN pip install --extra-index-url "https://pip.astronomer.io/simple/" "${AIRFLOW_MODULE}" --constraint /tmp/build-time-pip-constraints.txt \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-    && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
+    && pip install  jwcrypto~=0.6.0 && pip install --index-url "https://pip.astronomer.io/simple/" "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
 
 ## move this to same layer as airflow because its from tag.
