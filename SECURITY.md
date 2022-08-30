@@ -6,12 +6,11 @@ Details on which versions are still in maintenance can be found in the [AC Suppo
 
 ## Reporting a Vulnerability
 
-Please report all security issues, including vulnerabilities, **privately** to security@astronomer.io.
+We understand that community members may identify potential security vulnerabilities.
+Identified vulnerabilities should be reported to security@astronomer.io.
+When reporting a vulnerability, we request that you do not publicly disclose any information
+regarding the vulnerability until we've had the opportunity to analyze the vulnerability, to
+respond to the notification, and to notify key customers and partners, as appropriate.
 
-<!--
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
--->
+While we greatly appreciate community reports regarding security issues, Astronomer does not provide
+compensation for vulnerability reports at this time.
