@@ -6,7 +6,7 @@ This script is used to update the VERSION in all Dockerfiles with the correspond
 import os
 import re
 
-from common import DEV_ALLOWLIST, get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
+from common import get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
 from datetime import datetime
 
 
@@ -23,8 +23,7 @@ def update_dockerfiles():
         arg_ac_version = ac_version
         if "dev" in ac_version:
             dev_version = True
-            if airflow_version not in DEV_ALLOWLIST:
-                arg_ac_version = ac_version.replace("dev", "*")
+            arg_ac_version = ac_version.replace("dev", "*")
 
         for distro in distros:
             file_name = os.path.join(project_directory, airflow_version, distro, "Dockerfile")

@@ -8,7 +8,6 @@ from jinja2 import Environment, FileSystemLoader
 
 from common import (
     circle_directory,
-    DEV_ALLOWLIST,
     dev_releases,
     get_airflow_version,
     IMAGE_MAP,
@@ -29,7 +28,6 @@ def generate_circleci_config():
 
     config = template.render(
         image_map=IMAGE_MAP,
-        dev_allowlist=DEV_ALLOWLIST,
     )
     print(config)
 

@@ -51,7 +51,7 @@ workflows:
           distribution_name: {{ distribution }}
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
-          {%- if "dev" in ac_version and airflow_version not in dev_allowlist %}
+          {%- if "dev" in ac_version %}
           extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'nightly' workflow -#}
             {%- if not edge_build %}
@@ -116,7 +116,7 @@ workflows:
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       {#- Only dev and edge builds are allowed to skip approval before pushing and notifying #}
-      {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+      {%- if "dev" not in ac_version and not edge_build %}
       - slack/on-hold:
           name: Slack-Approval-Notification-{{ airflow_version }}-{{ distribution }}
           context: slack_ap-airflow
@@ -162,7 +162,7 @@ workflows:
             - docker.io
             - qa
           requires:
-            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            {%- if "dev" not in ac_version and not edge_build %}
             - Need-Approval-{{ airflow_version }}-{{ distribution }}
             {%- else %}
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -190,7 +190,7 @@ workflows:
             - docker.io
             - qa
           requires:
-            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            {%- if "dev" not in ac_version and not edge_build %}
             - Need-Approval-{{ airflow_version }}-{{ distribution }}
             {%- else %}
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
@@ -224,7 +224,7 @@ workflows:
                 - master
 
       {#- Only dev and edge builds kick off smoke and regression tests (for now) #}
-      {%- if ("dev" in ac_version and airflow_version not in dev_allowlist) or edge_build %}
+      {%- if "dev" in ac_version or edge_build %}
       - kick-off-smoke-tests:
           name: Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
           {%- if distribution in ["alpine3.10", "buster"] %}
@@ -330,7 +330,6 @@ workflows:
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
-      {%- if airflow_version not in dev_allowlist  %}
 
       {%- if edge_build %}
       - download-file:
@@ -460,7 +459,6 @@ workflows:
               only:
                 - master
       {%- endfor %}{# distribution in distributions #}
-      {%- endif %}{# if airflow_version not in dev_allowlist #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
   {%- endif %}{# image_map.keys() | dev_releases | length > 0 #}
 
