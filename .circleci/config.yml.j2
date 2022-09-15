@@ -317,7 +317,6 @@ workflows:
       {%- endfor %}{# distribution in distributions #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
 
-  {%- if image_map.keys() | dev_releases | length > 0 %}
   nightly:
     when:
       and:
@@ -327,10 +326,12 @@ workflows:
       {%- for ac_version, distributions in image_map.items() %}
       {%- set airflow_version = ac_version | get_airflow_version %}
       {%- set airflow_version_wout_dev = airflow_version | replace('.dev', '') | replace('-dev', '') -%}
+      {%- set dev_release = ac_version | is_dev_release -%}
       {%- set edge_build = ac_version | is_edge_build -%}
       {%- set ext_build_filename = 'latest-' + airflow_version_wout_dev + '.build.json' %}
       {%- set ext_build_filename_workspace = workspace_prefix + '/latest-' + airflow_version_wout_dev + '.build.json' %}
 
+      {%- if dev_release -%}
       {%- if edge_build %}
       - download-file:
           name: download-latest-{{ airflow_version_wout_dev }}-build-info
@@ -459,8 +460,32 @@ workflows:
               only:
                 - master
       {%- endfor %}{# distribution in distributions #}
+      {%- else  -%}{# if dev_release #}
+      # {{ airflow_version }}
+      {%- for distribution in distributions %}
+      # {{ airflow_version }} - {{ distribution }}
+      - scan-trivy:
+          name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
+          airflow_version: {{ airflow_version }}
+          distribution: {{ distribution }}
+          distribution_name: {{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
+      - scan-snyk:
+          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["alpine3.10", "buster"] %}
+          tag: "{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          tag: "{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
+      {%- endfor %}{# distribution in distributions #}
+      {%- endif -%}{# dev_release #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
-  {%- endif %}{# image_map.keys() | dev_releases | length > 0 #}
 
 jobs:
   rebase-astro-main:
