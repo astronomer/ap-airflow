@@ -75,7 +75,7 @@ else
 fi
 echo "Distro: $DISTRO - Setting UID to $IMAGE_UID and GID to $IMAGE_GID"
 
-CHART_VERSION=$(helm search repo astronomer/airflow | grep astronomer/airflow | awk '{print $2}')
+CHART_VERSION=$(helm search repo --regexp 'astronomer/airflow[^-]' | grep astronomer/airflow | awk '{print $2}')
 export CHART_VERSION
 echo "Chart Version: $CHART_VERSION"
 
