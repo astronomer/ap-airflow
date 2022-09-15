@@ -274,8 +274,6 @@ def test_airflow_configs(scheduler, docker_client):
 
     if distro == "debian":
         expected_run_as_user = "50000"
-    elif distro == "alpine":
-        expected_run_as_user = "100"
     elif distro == "rhel":
         expected_run_as_user = "100"
     else:

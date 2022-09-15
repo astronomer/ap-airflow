@@ -63,16 +63,11 @@ echo "Airflow Version (SemVer): $AIRFLOW_VERSION_SEMVER"
 EDGE_BUILD=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.build.edge" }}' "$REPOSITORY:$TEST_TAG")
 export EDGE_BUILD
 
-# Find alpine or debian
+# Find debian
 DISTRO=$(docker inspect --format '{{ index .Config.Labels "io.astronomer.docker.distro" }}' "$REPOSITORY:$TEST_TAG")
 # This is handled by Houston for the platform: https://github.com/astronomer/houston-api/pull/581
-if [[ "$DISTRO" == "alpine" ]]; then
-  export IMAGE_UID="100"
-  export IMAGE_GID="101"
-else
-  export IMAGE_UID="50000"
-  export IMAGE_GID="50000"
-fi
+export IMAGE_UID="50000"
+export IMAGE_GID="50000"
 echo "Distro: $DISTRO - Setting UID to $IMAGE_UID and GID to $IMAGE_GID"
 
 CHART_VERSION=$(helm search repo --regexp 'astronomer/airflow[^-]' | grep astronomer/airflow | awk '{print $2}')

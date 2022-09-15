@@ -61,13 +61,12 @@ def update_dockerfiles():
                     'https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/'
                     'constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt'
                 )
-            if "alpine3.10" not in distros:
-                new_text = re.sub(
-                    r'https://raw.githubusercontent.com/apache/airflow/constraints-(.*)/constraints-(.*).txt',
-                    constraints_url,
-                    new_text,
-                    flags=re.MULTILINE
-                )
+            new_text = re.sub(
+                r'https://raw.githubusercontent.com/apache/airflow/constraints-(.*)/constraints-(.*).txt',
+                constraints_url,
+                new_text,
+                flags=re.MULTILINE
+            )
 
             with open(file_name, "w") as f:
                 f.write(new_text)
