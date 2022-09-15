@@ -25,7 +25,7 @@ LABEL io.astronomer.docker.airflow.onbuild=true
 ONBUILD COPY packages.txt .
 ONBUILD USER root
 ONBUILD RUN if [[ -s packages.txt ]]; then \
-    apt-get update && cat packages.txt | xargs apt-get install -y --no-install-recommends \
+    apt-get update && cat packages.txt | tr '\r\n' '\n' | xargs apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*; \
   fi
