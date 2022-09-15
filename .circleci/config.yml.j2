@@ -128,6 +128,8 @@ workflows:
             {% include "new_build_slack_approval.json.j2" %}
             {%- endfilter %}
           requires:
+            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
+            - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
@@ -160,11 +162,12 @@ workflows:
             - docker.io
             - qa
           requires:
+            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}
+            {%- else %}
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
-            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
-            - Need-Approval-{{ airflow_version }}-{{ distribution }}
             {%- endif %}
           filters:
             branches:
@@ -187,11 +190,12 @@ workflows:
             - docker.io
             - qa
           requires:
+            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
+            - Need-Approval-{{ airflow_version }}-{{ distribution }}
+            {%- else %}
             - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
-            {%- if ("dev" not in ac_version or airflow_version in dev_allowlist) and not edge_build %}
-            - Need-Approval-{{ airflow_version }}-{{ distribution }}
             {%- endif %}
           filters:
             branches:
