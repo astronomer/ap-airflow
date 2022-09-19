@@ -236,7 +236,6 @@ workflows:
           requires:
             - push-{{ airflow_version }}-{{ distribution }}
             - push-{{ airflow_version }}-{{ distribution }}-onbuild
-            - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
             branches:
               only:
