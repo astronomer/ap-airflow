@@ -14,7 +14,7 @@ def dev_releases(all_releases):
     """Find dev releases from a list of releases"""
     return [
         release for release in all_releases
-        if is_dev_release(release) and get_airflow_version(release) not in DEV_ALLOWLIST
+        if is_dev_release(release)
     ]
 
 
@@ -38,6 +38,3 @@ IMAGE_MAP = collections.OrderedDict([
     ("2.1.4-9", ["buster"]),
     ("2.3.4-2-dev", ["bullseye"]),
 ])
-
-# Airflow Versions for which we don't publish Python Wheels
-DEV_ALLOWLIST = []

@@ -6,7 +6,7 @@ This script is used to update the VERSION in all Dockerfiles with the correspond
 import os
 import re
 
-from common import DEV_ALLOWLIST, get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
+from common import get_airflow_version, IMAGE_MAP, project_directory, is_edge_build
 from datetime import datetime
 
 
@@ -23,8 +23,7 @@ def update_dockerfiles():
         arg_ac_version = ac_version
         if "dev" in ac_version:
             dev_version = True
-            if airflow_version not in DEV_ALLOWLIST:
-                arg_ac_version = ac_version.replace("dev", "*")
+            arg_ac_version = ac_version.replace("dev", "*")
 
         for distro in distros:
             file_name = os.path.join(project_directory, airflow_version, distro, "Dockerfile")
@@ -62,13 +61,12 @@ def update_dockerfiles():
                     'https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/'
                     'constraints-${PYTHON_MAJOR_MINOR_VERSION}.txt'
                 )
-            if "alpine3.10" not in distros:
-                new_text = re.sub(
-                    r'https://raw.githubusercontent.com/apache/airflow/constraints-(.*)/constraints-(.*).txt',
-                    constraints_url,
-                    new_text,
-                    flags=re.MULTILINE
-                )
+            new_text = re.sub(
+                r'https://raw.githubusercontent.com/apache/airflow/constraints-(.*)/constraints-(.*).txt',
+                constraints_url,
+                new_text,
+                flags=re.MULTILINE
+            )
 
             with open(file_name, "w") as f:
                 f.write(new_text)
