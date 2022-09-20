@@ -79,7 +79,10 @@ yq eval --inplace \
 git add $CONFIG_FILE
 git config user.name "ap-airflow"
 git config user.email "astronomer@users.noreply.github.com"
-git commit --allow-empty --message="Run ${TEST_TYPE} tests for Airflow $AIRFLOW_VERSION"
+git commit --allow-empty --message="Run ${TEST_TYPE} tests for Airflow $AIRFLOW_VERSION
+
+CircleCI build: ${CIRCLE_BUILD_URL}
+Git commit: https://github.com/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/commit/${CIRCLE_SHA1}"
 
 if [[ -n "$DRY_RUN" ]]; then
     exit 0
