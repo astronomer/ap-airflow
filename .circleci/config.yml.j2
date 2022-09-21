@@ -481,8 +481,6 @@ workflows:
           {%- else %}
           tag: "{{ airflow_version }}"
           {%- endif %}
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
       {%- endfor %}{# distribution in distributions #}
       {%- endif -%}{# dev_release #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
