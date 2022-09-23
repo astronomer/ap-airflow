@@ -631,8 +631,10 @@ jobs:
       - attach_workspace:
           at: {{ workspace_prefix }}
       - run:
-          name: Load archived Docker image
-          command: docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+          name: Load archived Docker image or pull it from the registry
+          command: |
+            docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar || \
+            docker pull quay.io/astronomer/<< parameters.image_name >>-onbuild
       - run:
           name: Install trivy
           command: |
@@ -943,9 +945,10 @@ commands:
       - attach_workspace:
           at: {{ workspace_prefix }}
       - run:
-          name: Load archived Docker image
+          name: Load archived Docker image or pull it from the registry
           command: |
-            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar || \
+            docker pull quay.io/astronomer/ap-airflow:<< parameters.tag >>-onbuild
       - snyk/scan:
           docker-image-name: ap-airflow:<< parameters.tag >>-onbuild
           monitor-on-build: false
