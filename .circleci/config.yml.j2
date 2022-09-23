@@ -905,7 +905,7 @@ commands:
               --label io.astronomer.repo.commit_sha="${CIRCLE_SHA1}" \
               --label io.astronomer.repo.url="${CIRCLE_REPOSITORY_URL}" \
               --label io.astronomer.ci.build_url="${CIRCLE_BUILD_URL}" \
-              --file '<< parameters.path>>/<< parameters.dockerfile >>' \
+              --file '<< parameters.path >>/<< parameters.dockerfile >>' \
               << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
             docker inspect << parameters.image_name >>
@@ -947,7 +947,7 @@ commands:
           command: |
             docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
       - snyk/scan:
-          docker-image-name: ap-airflow:<<parameters.tag>>-onbuild
+          docker-image-name: ap-airflow:<< parameters.tag >>-onbuild
           monitor-on-build: false
           project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
           severity-threshold: high
