@@ -85,11 +85,29 @@ workflows:
             {%- if edge_build %}
             - download-latest-{{ airflow_version_wout_dev }}-build-metadata-file
             {%- endif %}
+      - load-image:
+          name: load-image-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}-onbuild"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
+          {%- if distribution in ["buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - load-image-{{ airflow_version }}-{{ distribution }}-onbuild
+      - load-image:
+          name: load-image-{{ airflow_version }}-{{ distribution }}
           {%- if distribution in ["buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
@@ -105,7 +123,7 @@ workflows:
           tag: "{{ airflow_version }}"
           {%- endif %}
           requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+            - load-image-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["buster"] %}
@@ -378,11 +396,29 @@ workflows:
           requires:
             - download-latest-{{ airflow_version_wout_dev }}-build-info
           {%- endif %}
+      - load-image:
+          name: load-image-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}-onbuild"
+          {%- endif %}
+          requires:
+            - build-{{ airflow_version }}-{{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
+          {%- if distribution in ["buster"] %}
+          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "ap-airflow:{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - load-image-{{ airflow_version }}-{{ distribution }}-onbuild
+      - load-image:
+          name: load-image-{{ airflow_version }}-{{ distribution }}
           {%- if distribution in ["buster"] %}
           image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
@@ -398,7 +434,7 @@ workflows:
           tag: "{{ airflow_version }}"
           {%- endif %}
           requires:
-            - build-{{ airflow_version }}-{{ distribution }}
+            - load-image-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["buster"] %}
@@ -464,23 +500,41 @@ workflows:
       # {{ airflow_version }}
       {%- for distribution in distributions %}
       # {{ airflow_version }} - {{ distribution }}
+      - pull-image:
+          name: pull-image-{{ airflow_version }}-{{ distribution }}-onbuild
+          {%- if distribution in ["buster"] %}
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}-onbuild"
+          {%- else %}
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-onbuild"
+          {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
           airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          image_name: "ap-airflow:{{ airflow_version }}"
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
+          {%- endif %}
+          requires:
+            - pull-image-{{ airflow_version }}-{{ distribution }}-onbuild
+      - pull-image:
+          name: pull-image-{{ airflow_version }}-{{ distribution }}
+          {%- if distribution in ["buster"] %}
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          {%- else %}
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
           {%- endif %}
       - scan-snyk:
-          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
+          name: scan-snyk-{{ airflow_version }}-{{ distribution }}
           {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
+          tag: "quay.io/astronomer/{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          tag: "{{ airflow_version }}"
+          tag: "quay.io/astronomer/{{ airflow_version }}"
           {%- endif %}
+          requires:
+            - pull-image-{{ airflow_version }}-{{ distribution }}
       {%- endfor %}{# distribution in distributions #}
       {%- endif -%}{# dev_release #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
@@ -608,6 +662,38 @@ jobs:
     steps:
       - airflow-image-test:
           tag: "<< parameters.tag >>"
+  load-image:
+    description: Load an image from a local file
+    docker:
+      - image: docker:18.09-git
+    parameters:
+      image_name:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: {{ workspace_prefix }}
+      - run:
+          name: Load archived Docker image or pull it from the registry
+          command: |
+            docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>.tar
+  pull-image:
+    description: Pull an image from a remote registry
+    docker:
+      - image: docker:18.09-git
+    parameters:
+      image_name:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: {{ workspace_prefix }}
+      - run:
+          name: Load archived Docker image or pull it from the registry
+          command: |
+            docker pull << parameters.image_name >>
   scan-trivy:
     docker:
       - image: docker:18.09-git
@@ -630,11 +716,6 @@ jobs:
       - setup_remote_docker
       - attach_workspace:
           at: {{ workspace_prefix }}
-      - run:
-          name: Load archived Docker image or pull it from the registry
-          command: |
-            docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar || \
-            docker pull quay.io/astronomer/<< parameters.image_name >>-onbuild
       - run:
           name: Install trivy
           command: |
@@ -944,11 +1025,6 @@ commands:
       - setup_remote_docker
       - attach_workspace:
           at: {{ workspace_prefix }}
-      - run:
-          name: Load archived Docker image or pull it from the registry
-          command: |
-            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar || \
-            docker pull quay.io/astronomer/ap-airflow:<< parameters.tag >>-onbuild
       - snyk/scan:
           docker-image-name: ap-airflow:<< parameters.tag >>-onbuild
           monitor-on-build: false
