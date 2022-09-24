@@ -47,7 +47,7 @@ workflows:
       # {{ airflow_version }} - {{ distribution }}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution_name: {{ distribution }}
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
@@ -87,7 +87,7 @@ workflows:
             {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
@@ -343,7 +343,7 @@ workflows:
       {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution_name: {{ distribution }}
           dev_build: true
           edge_build: {{ edge_build }}
@@ -380,7 +380,7 @@ workflows:
           {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
@@ -466,7 +466,7 @@ workflows:
       # {{ airflow_version }} - {{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
