@@ -632,7 +632,10 @@ jobs:
           at: {{ workspace_prefix }}
       - run:
           name: Load archived Docker image
-          command: docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+          command: |
+            if [[ -e "{{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar" ]]; then
+              docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+            fi
       - run:
           name: Install trivy
           command: |
@@ -945,7 +948,9 @@ commands:
       - run:
           name: Load archived Docker image
           command: |
-            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            if [[ -e "{{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar" ]]; then
+              docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            fi
       - snyk/scan:
           docker-image-name: ap-airflow:<< parameters.tag >>-onbuild
           monitor-on-build: false
