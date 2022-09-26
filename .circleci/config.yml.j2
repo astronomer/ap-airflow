@@ -47,7 +47,7 @@ workflows:
       # {{ airflow_version }} - {{ distribution }}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution_name: {{ distribution }}
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
@@ -87,7 +87,7 @@ workflows:
             {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
@@ -343,7 +343,7 @@ workflows:
       {%- for distribution in distributions %}
       - build:
           name: build-{{ airflow_version }}-{{ distribution }}
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution_name: {{ distribution }}
           dev_build: true
           edge_build: {{ edge_build }}
@@ -380,7 +380,7 @@ workflows:
           {%- endif %}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
@@ -466,7 +466,7 @@ workflows:
       # {{ airflow_version }} - {{ distribution }}
       - scan-trivy:
           name: scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
-          airflow_version: {{ airflow_version }}
+          airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
@@ -632,7 +632,10 @@ jobs:
           at: {{ workspace_prefix }}
       - run:
           name: Load archived Docker image
-          command: docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+          command: |
+            if [[ -e "{{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar" ]]; then
+              docker load -i {{ workspace_prefix }}/saved-images/<< parameters.image_name >>-onbuild.tar
+            fi
       - run:
           name: Install trivy
           command: |
@@ -905,7 +908,7 @@ commands:
               --label io.astronomer.repo.commit_sha="${CIRCLE_SHA1}" \
               --label io.astronomer.repo.url="${CIRCLE_REPOSITORY_URL}" \
               --label io.astronomer.ci.build_url="${CIRCLE_BUILD_URL}" \
-              --file '<< parameters.path>>/<< parameters.dockerfile >>' \
+              --file '<< parameters.path >>/<< parameters.dockerfile >>' \
               << parameters.extra_args >> '<< parameters.path >>'
             docker save -o saved-images/<< parameters.image_name >>.tar '<< parameters.image_name >>'
             docker inspect << parameters.image_name >>
@@ -945,9 +948,11 @@ commands:
       - run:
           name: Load archived Docker image
           command: |
-            docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            if [[ -e "{{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar" ]]; then
+              docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
+            fi
       - snyk/scan:
-          docker-image-name: ap-airflow:<<parameters.tag>>-onbuild
+          docker-image-name: ap-airflow:<< parameters.tag >>-onbuild
           monitor-on-build: false
           project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
           severity-threshold: high
