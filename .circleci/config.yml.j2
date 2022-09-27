@@ -470,16 +470,16 @@ workflows:
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          image_name: "ap-airflow:{{ airflow_version }}"
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
           {%- endif %}
-      - scan-snyk:
+      - scan-snyk-image:
           name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
+          image: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          tag: "{{ airflow_version }}"
+          image: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
           {%- endif %}
       {%- endfor %}{# distribution in distributions #}
       {%- endif -%}{# dev_release #}
@@ -665,6 +665,24 @@ jobs:
     steps:
       - scan-snyk-docker-image:
           tag: "<< parameters.tag >>"
+  scan-snyk-image:
+    description: "Snyk: Dependency scanner for a Docker image"
+    executor: docker-executor
+    parameters:
+      image:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: {{ workspace_prefix }}
+      - snyk/scan:
+          docker-image-name: << parameters.image >>-onbuild
+          monitor-on-build: false
+          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
+          severity-threshold: high
+          organization: ${SNYK_CICD_ORGANIZATION}
+          additional-arguments: "--fail-on=all"
   push:
     executor: docker-executor
     description: Push Airflow images
