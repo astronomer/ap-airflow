@@ -665,6 +665,24 @@ jobs:
     steps:
       - scan-snyk-docker-image:
           tag: "<< parameters.tag >>"
+  scan-snyk-image:
+    description: "Snyk: Dependency scanner for a Docker image"
+    executor: docker-executor
+    parameters:
+      image:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker
+      - attach_workspace:
+          at: {{ workspace_prefix }}
+      - snyk/scan:
+          docker-image-name: << parameters.image >>-onbuild
+          monitor-on-build: false
+          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
+          severity-threshold: high
+          organization: ${SNYK_CICD_ORGANIZATION}
+          additional-arguments: "--fail-on=all"
   push:
     executor: docker-executor
     description: Push Airflow images
