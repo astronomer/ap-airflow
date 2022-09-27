@@ -470,16 +470,16 @@ workflows:
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          image_name: "ap-airflow:{{ airflow_version }}"
+          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
           {%- endif %}
-      - scan-snyk:
+      - scan-snyk-image:
           name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
           {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
+          image: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
           {%- else %}
-          tag: "{{ airflow_version }}"
+          image: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
           {%- endif %}
       {%- endfor %}{# distribution in distributions #}
       {%- endif -%}{# dev_release #}
