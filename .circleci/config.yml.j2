@@ -55,7 +55,11 @@ workflows:
           extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'nightly' workflow -#}
             {%- if not edge_build %}
+            {%- if airflow_version_wout_dev >= "2.4.0" %}
+            --build-arg VERSION=$(curl https://pip.astronomer.io/v2/apache-airflow/latest-{{ airflow_version_wout_dev }}.build)
+            {%- else %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
+            {%- endif %}{# version #}
             {%- else %}
             --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }}) \
             --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }}) \
@@ -350,7 +354,11 @@ workflows:
           extra_args: |-
             {#- If you modify this, make sure you also modify it in the 'certified-airflow' workflow -#}
             {%- if not edge_build %}
+            {%- if airflow_version_wout_dev >= "2.4.0" %}
+            --build-arg VERSION=$(curl https://pip.astronomer.io/v2/apache-airflow/latest-{{ airflow_version_wout_dev }}.build)
+            {%- else %}
             --build-arg VERSION=$(curl https://pip.astronomer.io/simple/astronomer-certified/latest-{{ airflow_version_wout_dev }}.build)
+            {%- endif %}{# version #}
             {%- else %}
             --build-arg VERSION=$(jq -r '.output.astronomer_certified.package.version' <{{ ext_build_filename_workspace }}) \
             --label org.apache.airflow.ci.build.date=$(jq -r '.date' <{{ ext_build_filename_workspace }}) \
