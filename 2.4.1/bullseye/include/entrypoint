@@ -12,7 +12,7 @@ else
 fi
 
 if [[ -n "$EXECUTOR" && -z "$AIRFLOW__CORE__EXECUTOR" ]]; then
-  # Support for puckle style of defining configs
+  # Support for puckel style of defining configs
   export AIRFLOW__CORE__EXECUTOR "${EXECUTOR}Executor"
 fi
 
