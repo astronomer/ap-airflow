@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.4.1-1, 2022-10-03
+Astronomer Certified 2.4.1-1, 2022-09-30
 ----------------------------------------
 
 User-facing CHANGELOG for AC 2.4.1+astro.1 from Airflow 2.4.1.
