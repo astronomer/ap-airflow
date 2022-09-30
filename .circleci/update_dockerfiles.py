@@ -24,6 +24,10 @@ def update_dockerfiles():
         if "dev" in ac_version:
             dev_version = True
             arg_ac_version = ac_version.replace("dev", "*")
+        elif ac_version >= "2.4.0":
+            # transform 2.4.1-1 -> 2.4.1+astro.1
+            version_parts = ac_version.split("-")
+            arg_ac_version = f"{version_parts[0]}+astro.{version_parts[1]}"
 
         for distro in distros:
             file_name = os.path.join(project_directory, airflow_version, distro, "Dockerfile")
