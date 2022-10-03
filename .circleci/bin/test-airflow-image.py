@@ -26,7 +26,6 @@ class ImageType(Enum):
 
 
 airflow_version = os.environ.get("AIRFLOW_VERSION")
-airflow_2 = True if airflow_version.startswith("2") else False
 is_edge_build = os.environ.get("EDGE_BUILD") == "true"
 
 
@@ -93,9 +92,9 @@ def test_version(webserver, docker_client):
         post_fix_version_astro = ac_version.rsplit('-')[-1]
     assert post_fix_version_astro == ac_version_postfix_output, \
         f"Incorrect post-fix version in {ac_version_output}"
-    if airflow_2:
-        pip_ver = webserver.pip_package.get_packages()["pip"]
-        assert semantic_version(pip_ver['version']) >= semantic_version('21.2.3')
+
+    pip_ver = webserver.pip_package.get_packages()["pip"]
+    assert semantic_version(pip_ver['version']) >= semantic_version('21.2.3')
 
 
 def test_elasticsearch_version(webserver):
@@ -111,19 +110,6 @@ def test_elasticsearch_version(webserver):
         "elasticsearch module must be version 5.5.3 or greater"
     assert semantic_version(version) < semantic_version('7.14'), \
         "elasticsearch module must be less than 7.14 until https://github.com/astronomer/issues/issues/3347 is fixed"
-
-
-@pytest.mark.skipif(airflow_2, reason="Not needed for Airflow>=2")
-def test_werkzeug_version(webserver):
-    """ Werkzeug pip module version >= 1.0.0 has an issue
-    """
-    try:
-        werkzeug_module = webserver.pip_package.get_packages()['Werkzeug']
-    except KeyError:
-        raise Exception("Werkzeug pip module is not installed")
-    version = werkzeug_module['version']
-    assert semantic_version(version) < semantic_version('1.0.0'), \
-        "Werkzeug pip module version must be less than 1.0.0"
 
 
 def test_redis_version(webserver):
@@ -156,71 +142,41 @@ def test_airflow_connections(scheduler):
     test_conn_uri = "postgresql://postgres_user:postgres_test@1.1.1.1:5432"
     test_conn_id = "test"
 
-    if airflow_2:
-        # Assert Connection can be added
-        assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
-            'airflow connections add --conn-uri %s %s', test_conn_uri, test_conn_id)
+    # Assert Connection can be added
+    assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
+        'airflow connections add --conn-uri %s %s', test_conn_uri, test_conn_id)
 
-        # Assert Connection can be removed
-        assert f"Successfully deleted connection with `conn_id`={test_conn_id}" in scheduler.check_output(
-            'airflow connections delete %s', test_conn_id)
-    else:
-        # Assert Connection can be added
-        assert f"Successfully added `conn_id`={test_conn_id} : {test_conn_uri}" in scheduler.check_output(
-            'airflow connections -a --conn_uri %s --conn_id %s', test_conn_uri, test_conn_id)
-
-        # Assert Connection can be removed
-        assert f"Successfully deleted `conn_id`={test_conn_id}" in scheduler.check_output(
-            'airflow connections -d --conn_id %s', test_conn_id)
+    # Assert Connection can be removed
+    assert f"Successfully deleted connection with `conn_id`={test_conn_id}" in scheduler.check_output(
+        'airflow connections delete %s', test_conn_id)
 
 
 def test_airflow_variables(scheduler):
     """Test Variables can be added, retrieved and deleted"""
-    if airflow_2:
-        # Assert Variables can be added
-        assert "" in scheduler.check_output("airflow variables set test_key test_value")
+    # Assert Variables can be added
+    assert "" in scheduler.check_output("airflow variables set test_key test_value")
 
-        # Assert Variables can be retrieved
-        assert "test_value" in scheduler.check_output("airflow variables get test_key")
+    # Assert Variables can be retrieved
+    assert "test_value" in scheduler.check_output("airflow variables get test_key")
 
-        # Assert Variables can be deleted
-        assert "" in scheduler.check_output("airflow variables delete test_key")
-    else:
-        # Assert Variables can be added
-        assert "" in scheduler.check_output("airflow variables --set test_key test_value")
-
-        # Assert Variables can be retrieved
-        assert "test_value" in scheduler.check_output("airflow variables --get test_key")
-
-        # Assert Variables can be deleted
-        assert "" in scheduler.check_output("airflow variables --delete test_key")
+    # Assert Variables can be deleted
+    assert "" in scheduler.check_output("airflow variables delete test_key")
 
 
 def test_list_dags(scheduler):
     """
     Create Example DAG and add it to Scheduler POD
     """
-    if airflow_2:
-        airflow_list_dags_output = scheduler.check_output("airflow dags list")
-    else:
-        airflow_list_dags_output = scheduler.check_output("airflow list_dags -r")
-        assert "Number of DAGs: 1" in airflow_list_dags_output
-
+    airflow_list_dags_output = scheduler.check_output("airflow dags list")
     assert "example_dag" in airflow_list_dags_output
 
 
 def test_airflow_trigger_dags(scheduler):
     """Test Triggering of DAGs & Pausing & Unpausing Dags"""
-    if airflow_2:
-        pause_dag_command = "airflow dags pause example_dag"
-        trigger_dag_command = "airflow dags trigger -r test_run -e 2020-05-01 example_dag"
-        unpause_dag_command = "airflow dags unpause example_dag"
-        dag_state_command = "airflow dags state example_dag 2020-05-01"
-    else:
-        pause_dag_command = "airflow pause example_dag"
-        trigger_dag_command = "airflow trigger_dag -r test_run -e 2020-05-01 example_dag"
-        unpause_dag_command = "airflow unpause example_dag"
-        dag_state_command = "airflow dag_state example_dag 2020-05-01"
+    pause_dag_command = "airflow dags pause example_dag"
+    trigger_dag_command = "airflow dags trigger -r test_run -e 2020-05-01 example_dag"
+    unpause_dag_command = "airflow dags unpause example_dag"
+    dag_state_command = "airflow dags state example_dag 2020-05-01"
 
     assert "Dag: example_dag, paused: True" in scheduler.check_output(pause_dag_command)
     assert "Created <DagRun example_dag @ 2020-05-01T00:00:00+00:00: test_run" \
@@ -282,27 +238,21 @@ def test_airflow_configs(scheduler, docker_client):
     else:
         expected_run_as_user = ""
 
-    if airflow_2:
-        assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^lazy_load_plugins' | awk '{print $3}'"
-        ) == "False", "[core] lazy_load_plugins needs to be False for astronomer-version-check plugin to work"
+    assert scheduler.check_output(
+        f"cat {config_file_path} | "
+        "grep '^lazy_load_plugins' | awk '{print $3}'"
+    ) == "False", "[core] lazy_load_plugins needs to be False for astronomer-version-check plugin to work"
 
-        assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^auth_backend' | awk '{print $3}'"
-        ) == "astronomer.flask_appbuilder.current_user_backend", \
-            "[api] auth_backend(s) needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
+    assert scheduler.check_output(
+        f"cat {config_file_path} | "
+        "grep '^auth_backend' | awk '{print $3}'"
+    ) == "astronomer.flask_appbuilder.current_user_backend", \
+        "[api] auth_backend(s) needs to be set to 'astronomer.flask_appbuilder.current_user_backend' for Platform"
 
-        assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^operation_timeout' | awk '{print $3}'"
-        ) == "10.0", "[celery] operation_timeout needs to be set for AC >= 2.0.0"
-    else:
-        # Confirm that run_as_user is the UID for astro user (and not root) for AC images
-        assert scheduler.check_output(
-            f"cat {config_file_path} | "
-            "grep '^run_as_user' | awk '{print $3}'").strip() == expected_run_as_user
+    assert scheduler.check_output(
+        f"cat {config_file_path} | "
+        "grep '^operation_timeout' | awk '{print $3}'"
+    ) == "10.0", "[celery] operation_timeout needs to be set for AC >= 2.0.0"
 
     if semantic_version(airflow_version) >= semantic_version('1.10.7'):
         assert scheduler.check_output(
@@ -385,16 +335,10 @@ def test_apache_airflow_in_requirements(tmp_path):
         assert b"Do not upgrade by specifying 'apache-airflow' in your requirements.txt" in output.stderr
 
     # Test that you can still use Provider (or backport providers) packages that start with "apache-airflow"
-    if airflow_2:
-        (test_project / "requirements.txt").write_text("apache-airflow-providers-amazon")
-        output = subprocess.run(
-            ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True
-        )
-    else:
-        (test_project / "requirements.txt").write_text("apache-airflow-backport-providers-amazon")
-        output = subprocess.run(
-            ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True
-        )
+    (test_project / "requirements.txt").write_text("apache-airflow-providers-amazon")
+    output = subprocess.run(
+        ['docker', 'build', '-t', 'testimage', test_project.resolve()], capture_output=True
+    )
     assert output.returncode == 0, output.stderr
 
 
@@ -408,10 +352,9 @@ def test_airflow_in_constraints(scheduler):
     assert installed_airflow_version in pip_constraints_file
 
 
-@pytest.mark.skipif(not airflow_2 or is_edge_build, reason="Airflow <2.0.0 does not support this test")
+@pytest.mark.skipif(is_edge_build, reason="Edge builds won't have a patched k8s provider")
 def test_istio_patch_exists_in_kubernetes_providers(scheduler: testinfra.host.Host):
     """Test that Istio patch exists in the Kubernetes Provider and Kubernetes Executor"""
-
     scheduler.check_output(
         "python -c 'from airflow.providers.cncf.kubernetes.utils.istio import Istio'"
     )
