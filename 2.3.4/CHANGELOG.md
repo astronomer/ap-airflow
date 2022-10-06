@@ -1,5 +1,17 @@
 # Changelog
 
+Astronomer Certified 2.3.4-3, 2022-10-06
+----------------------------------------
+
+### Bugfixes
+
+- Remove TaskFail duplicates check (#26714) ([commit](https://github.com/astronomer/airflow/commit/b94db52c3497e04747e63fce85dc08dd7f4657fc))
+- Fix faulty executor config serialization logic (#26191) ([commit](https://github.com/astronomer/airflow/commit/6831e7824e11c43061d200f55f2e013382d61f46))
+
+### Security
+
+- Updated `expat` to `2.2.10-2+deb11u` to fix [CVE-2022-40674](https://avd.aquasec.com/nvd/cve-2022-40674)
+
 Astronomer Certified 2.3.4-2, 2022-09-21
 ----------------------------------------
 
