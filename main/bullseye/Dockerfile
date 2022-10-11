@@ -15,6 +15,7 @@
 ARG APT_DEPS_IMAGE="airflow-apt-deps"
 ARG PYTHON_MAJOR_MINOR_VERSION="3.9"
 ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-bullseye"
+ARG ASTRONOMER_ANALYTICS_PLUGIN_RELEASE="0.0.1"
 
 FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
@@ -115,6 +116,7 @@ ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes
 ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION=${VERSION}
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.1"
+ARG ASTRONOMER_ANALYTICS_PLUGIN_RELEASE
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -128,6 +130,10 @@ RUN pip install "${AIRFLOW_MODULE}" celery flower "elasticsearch==7.13.4" \
 	&& pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
 	&& pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
 
+# Install Astronomer airflow plugins
+ADD https://github.com/astronomer/airflow-analytics-plugin/archive/refs/tags/${ASTRONOMER_ANALYTICS_PLUGIN_RELEASE}.tar.gz /
+RUN tar -xzf /0.0.1.tar.gz
+RUN rm /0.0.1.tar.gz
 
 ## move this to same layer as airflow because its from tag.
 
@@ -202,6 +208,8 @@ USER ${ASTRONOMER_USER}
 
 # Switch to AIRFLOW_HOME
 WORKDIR ${AIRFLOW_HOME}
+ARG ASTRONOMER_ANALYTICS_PLUGIN_RELEASE
+COPY --from=devel /airflow-analytics-plugin-${ASTRONOMER_ANALYTICS_PLUGIN_RELEASE}/plugins /plugins/
 
 ENTRYPOINT ["/entrypoint"]
 CMD ["airflow", "--help"]
