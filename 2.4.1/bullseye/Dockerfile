@@ -131,7 +131,8 @@ COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 RUN pip install "${AIRFLOW_MODULE}" celery flower \
         --constraint /tmp/build-time-pip-constraints.txt \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-    && pip install --find-links https://pip.astronomer.io/simple/astronomer-fab-security-manager/ "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
+    && pip install --find-links https://pip.astronomer.io/simple/astronomer-fab-security-manager/ "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
+    && pip install astronomer-analytics-plugin==1.0.0
 
 
 ## move this to same layer as airflow because its from tag.
