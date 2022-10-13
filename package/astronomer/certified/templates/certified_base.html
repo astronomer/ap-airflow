@@ -1,0 +1,30 @@
+{% extends original_base_template %}
+
+{% block head_css %}
+  {{ super() }}
+  <link href="{{ url_for('AstronomerCertifiedTheme.static', filename='astro-theme.css') }}" rel="stylesheet">
+  {% endblock %}
+
+  {% block footer %}
+  {% if not current_user.is_anonymous %}
+    {% set version_label = 'Version' %}
+    <footer class="footer">
+      <div class="container">
+        <div>
+          {% if airflow_version %}
+            Astronomer Certified
+              <strong>v{{ ac_version }}</strong>
+            based on Apache Airflow
+            <a href="https://pypi.python.org/pypi/apache-airflow/{{ airflow_upstream_version }}" target="_blank">
+              <strong>v{{ airflow_upstream_version }}</strong>
+            </a>
+          {% else %}
+            Airflow Version: Not Available
+          {% endif %}
+          {% if git_version %}<br>Git Version: <strong>{{ git_version }}</strong>{% endif %}
+        </div>
+        <div></div>
+      </div>
+    </footer>
+  {% endif %}
+{% endblock %}
