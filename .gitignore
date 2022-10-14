@@ -1,10 +1,12 @@
 *.csr
+*.egg-info/
 *.iml
 *.jar
 *.log
 *.pyc
 *.req
 *.srl
+*.whl
 *cache*
 *ipynb*
 .DS_Store
@@ -13,8 +15,11 @@
 .python-version
 .vscode/*
 __pycache__
+build
+dist
 docs/_build
 docs/README.md
+env
 in
 java/.classpath
 java/.project

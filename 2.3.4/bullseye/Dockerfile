@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 ARG APT_DEPS_IMAGE="airflow-apt-deps"
 ARG PYTHON_MAJOR_MINOR_VERSION="3.9"
 ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-bullseye"
@@ -110,9 +111,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.3.4-3"
+ARG VERSION="2.3.4-4-*"
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
-ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
+ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="2.3.4"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 
@@ -128,10 +129,13 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
+COPY dist/ /tmp/dist/
 RUN pip install "${AIRFLOW_MODULE}" celery flower \
-        --constraint /tmp/build-time-pip-constraints.txt \
+     --constraint /tmp/build-time-pip-constraints.txt \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-    && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
+    && pip install "astronomer-airflow-version-check>=1.0.12" \
+    && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
+    && pip install /tmp/dist/astronomer_certified_extensions*.whl
 
 
 ## move this to same layer as airflow because its from tag.
@@ -146,7 +150,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.3.4-3"
+ARG VERSION="2.3.4-4-*"
 ARG AIRFLOW_VERSION="2.3.4"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
@@ -198,6 +202,8 @@ RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 
 # Environment Variables for Partner Programs
 ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
+# Environment Variable for UI version display
+ENV ASTRONOMER_CERTIFIED_VERSION=${VERSION}
 
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes
