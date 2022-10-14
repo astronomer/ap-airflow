@@ -1,0 +1,4 @@
+# Ignore these CVEs only for the dev image.
+# The release image would pass the CVE scan
+CVE-2022-38054
+CVE-2022-40604
