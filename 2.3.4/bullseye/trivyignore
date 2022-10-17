@@ -1,4 +1,4 @@
-# Airflow vulnerability fixed in 2.4.0
+# Airflow vulnerability with backported fix
 CVE-2022-40604
 # Inactive user CVE in Airflow does not affect astronomer users
 CVE-2022-41672
