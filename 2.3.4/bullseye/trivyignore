@@ -1,4 +1,4 @@
-# Ignore these CVEs only for the dev image.
-# The release image would pass the CVE scan
-CVE-2022-38054
+# Airflow vulnerability with backported fix
 CVE-2022-40604
+# Inactive user CVE in Airflow does not affect astronomer users
+CVE-2022-41672

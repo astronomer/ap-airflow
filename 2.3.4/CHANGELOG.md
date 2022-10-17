@@ -1,7 +1,7 @@
 # Changelog
 
-Astronomer Certified 2.3.4-4, TBD
----------------------------------
+Astronomer Certified 2.3.4-4, 2022-10-17
+----------------------------------------
 
 ### Bugfixes
 
