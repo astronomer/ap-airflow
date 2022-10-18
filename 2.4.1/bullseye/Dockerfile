@@ -138,7 +138,6 @@ RUN pip install "${AIRFLOW_MODULE}" celery flower \
     && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.0/astronomer_analytics_plugin-1.0.0-py3-none-any.whl
 
 
-
 ## move this to same layer as airflow because its from tag.
 
 FROM ${APT_DEPS_IMAGE} as main
