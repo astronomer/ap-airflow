@@ -128,11 +128,15 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
+COPY dist/ /tmp/dist/
 RUN pip install "${AIRFLOW_MODULE}" celery flower \
         --constraint /tmp/build-time-pip-constraints.txt \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
-    && pip install --find-links https://pip.astronomer.io/simple/astronomer-fab-security-manager/ "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
+    && pip install "astronomer-airflow-version-check>=1.0.12" \
+    && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
+    && pip install /tmp/dist/astronomer_certified_extensions*.whl \
     && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.0/astronomer_analytics_plugin-1.0.0-py3-none-any.whl
+
 
 
 ## move this to same layer as airflow because its from tag.
@@ -199,6 +203,9 @@ RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 
 # Environment Variables for Partner Programs
 ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
+
+# Environment Variable for UI version display
+ENV ASTRONOMER_CERTIFIED_VERSION=${VERSION}
 
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes

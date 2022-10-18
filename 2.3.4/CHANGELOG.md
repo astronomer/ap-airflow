@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.3.4-4, 2022-10-17
+----------------------------------------
+
+### Bugfixes
+
+- Revert "Cache the custom secrets backend so the same instance gets re-used" ([#25556](https://github.com/apache/airflow/pull/25556))
+
 Astronomer Certified 2.3.4-3, 2022-10-06
 ----------------------------------------
 

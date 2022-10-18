@@ -1,0 +1,4 @@
+# Airflow vulnerability with backported fix
+CVE-2022-40604
+# Inactive user CVE in Airflow does not affect astronomer users
+CVE-2022-41672
