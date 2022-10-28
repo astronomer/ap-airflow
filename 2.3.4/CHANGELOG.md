@@ -1,5 +1,12 @@
 # Changelog
 
+Astronomer Certified 2.3.4-4, TBD
+---------------------------------
+
+### Bugfixes
+
+- Fix backporting issue with faulty executor config serialization logic
+
 Astronomer Certified 2.3.4-4, 2022-10-17
 ----------------------------------------
 
