@@ -1,11 +1,12 @@
 # Changelog
 
-Astronomer Certified 2.3.4-4, TBD
----------------------------------
+Astronomer Certified 2.3.4-5, 2022-10-28
+----------------------------------------
 
 ### Bugfixes
 
 - Fix backporting issue with faulty executor config serialization logic
+- Fix warning when using xcomarg dependencies ([#26801](https://github.com/apache/airflow/pull/26801))
 
 Astronomer Certified 2.3.4-4, 2022-10-17
 ----------------------------------------

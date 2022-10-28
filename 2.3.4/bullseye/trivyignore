@@ -4,5 +4,3 @@ CVE-2022-40604
 CVE-2022-41672
 # Protobuf CVE not fixable until protobuf is updated in Airflow
 CVE-2022-1941
-# This should be removed on non dev version
-CVE-2022-38054
