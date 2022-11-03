@@ -1,5 +1,19 @@
 # Changelog
 
+Astronomer Certified 2.3.4-6, 2022-11-07
+----------------------------------------
+
+### Bugfixes
+
+- Make tracebacks opt-in ([#27059](https://github.com/apache/airflow/pull/27059))
+- Avoid 500 on dag redirect ([#27064](https://github.com/apache/airflow/pull/27064))
+
+### Security
+
+- Don't overwrite connection extra with invalid json ([#27142](https://github.com/apache/airflow/pull/27142))
+- Simplify origin string cleaning (#) ([#27143](https://github.com/apache/airflow/pull/27143))
+- Update `libexpat1` to `2.2.10-2+deb11u5` to fix [CVE-2022-43680](https://avd.aquasec.com/nvd/2022/cve-2022-43680/)
+
 Astronomer Certified 2.3.4-5, 2022-10-28
 ----------------------------------------
 

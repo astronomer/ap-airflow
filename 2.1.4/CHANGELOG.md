@@ -1,5 +1,14 @@
 # Changelog
 
+Astronomer Certified 2.1.4-10, 2022-11-07
+-----------------------------------------
+
+### Security
+
+- Make tracebacks opt-in (#27059) ([commit](https://github.com/astronomer/airflow/commit/cc1c2cf4309947f3b175272898aa6b41af24e4ed))
+- Simplify origin string cleaning (#27143) ([commit](https://github.com/astronomer/airflow/commit/dd94f3348f47ab051c66b1534aa393f45ca04952))
+- (more system level tbd)
+
 Astronomer Certified 2.1.4-9, 2022-07-22
 ----------------------------------------
 
