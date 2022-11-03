@@ -2,5 +2,8 @@
 CVE-2022-40604
 # Inactive user CVE in Airflow does not affect astronomer users
 CVE-2022-41672
+# Session fixation is not an issues on our platform
+CVE-2022-38054
+
 # Protobuf CVE not fixable until protobuf is updated in Airflow
 CVE-2022-1941
