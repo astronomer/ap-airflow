@@ -13,8 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ARG APT_DEPS_IMAGE="airflow-apt-deps"
-ARG PYTHON_MAJOR_MINOR_VERSION="3.7"
-ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-buster"
+ARG PYTHON_MAJOR_MINOR_VERSION="3.9"
+ARG PYTHON_BASE_IMAGE="python:${PYTHON_MAJOR_MINOR_VERSION}-slim-bullseye"
 
 FROM ${PYTHON_BASE_IMAGE} as airflow-apt-deps
 
@@ -53,7 +53,7 @@ ENV DEBIAN_FRONTEND=noninteractive LANGUAGE=C.UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8 
     LC_CTYPE=C.UTF-8 LC_MESSAGES=C.UTF-8
 
 # By increasing this number we can do force build of all dependencies
-ARG DEPENDENCIES_EPOCH_NUMBER="7"
+ARG DEPENDENCIES_EPOCH_NUMBER="1"
 # Increase the value below to force renstalling of all dependencies
 ENV DEPENDENCIES_EPOCH_NUMBER=${DEPENDENCIES_EPOCH_NUMBER}
 
@@ -64,7 +64,7 @@ RUN apt-get update \
            libmariadb3 \
            freetds-bin \
            gosu \
-           libffi6 \
+           libffi7 \
            libkrb5-3 \
            libpq5 \
            libsasl2-2 \
@@ -98,7 +98,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
 ENV PIP_NO_CACHE_DIR="true"
 
 RUN apt-get update \
-    && curl -sL https://deb.nodesource.com/setup_13.x | sudo bash - \
+    && curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - \
     && apt-get install -y --no-install-recommends \
         build-essential \
         default-libmysqlclient-dev \
@@ -110,11 +110,11 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.1.4-10"
-ARG SUBMODULES="async,azure,amazon,celery,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
-ARG AIRFLOW_MODULE="astronomer_certified[${SUBMODULES}]==$VERSION"
-ARG AIRFLOW_VERSION="2.1.4"
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.2"
+ARG VERSION="2.4.3+astro.1"
+ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
+ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==$VERSION"
+ARG AIRFLOW_VERSION="2.4.3"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 
 # Make pip look at our pip repo too, and force it to install these specific
 # versions when ever it installs a module.
@@ -128,27 +128,30 @@ COPY include/pip-constraints.txt /usr/local/share/astronomer-pip-constraints.txt
 COPY build-time-pip-constraints.txt /tmp/build-time-pip-constraints.txt
 
 # Pip install airflow and astro security manager
-RUN pip install "${AIRFLOW_MODULE}" \
+COPY dist/ /tmp/dist/
+RUN pip install "${AIRFLOW_MODULE}" celery flower \
         --constraint /tmp/build-time-pip-constraints.txt \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
+    && pip install "astronomer-airflow-version-check>=1.0.12" \
     && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
-    && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.0/astronomer_analytics_plugin-1.0.0-py3-none-any.whl
+    && pip install /tmp/dist/astronomer_certified_extensions*.whl
+
 
 ## move this to same layer as airflow because its from tag.
 
 FROM ${APT_DEPS_IMAGE} as main
 
 # By increasing this number we force CI to upgrade all system packages
-ARG PACKAGE_UPGRADE_EPOCH_NUMBER="7"
+ARG PACKAGE_UPGRADE_EPOCH_NUMBER="2"
 
 RUN apt-get update \
     && apt-get upgrade -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.1.4-10"
-ARG AIRFLOW_VERSION="2.1.4"
-ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.2"
+ARG VERSION="2.4.3+astro.1"
+ARG AIRFLOW_VERSION="2.4.3"
+ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"
 LABEL io.astronomer.docker.fab_security_manager.version="${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}"
@@ -173,7 +176,7 @@ RUN sed -i \
     -e 's/^run_as_user =.*/run_as_user = 50000/g' \
     -e 's/^lazy_load_plugins =.*/lazy_load_plugins = False/g' \
     -e 's/^update_fab_perms =.*/update_fab_perms = False/g' \
-    -e 's/^auth_backend =.*/auth_backend = astronomer.flask_appbuilder.current_user_backend/g' \
+    -e 's/^auth_backends =.*/auth_backends = astronomer.flask_appbuilder.current_user_backend/g' \
     -e 's/^operation_timeout =.*/operation_timeout = 10.0/g' \
     /usr/local/lib/python${PYTHON_MAJOR_MINOR_VERSION}/site-packages/airflow/config_templates/default_airflow.cfg
 
@@ -198,6 +201,9 @@ RUN mkdir -pv /usr/share/man/man1 && mkdir -pv /usr/share/man/man7
 
 # Environment Variables for Partner Programs
 ENV AIRFLOW_SNOWFLAKE_PARTNER=ASTRONOMER
+
+# Environment Variable for UI version display
+ENV ASTRONOMER_CERTIFIED_VERSION=${VERSION}
 
 # Though this is set here we currently override this in the helm template, so
 # this _might_ not have any effect once deployed. The /entrypoint script copes

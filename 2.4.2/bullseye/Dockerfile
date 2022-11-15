@@ -110,10 +110,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.4.1+astro.1"
+ARG VERSION="2.4.2+astro.1"
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==$VERSION"
-ARG AIRFLOW_VERSION="2.4.1"
+ARG AIRFLOW_VERSION="2.4.2"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 
 # Make pip look at our pip repo too, and force it to install these specific
@@ -150,8 +150,8 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.4.1+astro.1"
-ARG AIRFLOW_VERSION="2.4.1"
+ARG VERSION="2.4.2+astro.1"
+ARG AIRFLOW_VERSION="2.4.2"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
 LABEL io.astronomer.docker.ac.version="${VERSION}"

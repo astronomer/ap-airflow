@@ -1,5 +1,23 @@
 # Changelog
 
+Astronomer Certified 2.1.4-10, 2022-11-09
+-----------------------------------------
+
+### Security
+
+- Make tracebacks opt-in (#27059) ([commit](https://github.com/astronomer/airflow/commit/cc1c2cf4309947f3b175272898aa6b41af24e4ed))
+- Simplify origin string cleaning (#27143) ([commit](https://github.com/astronomer/airflow/commit/dd94f3348f47ab051c66b1534aa393f45ca04952))
+- Updated `Mako` to `1.2.2` to fix [CVE-2022-40023](https://avd.aquasec.com/nvd/CVE-2022-40023)
+- Updated `curl` to `7.64.0-4+deb10u3` to fix [CVE-2021-22946](https://avd.aquasec.com/nvd/CVE-2021-22946), [CVE-2022-22576](https://avd.aquasec.com/nvd/CVE-2022-22576), [CVE-2022-27781](https://avd.aquasec.com/nvd/CVE-2022-27781), and [CVE-2022-27782](https://avd.aquasec.com/nvd/CVE-2022-27782)
+- Updated `glibc` to `2.28-10+deb10u2` to fix [DLA-3152-1](https://security-tracker.debian.org/tracker/DLA-3152-1)
+- Update `libexpat1` to `2.2.6-2+deb10u6` to fix [CVE-2022-43680](https://avd.aquasec.com/nvd/2022/cve-2022-43680) and [CVE-2022-40674](https://avd.aquasec.com/nvd/2022/cve-2022-40674)
+- Updated `gnutls` to `3.6.7-4+deb10u9` to fix [CVE-2022-2509](https://avd.aquasec.com/nvd/cve-2022-2509)
+- Updated `mariadb` to `1:10.3.36-0+deb10u1` to fix [DLA-3114-1](https://security-tracker.debian.org/tracker/DLA-3114-1)
+- Updated `ncurses` to `6.1+20181013-2+deb10u3` to fix [CVE-2022-29458](https://avd.aquasec.com/nvd/cve-CVE-2022-29458)
+- Updated `postgresql` to `11.17-0+deb10u1` to fix [CVE-2022-2625](https://avd.aquasec.com/nvd/cve-CVE-2022-2625)
+- Updated `sqlite` to `3.27.2-3+deb10u2` to fix [DLA-3107-1](https://security-tracker.debian.org/tracker/DLA-3107-1)
+- Updated `zlib` to `1:1.2.11.dfsg-1+deb10u2` to fix [CVE-2022-37434](https://avd.aquasec.com/nvd/cve-CVE-2022-37434)
+
 Astronomer Certified 2.1.4-9, 2022-07-22
 ----------------------------------------
 
