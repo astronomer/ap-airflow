@@ -132,7 +132,7 @@ RUN pip install "${AIRFLOW_MODULE}" \
         --constraint /tmp/build-time-pip-constraints.txt \
     && pip install "https://github.com/astronomer/astronomer-airflow-scripts/releases/download/v0.0.5/astronomer_airflow_scripts-0.0.5-py3-none-any.whl" \
     && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
-    && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.0/astronomer_analytics_plugin-1.0.1-py3-none-any.whl
+    && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.1/astronomer_analytics_plugin-1.0.1-py3-none-any.whl
 
 ## move this to same layer as airflow because its from tag.
 
