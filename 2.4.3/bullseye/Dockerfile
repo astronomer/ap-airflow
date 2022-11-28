@@ -135,7 +135,7 @@ RUN pip install "${AIRFLOW_MODULE}" celery flower \
     && pip install "astronomer-airflow-version-check>=1.0.12" \
     && pip install "astronomer-fab-security-manager==${ASTRONOMER_FAB_SECURITY_MANAGER_VERSION}" \
     && pip install /tmp/dist/astronomer_certified_extensions*.whl \
-    && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.1/astronomer_analytics_plugin-1.0.1-py3-none-any.whl
+    && pip install https://github.com/astronomer/airflow-analytics-plugin/releases/download/1.0.2/astronomer_analytics_plugin-1.0.2-py3-none-any.whl
 
 
 
