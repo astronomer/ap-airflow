@@ -1,5 +1,16 @@
 # Changelog
 
+Astronomer Certified 2.3.4-7, 2022-12-21
+----------------------------------------
+### Bugfixes
+
+- Fix deadlock when chaining multiple empty mapped tasks ([#27964](https://github.com/apache/airflow/pull/27964))
+
+### Security
+
+- Change the template to use human readable task_instance description ([#25960](https://github.com/apache/airflow/pull/25960))
+- Update `certifi` to `2022.12.7` to fix [CVE-2022-23491](https://avd.aquasec.com/nvd/2022/cve-2022-23491/)
+
 Astronomer Certified 2.3.4-6, 2022-11-09
 ----------------------------------------
 
