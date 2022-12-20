@@ -1,5 +1,9 @@
 # Airflow vulnerability with backported fix
 CVE-2022-40604
+CVE-2022-40127
+CVE-2022-43982
+CVE-2022-43985
+
 # Inactive user CVE in Airflow does not affect astronomer users
 CVE-2022-41672
 # Session fixation is not an issues on our platform
