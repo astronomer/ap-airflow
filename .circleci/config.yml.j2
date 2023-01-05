@@ -77,11 +77,7 @@ workflows:
             --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
           {%- endif %}
-          {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_name: "ap-airflow:{{ airflow_version }}"
-          {%- endif %}
           requires:
             - build-package
             {%- if edge_build %}
@@ -92,20 +88,12 @@ workflows:
           airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
-          {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_name: "ap-airflow:{{ airflow_version }}"
-          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           tag: "{{ airflow_version }}"
-          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       {#- Only dev and edge builds are allowed to skip approval before pushing and notifying #}
@@ -142,13 +130,8 @@ workflows:
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
           nightly_build: false
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
-          {%- else %}
           tag: "{{ airflow_version }}"
           extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM},{{ ac_version }}"
-          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -169,13 +152,8 @@ workflows:
           dev_build: {{ dev_build }}
           edge_build: {{ edge_build }}
           nightly_build: false
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
-          {%- else %}
           tag: "{{ airflow_version }}-onbuild"
           extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
-          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -196,13 +174,8 @@ workflows:
           name: new-build-slack-notification-{{ airflow_version }}-{{ distribution }}-onbuild
           dev_build: {{ dev_build }}
           airflow_version: "{{ airflow_version }}"
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ ac_version }}-{{ distribution }}-onbuild"
-          {%- else %}
           tag: "{{ airflow_version }}-onbuild"
           extra_tags: "{{ ac_version }}-onbuild"
-          {%- endif %}
           context:
             - slack_ap-airflow
           requires:
@@ -217,11 +190,7 @@ workflows:
       {%- if "dev" in ac_version or edge_build %}
       - kick-off-smoke-tests:
           name: Kick-off-smoke-tests-{{ airflow_version }}-{{ distribution }}
-          {%- if distribution in ["buster"] %}
-          image_tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_tag: "{{ airflow_version }}"
-          {%- endif %}
           airflow_version: "{{ airflow_version }}"
           requires:
             - push-{{ airflow_version }}-{{ distribution }}
@@ -234,11 +203,7 @@ workflows:
       - smoke-test-slack-notification:
           name: smoke-test-slack-notification-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
-          {%- if distribution in ["buster"] %}
-          image_tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_tag: "{{ airflow_version }}"
-          {%- endif %}
           context:
             - slack_ap-airflow
           requires:
@@ -275,11 +240,7 @@ workflows:
                 - master
       - kick-off-regression-tests:
           name: Kick-off-regression-tests-{{ airflow_version }}-{{ distribution }}
-          {%- if distribution in ["buster"] %}
-          image_tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_tag: "{{ airflow_version }}"
-          {%- endif %}
           airflow_version: "{{ airflow_version }}"
           requires:
             - Need-Approval-{{ airflow_version }}-{{ distribution }}-Regression-Tests
@@ -290,11 +251,7 @@ workflows:
       - regression-test-slack-notification:
           name: regression-test-slack-notification-{{ airflow_version }}-{{ distribution }}
           airflow_version: "{{ airflow_version }}"
-          {%- if distribution in ["buster"] %}
-          image_tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_tag: "{{ airflow_version }}"
-          {%- endif %}
           context:
             - slack_ap-airflow
           requires:
@@ -363,11 +320,7 @@ workflows:
             {#- This redirects to the canonical workflow URL #}
             --label com.circleci.workflow.url="https://app.circleci.com/pipelines/workflows/${CIRCLE_WORKFLOW_ID}"
             {%- endif %}{# edge_build #}
-          {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_name: "ap-airflow:{{ airflow_version }}"
-          {%- endif %}
           {%- if edge_build %}
           requires:
             - download-latest-{{ airflow_version_wout_dev }}-build-info
@@ -377,20 +330,12 @@ workflows:
           airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
-          {%- if distribution in ["buster"] %}
-          image_name: "ap-airflow:{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_name: "ap-airflow:{{ airflow_version }}"
-          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           tag: "{{ airflow_version }}"
-          {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
       - push:
@@ -398,13 +343,8 @@ workflows:
           dev_build: true
           edge_build: {{ edge_build }}
           nightly_build: true
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}"
-          {%- else %}
           tag: "{{ airflow_version }}"
           extra_tags: "{{ airflow_version }}-${CIRCLE_BUILD_NUM},{{ ac_version }}"
-          {%- endif %}{# distribution in ["buster"] #}
           {%- if edge_build %}
           extra_tags_file: {{ workspace_prefix }}/extra-tags-{{ airflow_version_wout_dev }}.txt
           {%- endif %}{# edge_build #}
@@ -424,13 +364,8 @@ workflows:
           dev_build: true
           edge_build: {{ edge_build }}
           nightly_build: true
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}-onbuild"
-          extra_tags: "{{ airflow_version }}-{{ distribution }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-{{ distribution }}-onbuild"
-          {%- else %}
           tag: "{{ airflow_version }}-onbuild"
           extra_tags: "{{ airflow_version }}-onbuild-${CIRCLE_BUILD_NUM},{{ ac_version }}-onbuild"
-          {%- endif %}
           context:
             - quay.io
             - docker.io
@@ -452,11 +387,7 @@ workflows:
           airflow_version: "{{ airflow_version }}"
           distribution: {{ distribution }}
           distribution_name: {{ distribution }}-onbuild
-          {%- if distribution in ["buster"] %}
-          image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
           image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
-          {%- endif %}
       {%- endfor %}{# distribution in distributions #}
       {%- endif -%}{# dev_release #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
