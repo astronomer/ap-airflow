@@ -12,13 +12,6 @@
 version: 2.1
 
 workflows:
-  rebase-astro-main:
-    when:
-      and:
-        - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
-        - equal: [ "every-midnight-utc", << pipeline.schedule.name >> ]
-    jobs:
-      - rebase-astro-main
   certified-airflow:
     when:
       not:
@@ -106,15 +99,6 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
-      - scan-snyk:
-          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
-          tag: "{{ airflow_version }}"
-          {%- endif %}
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["buster"] %}
@@ -137,7 +121,6 @@ workflows:
             {% include "new_build_slack_approval.json.j2" %}
             {%- endfilter %}
           requires:
-            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -174,7 +157,6 @@ workflows:
             {%- if "dev" not in ac_version and not edge_build %}
             - Need-Approval-{{ airflow_version }}-{{ distribution }}
             {%- else %}
-            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
             {%- endif %}
@@ -202,7 +184,6 @@ workflows:
             {%- if "dev" not in ac_version and not edge_build %}
             - Need-Approval-{{ airflow_version }}-{{ distribution }}
             {%- else %}
-            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
             {%- endif %}
@@ -403,15 +384,6 @@ workflows:
           {%- endif %}
           requires:
             - build-{{ airflow_version }}-{{ distribution }}
-      - scan-snyk:
-          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
-          {%- if distribution in ["buster"] %}
-          tag: "{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
-          tag: "{{ airflow_version }}"
-          {%- endif %}
-          requires:
-            - build-{{ airflow_version }}-{{ distribution }}
       - test:
           name: test-{{ airflow_version }}-{{ distribution }}-images
           {%- if distribution in ["buster"] %}
@@ -441,7 +413,6 @@ workflows:
             - docker.io
             - qa
           requires:
-            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -465,7 +436,6 @@ workflows:
             - docker.io
             - qa
           requires:
-            - scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
             - scan-trivy-{{ airflow_version }}-{{ distribution }}-onbuild
             - test-{{ airflow_version }}-{{ distribution }}-images
           filters:
@@ -487,41 +457,11 @@ workflows:
           {%- else %}
           image_name: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
           {%- endif %}
-      - scan-snyk-image:
-          name: scan-snyk-{{ airflow_version }}-{{ distribution }}-onbuild
-          {%- if distribution in ["buster"] %}
-          image: "quay.io/astronomer/ap-airflow:{{ airflow_version }}-{{ distribution }}"
-          {%- else %}
-          image: "quay.io/astronomer/ap-airflow:{{ airflow_version }}"
-          {%- endif %}
       {%- endfor %}{# distribution in distributions #}
       {%- endif -%}{# dev_release #}
       {%- endfor %}{# ac_version, distributions in image_map.items() #}
 
 jobs:
-  rebase-astro-main:
-    machine:
-      image: ubuntu-2004:202107-02
-    steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "11:0b:15:6b:f2:77:3e:93:c5:83:0e:8a:0a:93:2e:7e"
-      - run:
-          name: Rebase astronomer/airflow:astro-main onto main
-          command: |
-            export GIT_SSH_COMMAND="ssh -o IdentitiesOnly=yes -i $HOME/.ssh/id_rsa_110b156bf2773e93c5830e8a0a932e7e"
-            git clone git@github.com:astronomer/airflow.git
-            cd airflow
-            git config user.name "astronomer/ap-airflow GitHub:CircleCI integration"
-            git config user.email "astronomer@users.noreply.github.com"
-            git branch --verbose
-            git fetch --all
-            git checkout astro-main
-            git --no-pager log --max-count 4
-            git rebase main
-            git --no-pager log --max-count 4
-            git push --force origin astro-main
-            git --no-pager remote --verbose
   static-checks:
     executor: machine-executor
     description: Static Checks
@@ -700,32 +640,6 @@ jobs:
           key: trivy-cache
           paths:
             - {{ workspace_prefix }}/trivy-cache
-  scan-snyk:
-    executor: docker-executor
-    parameters:
-      tag:
-        type: string
-    steps:
-      - scan-snyk-docker-image:
-          tag: "<< parameters.tag >>"
-  scan-snyk-image:
-    description: "Snyk: Dependency scanner for a Docker image"
-    executor: docker-executor
-    parameters:
-      image:
-        type: string
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: {{ workspace_prefix }}
-      - snyk/scan:
-          docker-image-name: << parameters.image >>-onbuild
-          monitor-on-build: false
-          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
-          severity-threshold: high
-          organization: ${SNYK_CICD_ORGANIZATION}
-          additional-arguments: "--fail-on=all"
   push:
     executor: docker-executor
     description: Push Airflow images
@@ -809,7 +723,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+            - "ca:11:9b:ff:1d:72:65:a2:02:eb:53:79:bc:e2:f3:36"
       - checkout
       - install-yq
       - run:
@@ -852,7 +766,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "21:8b:f6:e6:a1:4a:59:06:d4:1a:c3:28:a4:67:f9:24"
+            - "ca:11:9b:ff:1d:72:65:a2:02:eb:53:79:bc:e2:f3:36"
       - checkout
       - install-yq
       - run:
@@ -887,7 +801,6 @@ jobs:
 orbs:
   slack: circleci/slack@4.4.4
   clair-scanner: ovotech/clair-scanner@1.6.0
-  snyk: snyk/snyk@1.1.2
 executors:
   docker-executor:
     docker:
@@ -1003,29 +916,6 @@ commands:
             .circleci/bin/test-airflow 'ap-airflow' '<< parameters.tag >>'
       - store_test_results:
           path: /tmp/test-reports
-  scan-snyk-docker-image:
-    description: "Snyk: Dependency scanner for a Docker image"
-    parameters:
-      tag:
-        type: string
-    steps:
-      - checkout
-      - setup_remote_docker
-      - attach_workspace:
-          at: {{ workspace_prefix }}
-      - run:
-          name: Load archived Docker image
-          command: |
-            if [[ -e "{{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar" ]]; then
-              docker load -i {{ workspace_prefix }}/saved-images/ap-airflow:<< parameters.tag >>-onbuild.tar
-            fi
-      - snyk/scan:
-          docker-image-name: ap-airflow:<< parameters.tag >>-onbuild
-          monitor-on-build: false
-          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
-          severity-threshold: high
-          organization: ${SNYK_CICD_ORGANIZATION}
-          additional-arguments: "--fail-on=all"
   push:
     description: "Push a Docker image to DockerHub"
     parameters:
