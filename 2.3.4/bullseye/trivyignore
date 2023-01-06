@@ -11,3 +11,6 @@ CVE-2022-38054
 
 # Protobuf CVE not fixable until protobuf is updated in Airflow
 CVE-2022-1941
+
+# REDoS CVE in setuptools does not affect us
+CVE-2022-40897
