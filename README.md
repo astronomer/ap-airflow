@@ -29,35 +29,19 @@ Note: Edge builds are always development builds
 Docker images for deploying and running Astronomer Core are currently available on
 [Quay](https://quay.io/repository/astronomer/ap-airflow?tab=tags).
 
-We publish 2 variants for each AC Version (example: `1.10.15-3`):
+We publish 2 variants for each AC Version (example: `2.3.4-7`):
 
-**For AC<2.2.0**:
-1. `quay.io/astronomer/ap-airflow:1.10.15-3-buster`
-2. `quay.io/astronomer/ap-airflow:1.10.15-3-buster-onbuild`
-
-**For AC>=2.2.0**:
-
-We dropped the distribution name from the image tag so the 2 variants are as follows:
-
-1. `quay.io/astronomer/ap-airflow:2.2.1-1`
-2. `quay.io/astronomer/ap-airflow:2.2.1-1-onbuild`
+1. `quay.io/astronomer/ap-airflow:2.3.4-7`
+2. `quay.io/astronomer/ap-airflow:2.3.4-7-onbuild`
 
 The only difference between them is that the `-onbuild` images uses Docker `ONBUILD` commands to
 copy `packages.txt`, `requirements.txt` and the entire project directory (including `dags`,
 `plugins` folders etc) in the docker file.
 
-For each of our `-onbuild` images we publish two flavors of tag:
+We also publish a "floating" or movable tag that points at the latest release of the Airflow version:
 
-**For AC<2.2.0**:
-1. `quay.io/astronomer/ap-airflow:1.10.15-buster-onbuild` which is our latest release of the `1.10.15` series,
-including latest security patches. This tag is "floating" or movable.
-2. `quay.io/astronomer/ap-airflow:1.10.15-3-buster-onbuild` once this tag is pushed it will never change again.
-
-**For AC>=2.2.0**:
-
-1. `quay.io/astronomer/ap-airflow:2.2.0-onbuild` which is our latest release of the `2.2.0` series,
-including latest security patches. This tag is "floating" or movable.
-2. `quay.io/astronomer/ap-airflow:2.2.0-3-onbuild` once this tag is pushed it will never change again.
+1. `quay.io/astronomer/ap-airflow:2.3.4`
+2. `quay.io/astronomer/ap-airflow:2.3.4-onbuild`
 
 ## Version Life Cycle & Maintenance policy
 
