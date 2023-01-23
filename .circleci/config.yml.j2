@@ -775,7 +775,7 @@ commands:
       - docker-build:
           image_name: "<< parameters.image_name >>"
           path: "<< parameters.airflow_version >>/<< parameters.distribution_name >>"
-          extra_args: "<< parameters.extra_args >>"
+          extra_args: "--pull << parameters.extra_args >>"
           edge_build: "<< parameters.edge_build >>"
       - docker-build:
           image_name: "<< parameters.image_name >>-onbuild"
