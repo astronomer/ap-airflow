@@ -1,6 +1,6 @@
 # Changelog
 
-Astronomer Certified 2.4.3-3, 2023-01-25
+Astronomer Certified 2.4.3-3, 2023-01-26
 ----------------------------------------
 ### Bugfixes
 
