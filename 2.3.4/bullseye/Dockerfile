@@ -114,7 +114,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.3.4-8-*"
+ARG VERSION="2.3.4+astro.8"
 ARG SUBMODULES="async,azure,amazon,elasticsearch,google,password,cncf.kubernetes,mysql,postgres,redis,slack,ssh,statsd,virtualenv"
 ARG AIRFLOW_MODULE="apache-airflow[${SUBMODULES}]==$VERSION"
 ARG AIRFLOW_VERSION="2.3.4"
@@ -154,7 +154,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ARG VERSION="2.3.4-8-*"
+ARG VERSION="2.3.4+astro.8"
 ARG AIRFLOW_VERSION="2.3.4"
 ARG ASTRONOMER_FAB_SECURITY_MANAGER_VERSION="1.9.3"
 LABEL io.astronomer.docker.airflow.version="${AIRFLOW_VERSION}"
