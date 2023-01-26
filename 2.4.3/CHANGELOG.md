@@ -1,5 +1,11 @@
 # Changelog
 
+Astronomer Certified 2.4.3-4, 2023-01-26
+----------------------------------------
+### Bugfixes
+
+- Annotate KubernetesExecutor pods that we don't delete (#28844)([#28844](https://github.com/apache/airflow/pull/28844))
+
 Astronomer Certified 2.4.3-3, 2023-01-26
 ----------------------------------------
 ### Bugfixes
