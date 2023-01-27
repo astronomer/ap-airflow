@@ -11,11 +11,6 @@ else
   __TINIFIED=1 exec gosu "${ASTRONOMER_USER}" tini -- "$0" "$@"
 fi
 
-if [[ -n "$EXECUTOR" && -z "$AIRFLOW__CORE__EXECUTOR" ]]; then
-  # Support for puckel style of defining configs
-  export AIRFLOW__CORE__EXECUTOR "${EXECUTOR}Executor"
-fi
-
 # Handle 2.3.0 DeprecationWarnings - can be removed once platform is setting these themselves
 # Add SQL_ALCHEMY_CONN to new section if it only exists in the old section
 if [[ -n "$AIRFLOW__CORE__SQL_ALCHEMY_CONN" && -z "$AIRFLOW__DATABASE__SQL_ALCHEMY_CONN" ]]; then
