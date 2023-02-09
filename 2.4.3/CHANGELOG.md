@@ -1,13 +1,22 @@
 # Changelog
 
+Astronomer Certified 2.4.3-5, 2023-02-09
+----------------------------------------
+
+### Bugfixes
+
+- Use time not tries for queued & running re-checks ([#28586](https://github.com/apache/airflow/pull/28586))
+
 Astronomer Certified 2.4.3-4, 2023-01-26
 ----------------------------------------
+
 ### Bugfixes
 
 - Annotate KubernetesExecutor pods that we don't delete (#28844)([#28844](https://github.com/apache/airflow/pull/28844))
 
 Astronomer Certified 2.4.3-3, 2023-01-26
 ----------------------------------------
+
 ### Bugfixes
 
 - Revert "Make DagRun state updates for paused DAGs faster ([#27725](https://github.com/apache/airflow/pull/27725))"

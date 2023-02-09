@@ -1,13 +1,22 @@
 # Changelog
 
-Astronomer Certified 2.3.4-9, 2023-01-26
-----------------------------------------
+Astronomer Certified 2.3.4-10, 2023-02-09
+-----------------------------------------
+
 ### Bugfixes
 
-- Annotate KubernetesExecutor pods that we don't delete (#28844)([#28844](https://github.com/apache/airflow/pull/28844))
+- Use time not tries for queued & running re-checks ([#28586](https://github.com/apache/airflow/pull/28586))
+
+Astronomer Certified 2.3.4-9, 2023-01-26
+----------------------------------------
+
+### Bugfixes
+
+- Annotate KubernetesExecutor pods that we don't delete ([#28844](https://github.com/apache/airflow/pull/28844))
 
 Astronomer Certified 2.3.4-8, 2023-01-26
 ----------------------------------------
+
 ### Bugfixes
 
 - Fix bad pods pickled in executor_config ([#28454](https://github.com/apache/airflow/pull/28454))
@@ -25,6 +34,7 @@ Astronomer Certified 2.3.4-8, 2023-01-26
 
 Astronomer Certified 2.3.4-7, 2022-12-21
 ----------------------------------------
+
 ### Bugfixes
 
 - Fix deadlock when chaining multiple empty mapped tasks ([#27964](https://github.com/apache/airflow/pull/27964))
