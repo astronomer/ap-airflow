@@ -1,11 +1,17 @@
 # Changelog
 
-Astronomer Certified 2.4.3-5, 2023-02-09
-----------------------------------------
+Astronomer Certified 2.4.3-5, TBD
+---------------------------------
 
 ### Bugfixes
 
 - Use time not tries for queued & running re-checks ([#28586](https://github.com/apache/airflow/pull/28586))
+
+### Security
+
+- Update `apache-airflow-providers-mysql` to `4.0.0` and `apache-airflow-providers-common-sql` to `1.3.3` to fix [CVE-2023-22884](https://avd.aquasec.com/nvd/2022/cve-2023-22884/). This update includes a breaking change for the MySQL provider, see the [4.0.0 MySQL provider changelog](https://airflow.apache.org/docs/apache-airflow-providers-mysql/4.0.0/index.html#changelog) for details.
+- Update `curl` to `7.74.0-1.3+deb11u5` to fix [CVE-2022-32221](https://avd.aquasec.com/nvd/cve-2022-32221)
+- Update `openssl` to `1.1.1n-0+deb11u4` to fix [CVE-2023-0286](https://avd.aquasec.com/nvd/cve-2023-0286)
 
 Astronomer Certified 2.4.3-4, 2023-01-26
 ----------------------------------------
