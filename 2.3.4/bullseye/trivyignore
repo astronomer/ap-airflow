@@ -11,3 +11,6 @@ CVE-2022-38054
 
 # Protobuf CVE not fixable until protobuf is updated in Airflow
 CVE-2022-1941
+
+# The mysql provider has been updated, core itself isn't actually vulnerable
+CVE-2023-22884

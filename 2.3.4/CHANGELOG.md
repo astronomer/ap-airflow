@@ -1,13 +1,28 @@
 # Changelog
 
-Astronomer Certified 2.3.4-9, 2023-01-26
-----------------------------------------
+Astronomer Certified 2.3.4-10, TBD
+----------------------------------
+
 ### Bugfixes
 
-- Annotate KubernetesExecutor pods that we don't delete (#28844)([#28844](https://github.com/apache/airflow/pull/28844))
+- Use time not tries for queued & running re-checks ([#28586](https://github.com/apache/airflow/pull/28586))
+
+### Security
+
+- Update `apache-airflow-providers-mysql` to `4.0.0` and `apache-airflow-providers-common-sql` to `1.3.3` to fix [CVE-2023-22884](https://avd.aquasec.com/nvd/2022/cve-2023-22884/). This update includes a breaking change for the MySQL provider, see the [4.0.0 MySQL provider changelog](https://airflow.apache.org/docs/apache-airflow-providers-mysql/4.0.0/index.html#changelog) for details.
+- Update `curl` to `7.74.0-1.3+deb11u5` to fix [CVE-2022-32221](https://avd.aquasec.com/nvd/cve-2022-32221)
+- Update `openssl` to `1.1.1n-0+deb11u4` to fix [CVE-2023-0286](https://avd.aquasec.com/nvd/cve-2023-0286)
+
+Astronomer Certified 2.3.4-9, 2023-01-26
+----------------------------------------
+
+### Bugfixes
+
+- Annotate KubernetesExecutor pods that we don't delete ([#28844](https://github.com/apache/airflow/pull/28844))
 
 Astronomer Certified 2.3.4-8, 2023-01-26
 ----------------------------------------
+
 ### Bugfixes
 
 - Fix bad pods pickled in executor_config ([#28454](https://github.com/apache/airflow/pull/28454))
@@ -25,6 +40,7 @@ Astronomer Certified 2.3.4-8, 2023-01-26
 
 Astronomer Certified 2.3.4-7, 2022-12-21
 ----------------------------------------
+
 ### Bugfixes
 
 - Fix deadlock when chaining multiple empty mapped tasks ([#27964](https://github.com/apache/airflow/pull/27964))
