@@ -1,5 +1,21 @@
 # Changelog
 
+Astronomer Certified 2.3.4-10, TBD
+----------------------------------
+
+### Bugfixes
+
+- Ensure that `dag.partial_subset` doesn't mutate task group properties ([#30129](https://github.com/apache/airflow/pull/30129))
+
+### Security
+
+- Update `apache-airflow-providers-amazon` to `7.3.0` to fix [CVE-2023-25956](https://avd.aquasec.com/nvd/cve-2023-25956). This update includes a breaking change for the Amazon provider, see the [6.0.0 Amazon provider changelog](https://airflow.apache.org/docs/apache-airflow-providers-amazon/6.0.0/index.html#changelog) and [7.0.0 Amazon provider changelog](https://airflow.apache.org/docs/apache-airflow-providers-amazon/7.0.0/index.html#changelog) for details.
+- Update `apache-airflow-providers-google` to `8.11.0` to fix [CVE-2023-25691](https://avd.aquasec.com/nvd/cve-2023-25691) and [CVE-2023-25692](https://avd.aquasec.com/nvd/cve-2023-25692).
+- Update `werkzeug` to `2.2.3` to fix [CVE-2023-25577](https://avd.aquasec.com/nvd/cve-2023-25577)
+- Update `cryptography` to `39.0.2` to fix [CVE-2023-0286](https://avd.aquasec.com/nvd/cve-2023-0286)
+- Update `curl` to `7.74.0-1.3+deb11u7` to fix [CVE-2023-23916](https://avd.aquasec.com/nvd/cve-2023-23916)
+- Update `gnutls` to `3.7.1-5+deb11u3` to fix [CVE-2023-0361](https://avd.aquasec.com/nvd/cve-2023-0361)
+
 Astronomer Certified 2.3.4-10, 2023-02-14
 -----------------------------------------
 
