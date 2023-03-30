@@ -14,3 +14,7 @@ CVE-2022-1941
 
 # The mysql provider has been updated, core itself isn't actually vulnerable
 CVE-2023-22884
+
+# Airflow doesn't support redis 4
+# redis 3 also doesn't seem to have the async stuff that was vulnerable
+CVE-2023-28858
