@@ -1,5 +1,5 @@
 
 --constraint="https://raw.githubusercontent.com/apache/airflow/constraints-2.4.1/constraints-3.9.txt"
-apache-airflow==2.4.1
+apache-airflow==2.6.0
 
 -e .[test]
